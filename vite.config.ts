@@ -2,8 +2,15 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
+// GitHub Pages serves project sites from /<repo-name>/, not /. Overridable
+// via BASE_PATH env var so `npm run build` still works for Vercel/other
+// hosts that serve from the root — the GitHub Actions workflow sets
+// BASE_PATH=/myndigo/ explicitly.
+const base = process.env.BASE_PATH ?? '/'
+
 // https://vite.dev/config/
 export default defineConfig({
+  base,
   plugins: [
     react(),
     VitePWA({
@@ -31,7 +38,7 @@ export default defineConfig({
             // shell still loads if the network briefly drops, but a parent
             // revoking sharing or a browser reload always prefers a fresh
             // fetch over serving a long-lived stale copy.
-            urlPattern: ({ url }) => url.pathname.startsWith('/s/'),
+            urlPattern: ({ url }) => url.pathname.startsWith(`${base}s/`),
             handler: 'NetworkFirst',
             options: {
               cacheName: 'shared-profiles',
@@ -66,7 +73,7 @@ export default defineConfig({
         display: 'standalone',
         icons: [
           {
-            src: '/favicon.svg',
+            src: `${base}favicon.svg`,
             sizes: 'any',
             type: 'image/svg+xml',
             purpose: 'any maskable',

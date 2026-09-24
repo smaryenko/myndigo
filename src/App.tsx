@@ -31,9 +31,14 @@ function PageLoader() {
   )
 }
 
+// Vite exposes the configured `base` at runtime via import.meta.env.BASE_URL
+// (e.g. "/myndigo/" on GitHub Pages, "/" everywhere else). React Router needs
+// this as `basename` so routes resolve correctly under a subpath.
+const basename = import.meta.env.BASE_URL.replace(/\/$/, '')
+
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <AuthProvider>
         <Suspense fallback={<PageLoader />}>
           <Routes>
