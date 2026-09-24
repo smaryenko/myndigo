@@ -36,29 +36,33 @@ export function SectionCard({
   return (
     <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-50">
+      <div className="flex items-center justify-between gap-2 flex-wrap px-4 py-3 border-b border-slate-50">
         <button
           type="button"
           onClick={() => setCollapsed(c => !c)}
-          className="flex items-center gap-2 text-left flex-1"
+          className="flex items-center gap-2 text-left"
         >
           <span className="font-semibold text-slate-800 text-sm">{title}</span>
-          <span className="text-slate-400 text-xs">{collapsed ? '▸' : '▾'}</span>
+          <span className="text-slate-400 text-xs shrink-0">{collapsed ? '▸' : '▾'}</span>
         </button>
 
-        {/* Visibility toggle */}
+        {/* Visibility toggle — label always shown (not just on sm+): on mobile,
+            the 👁/🙈 emoji pair alone reads as nearly identical at small size,
+            so hiding the text left this control ambiguous on phones. Header
+            wraps (flex-wrap) rather than truncating the section title when
+            both don't fit on one line. */}
         <button
           type="button"
           onClick={handleVisibilityToggle}
           title={visible ? t('share.sectionVisible') : t('share.sectionHidden')}
-          className={`ml-3 flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border transition-colors ${
+          className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border transition-colors shrink-0 whitespace-nowrap ${
             visible
               ? 'border-green-200 bg-green-50 text-green-700'
               : 'border-slate-200 bg-slate-50 text-slate-400'
           }`}
         >
           <span>{visible ? '👁' : '🙈'}</span>
-          <span className="hidden sm:inline">{visible ? t('share.sectionVisible') : t('share.sectionHidden')}</span>
+          <span>{visible ? t('share.sectionVisible') : t('share.sectionHidden')}</span>
         </button>
       </div>
 
