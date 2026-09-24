@@ -38,7 +38,18 @@ export default defineConfig({
             // shell still loads if the network briefly drops, but a parent
             // revoking sharing or a browser reload always prefers a fresh
             // fetch over serving a long-lived stale copy.
-            urlPattern: ({ url }) => url.pathname.startsWith(`${base}s/`),
+            //
+            // NOTE: this function is serialized as a *string* by
+            // vite-plugin-pwa/Workbox into the generated sw.js, and runs
+            // there in the service worker's own scope — it must not close
+            // over `base` or any other module-level variable from this
+            // Node config file, or the generated sw.js ends up referencing
+            // an undefined `base` at runtime (this broke the first version
+            // of this config). Using `new Function(...)` here bakes the
+            // current value of `base` into the function's source text
+            // itself before Workbox stringifies it, so the emitted sw.js
+            // contains the literal path prefix, not a variable reference.
+            urlPattern: new Function('url', `return url.pathname.startsWith(${JSON.stringify(`${base}s/`)})`) as unknown as (options: { url: URL }) => boolean,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'shared-profiles',
