@@ -94,6 +94,10 @@ export function ChildProfilePage() {
             fields={profile.fieldsBySection[section.section_key] ?? []}
             entries={profile.entries.filter(e => e.section_key === section.section_key)}
             onChange={entries => handleEntriesChange(section.section_key, entries)}
+            hiddenEmptySections={profile.child.hidden_empty_sections}
+            onHiddenEmptySectionsChange={next =>
+              setProfile(p => p ? { ...p, child: { ...p.child, hidden_empty_sections: next } } : p)
+            }
           />
         ))}
       </div>

@@ -107,6 +107,39 @@ export async function setChildShareTheme(childId: string, theme: string): Promis
   if (error) throw error
 }
 
+/**
+ * Set whether a repeatable section (triggers, contacts, medications, etc.)
+ * should be treated as hidden while it has zero entries — see
+ * `children.hidden_empty_sections` in schema.sql. Once the section gets
+ * its first entry, that entry's own `section_visible` takes over and this
+ * flag no longer has any effect until the section is emptied again.
+ */
+export async function setEmptySectionHidden(
+  childId: string,
+  sectionKey: string,
+  hidden: boolean
+): Promise<string[]> {
+  const { data: child, error: fetchError } = await supabase
+    .from('children')
+    .select('hidden_empty_sections')
+    .eq('id', childId)
+    .single()
+  if (fetchError) throw fetchError
+
+  const current: string[] = child?.hidden_empty_sections ?? []
+  const next = hidden
+    ? [...new Set([...current, sectionKey])]
+    : current.filter(k => k !== sectionKey)
+
+  const { error } = await supabase
+    .from('children')
+    .update({ hidden_empty_sections: next })
+    .eq('id', childId)
+  if (error) throw error
+
+  return next
+}
+
 // ============================================================
 // SECTION / FIELD DEFINITIONS
 // Metadata describing what sections/fields exist for a profile_type.

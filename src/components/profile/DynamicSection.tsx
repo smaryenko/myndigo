@@ -12,6 +12,7 @@ import {
   deleteProfileEntry,
   upsertSingleEntry,
   setSectionVisibility,
+  setEmptySectionHidden,
 } from '../../lib/db'
 import { ALERT_DISPLAY } from '../../lib/types'
 import type { SectionDefinition, FieldDefinition, ProfileEntryRow } from '../../lib/types'
@@ -22,6 +23,9 @@ interface Props {
   fields: FieldDefinition[]
   entries: ProfileEntryRow[]
   onChange: (entries: ProfileEntryRow[]) => void
+  /** section_keys the parent hid while they had zero entries — see schema.sql. */
+  hiddenEmptySections: string[]
+  onHiddenEmptySectionsChange: (next: string[]) => void
 }
 
 type Values = ProfileEntryRow['values']
@@ -48,35 +52,44 @@ function firstRequiredMissing(fields: FieldDefinition[], values: Values): boolea
  * EmergencyContactsSection, MedicalSection-ish groupings, Communication/
  * BehavioralNotes/EducationalInfo).
  */
-export function DynamicSection({ childId, section, fields, entries, onChange }: Props) {
+export function DynamicSection({ childId, section, fields, entries, onChange, hiddenEmptySections, onHiddenEmptySectionsChange }: Props) {
   if (!section.repeatable) {
     return <SingleEntrySection childId={childId} section={section} fields={fields} entry={entries[0] ?? null} onChange={e => onChange(e ? [e] : [])} />
   }
 
+  const emptyProps = { hiddenEmptySections, onHiddenEmptySectionsChange }
+
   if (section.render_hint === 'contact_list') {
-    return <ContactListSection childId={childId} section={section} fields={fields} entries={entries} onChange={onChange} />
+    return <ContactListSection childId={childId} section={section} fields={fields} entries={entries} onChange={onChange} {...emptyProps} />
   }
 
   if (section.render_hint === 'alert_bar') {
-    return <AlertBarSection childId={childId} section={section} fields={fields} entries={entries} onChange={onChange} />
+    return <AlertBarSection childId={childId} section={section} fields={fields} entries={entries} onChange={onChange} {...emptyProps} />
   }
 
-  return <ListSection childId={childId} section={section} fields={fields} entries={entries} onChange={onChange} />
+  return <ListSection childId={childId} section={section} fields={fields} entries={entries} onChange={onChange} {...emptyProps} />
 }
 
 // ============================================================
 // Generic repeatable list — triggers, sensory, routines, medications,
 // conditions, doctors. One card per entry, fields rendered in order.
 // ============================================================
-function ListSection({ childId, section, fields, entries, onChange }: Props) {
+function ListSection({ childId, section, fields, entries, onChange, hiddenEmptySections, onHiddenEmptySectionsChange }: Props) {
   const { t } = useTranslation()
   const [adding, setAdding] = useState(false)
   const [newValues, setNewValues] = useState<Values>(() => emptyValues(fields))
   const [saving, setSaving] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editValues, setEditValues] = useState<Values>({})
+  const [visibilityError, setVisibilityError] = useState<string | null>(null)
 
-  const sectionVisible = entries[0]?.section_visible ?? section.default_visible
+  // When empty, there's no profile_entries row to hold section_visible, so
+  // fall back to the parent's remembered preference for this empty section
+  // (see children.hidden_empty_sections in schema.sql) instead of always
+  // reading as "visible" with no way to change it.
+  const sectionVisible = entries.length > 0
+    ? (entries[0]?.section_visible ?? section.default_visible)
+    : !hiddenEmptySections.includes(section.section_key)
 
   const handleAdd = async () => {
     if (firstRequiredMissing(fields, newValues)) return
@@ -85,7 +98,8 @@ function ListSection({ childId, section, fields, entries, onChange }: Props) {
       const saved = await upsertProfileEntry(childId, section.section_key, {
         values: newValues,
         sort_order: entries.length,
-        section_visible: true,
+        // Carry over whatever the parent set while the section was empty.
+        section_visible: !hiddenEmptySections.includes(section.section_key),
       })
       onChange([...entries, saved])
       setAdding(false)
@@ -112,13 +126,26 @@ function ListSection({ childId, section, fields, entries, onChange }: Props) {
   }
 
   const handleVisibility = async (visible: boolean) => {
-    await setSectionVisibility(entries.map(e => e.id), visible)
-    onChange(entries.map(e => ({ ...e, section_visible: visible })))
+    setVisibilityError(null)
+    try {
+      if (entries.length === 0) {
+        const next = await setEmptySectionHidden(childId, section.section_key, !visible)
+        onHiddenEmptySectionsChange(next)
+        return
+      }
+      await setSectionVisibility(entries.map(e => e.id), visible)
+      onChange(entries.map(e => ({ ...e, section_visible: visible })))
+    } catch (err) {
+      setVisibilityError(err instanceof Error ? err.message : t('common.error'))
+    }
   }
 
   return (
     <SectionCard title={t(section.label_key)} visible={sectionVisible} onVisibilityChange={handleVisibility}>
       <div className="space-y-3">
+        {visibilityError && (
+          <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-2.5 py-1.5">{visibilityError}</p>
+        )}
         {entries.length === 0 && (
           <p className="text-sm text-slate-400 text-center py-2">—</p>
         )}
@@ -188,15 +215,21 @@ function ListSection({ childId, section, fields, entries, onChange }: Props) {
 // ============================================================
 // Contact list — priority-ordered, numbered, tap-to-call.
 // ============================================================
-function ContactListSection({ childId, section, fields, entries, onChange }: Props) {
+function ContactListSection({ childId, section, fields, entries, onChange, hiddenEmptySections, onHiddenEmptySectionsChange }: Props) {
   const { t } = useTranslation()
   const [adding, setAdding] = useState(false)
   const [newValues, setNewValues] = useState<Values>(() => emptyValues(fields))
   const [saving, setSaving] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editValues, setEditValues] = useState<Values>({})
+  const [visibilityError, setVisibilityError] = useState<string | null>(null)
 
-  const sectionVisible = entries[0]?.section_visible ?? section.default_visible
+  // See ListSection's identical comment — no profile_entries row exists to
+  // hold section_visible while the list is empty, so fall back to the
+  // parent's remembered preference (children.hidden_empty_sections).
+  const sectionVisible = entries.length > 0
+    ? (entries[0]?.section_visible ?? section.default_visible)
+    : !hiddenEmptySections.includes(section.section_key)
   const sorted = [...entries].sort((a, b) => a.sort_order - b.sort_order)
   const displayFields = fields.filter(f => f.field_type !== 'priority_int')
 
@@ -207,7 +240,7 @@ function ContactListSection({ childId, section, fields, entries, onChange }: Pro
       const saved = await upsertProfileEntry(childId, section.section_key, {
         values: newValues,
         sort_order: entries.length,
-        section_visible: true,
+        section_visible: !hiddenEmptySections.includes(section.section_key),
       })
       onChange([...entries, saved])
       setAdding(false)
@@ -235,13 +268,26 @@ function ContactListSection({ childId, section, fields, entries, onChange }: Pro
   }
 
   const handleVisibility = async (visible: boolean) => {
-    await setSectionVisibility(entries.map(e => e.id), visible)
-    onChange(entries.map(e => ({ ...e, section_visible: visible })))
+    setVisibilityError(null)
+    try {
+      if (entries.length === 0) {
+        const next = await setEmptySectionHidden(childId, section.section_key, !visible)
+        onHiddenEmptySectionsChange(next)
+        return
+      }
+      await setSectionVisibility(entries.map(e => e.id), visible)
+      onChange(entries.map(e => ({ ...e, section_visible: visible })))
+    } catch (err) {
+      setVisibilityError(err instanceof Error ? err.message : t('common.error'))
+    }
   }
 
   return (
     <SectionCard title={t(section.label_key)} visible={sectionVisible} onVisibilityChange={handleVisibility}>
       <div className="space-y-3">
+        {visibilityError && (
+          <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-2.5 py-1.5">{visibilityError}</p>
+        )}
         {sorted.length === 0 && (
           <p className="text-sm text-slate-400 text-center py-2">{t('child.contacts.noContacts')}</p>
         )}
@@ -317,15 +363,21 @@ function ContactListSection({ childId, section, fields, entries, onChange }: Pro
 // ============================================================
 // Alerts — severity-coloured cards with type select + optional note.
 // ============================================================
-function AlertBarSection({ childId, section, fields, entries, onChange }: Props) {
+function AlertBarSection({ childId, section, fields, entries, onChange, hiddenEmptySections, onHiddenEmptySectionsChange }: Props) {
   const { t } = useTranslation()
   const [adding, setAdding] = useState(false)
   const [newValues, setNewValues] = useState<Values>(() => emptyValues(fields))
   const [saving, setSaving] = useState(false)
   const [editingNoteId, setEditingNoteId] = useState<string | null>(null)
   const [noteInput, setNoteInput] = useState('')
+  const [visibilityError, setVisibilityError] = useState<string | null>(null)
 
-  const sectionVisible = entries[0]?.section_visible ?? section.default_visible
+  // See ListSection's identical comment — no profile_entries row exists to
+  // hold section_visible while there are zero alerts, so fall back to the
+  // parent's remembered preference (children.hidden_empty_sections).
+  const sectionVisible = entries.length > 0
+    ? (entries[0]?.section_visible ?? section.default_visible)
+    : !hiddenEmptySections.includes(section.section_key)
   const alertTypeField = fields.find(f => f.field_key === 'alert_type')
   const labelField = fields.find(f => f.field_key === 'label')
   const severityField = fields.find(f => f.field_key === 'severity')
@@ -349,7 +401,7 @@ function AlertBarSection({ childId, section, fields, entries, onChange }: Props)
           note: String(newValues.note || '').trim() || null,
         },
         sort_order: entries.length,
-        section_visible: true,
+        section_visible: !hiddenEmptySections.includes(section.section_key),
       })
       onChange([...entries, saved])
       setAdding(false)
@@ -374,8 +426,18 @@ function AlertBarSection({ childId, section, fields, entries, onChange }: Props)
   }
 
   const handleVisibility = async (visible: boolean) => {
-    await setSectionVisibility(entries.map(e => e.id), visible)
-    onChange(entries.map(e => ({ ...e, section_visible: visible })))
+    setVisibilityError(null)
+    try {
+      if (entries.length === 0) {
+        const next = await setEmptySectionHidden(childId, section.section_key, !visible)
+        onHiddenEmptySectionsChange(next)
+        return
+      }
+      await setSectionVisibility(entries.map(e => e.id), visible)
+      onChange(entries.map(e => ({ ...e, section_visible: visible })))
+    } catch (err) {
+      setVisibilityError(err instanceof Error ? err.message : t('common.error'))
+    }
   }
 
   const severityColor = (severity: string) =>
@@ -393,6 +455,9 @@ function AlertBarSection({ childId, section, fields, entries, onChange }: Props)
       hideWarning={t('share.alertsHideWarning')}
     >
       <div className="space-y-3">
+        {visibilityError && (
+          <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-2.5 py-1.5">{visibilityError}</p>
+        )}
         {entries.length === 0 && (
           <p className="text-sm text-slate-400 text-center py-2">{t('child.alerts.noAlerts')}</p>
         )}
@@ -523,6 +588,7 @@ function SingleEntrySection({
   const { t } = useTranslation()
   const [values, setValues] = useState<Values>(entry?.values ?? emptyValues(fields))
   const { saving, saved, executeSave } = useSaveState()
+  const [visibilityError, setVisibilityError] = useState<string | null>(null)
 
   const isFreeTextOnly = fields.length === 1 && fields[0].field_type === 'longtext'
 
@@ -548,9 +614,26 @@ function SingleEntrySection({
   }
 
   const handleVisibility = async (visible: boolean) => {
-    if (!entry?.id) return
-    const updated = await upsertProfileEntry(childId, section.section_key, { ...entry, section_visible: visible })
-    onChange(updated)
+    // No row exists yet (nothing entered in this section) — create one so
+    // the toggle actually persists, instead of silently no-op'ing. Uses the
+    // current in-memory `values` (which may be all-default/empty) rather
+    // than discarding them.
+    //
+    // Errors are surfaced (not swallowed) — this call previously had no
+    // try/catch anywhere in its chain, so a failure (RLS rejection, network
+    // error, etc.) produced an unhandled promise rejection with zero UI
+    // feedback: the toggle would look like it "did nothing" with no way to
+    // tell why.
+    setVisibilityError(null)
+    try {
+      const updated = await upsertProfileEntry(childId, section.section_key, {
+        ...(entry ?? { values }),
+        section_visible: visible,
+      })
+      onChange(updated)
+    } catch (err) {
+      setVisibilityError(err instanceof Error ? err.message : t('common.error'))
+    }
   }
 
   return (
@@ -560,6 +643,9 @@ function SingleEntrySection({
       onVisibilityChange={handleVisibility}
     >
       <div className="space-y-4">
+        {visibilityError && (
+          <p className="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-2.5 py-1.5">{visibilityError}</p>
+        )}
         {(saving || saved) && !isFreeTextOnly && (
           <p className="text-xs text-slate-400 text-right">{saving ? t('common.saving') : t('common.saved')}</p>
         )}

@@ -55,6 +55,11 @@ Parents can create and maintain a detailed profile for their child, including:
 - NFC write support (to program chips directly from the app)
 - Offline support (PWA)
 
+## Git Workflow
+
+- **Never run `git commit` or `git push` automatically.** Make and verify code changes (build/lint) as normal, but leave committing and pushing to the developer unless they explicitly ask for it in that turn.
+- This also means: changes won't auto-deploy via the GitHub Actions Pages workflow (it only triggers on push to `master`) until the developer commits and pushes themselves, or explicitly asks for that to be done.
+
 ## Design Principles
 
 - Simple and fast — parents are busy and stressed

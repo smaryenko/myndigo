@@ -36,6 +36,8 @@ export interface ChildRow {
   share_language: string
   share_theme: ShareTheme
   profile_type: ProfileType
+  /** section_keys hidden by the parent while they had zero entries (see schema.sql). */
+  hidden_empty_sections: string[]
   created_at: string
   updated_at: string
 }

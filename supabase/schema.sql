@@ -19,20 +19,31 @@ create extension if not exists "pgcrypto";
 -- share_theme below — new profile types are just new seed data.
 -- ============================================================
 create table if not exists children (
-  id              uuid primary key default gen_random_uuid(),
-  user_id         uuid not null references auth.users(id) on delete cascade,
-  share_token     uuid not null unique default gen_random_uuid(),
-  sharing_enabled boolean not null default false,
-  share_language  text not null default 'en',
-  share_theme     text not null default 'professional',
-  profile_type    text not null default 'asd_child',
-  created_at      timestamptz not null default now(),
-  updated_at      timestamptz not null default now()
+  id                    uuid primary key default gen_random_uuid(),
+  user_id               uuid not null references auth.users(id) on delete cascade,
+  share_token           uuid not null unique default gen_random_uuid(),
+  sharing_enabled       boolean not null default false,
+  share_language        text not null default 'en',
+  share_theme           text not null default 'professional',
+  profile_type          text not null default 'asd_child',
+  hidden_empty_sections text[] not null default '{}',
+  created_at            timestamptz not null default now(),
+  updated_at            timestamptz not null default now()
 );
 
 -- Safe to re-run on a database that already had `children` before
 -- profile_type existed — adds the column only if it's missing.
 alter table children add column if not exists profile_type text not null default 'asd_child';
+
+-- Tracks which repeatable sections (triggers, contacts, medications, etc.)
+-- a parent explicitly hid *while the section had zero entries*. Needed
+-- because a repeatable section's visibility otherwise lives on
+-- profile_entries.section_visible — which doesn't exist yet when there
+-- are no entries, so the visibility toggle had nothing to persist to and
+-- silently did nothing on an empty section. Once the first entry is
+-- added, this preference seeds that entry's section_visible and this
+-- array entry becomes irrelevant again until the section is emptied out.
+alter table children add column if not exists hidden_empty_sections text[] not null default '{}';
 
 -- ============================================================
 -- PERSONAL INFO
