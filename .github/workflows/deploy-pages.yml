@@ -18,6 +18,11 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Needed so this job can read secrets scoped to the github-pages
+    # environment, in case they were added there instead of (or in addition
+    # to) as plain repository secrets. Harmless if the secrets are
+    # repository-level — this just widens where the job is allowed to look.
+    environment: github-pages
     steps:
       - name: Checkout
         uses: actions/checkout@v4
