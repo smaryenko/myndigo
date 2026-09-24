@@ -1,0 +1,425 @@
+{
+  "common": {
+    "appName": "Myndigo",
+    "save": "保存",
+    "saved": "✓ 保存済み",
+    "saving": "保存中…",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "add": "追加",
+    "back": "戻る",
+    "loading": "読み込み中...",
+    "error": "エラーが発生しました",
+    "poweredBy": "Myndigo が提供",
+    "deleteFailed": "削除に失敗しました",
+    "saveFailed": "保存に失敗しました",
+    "removeInstruction": "指示を削除",
+    "removeAlert": "警告を削除",
+    "toggleMenu": "メニューの切り替え",
+    "selectLanguage": "言語を選択",
+    "photoAlt": "お子さまの写真",
+    "qrCodeAlt": "二要素認証用の QR コード"
+  },
+  "auth": {
+    "signIn": "サインイン",
+    "signOut": "サインアウト",
+    "signInWithGoogle": "Google で続ける",
+    "signUpWithGoogle": "Google で登録する",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "forgotPassword": "パスワードをお忘れですか？",
+    "noAccount": "アカウントをお持ちでないですか？",
+    "hasAccount": "すでにアカウントをお持ちですか？",
+    "signUp": "新規登録",
+    "orContinueWith": "または以下で続ける",
+    "tagline": "お子さまの世界を、いつも安全に、正しく理解してもらいましょう。",
+    "checkEmail": "アカウントを確認するためメールをご確認ください。",
+    "signUpTitle": "アカウントを作成",
+    "signUpTagline": "Myndigo の無料アカウントを作成して始めましょう。"
+  },
+  "landing": {
+    "mockProfile": {
+      "alertsTitle": "重要な警告",
+      "nonVerbal": "💬 非言語",
+      "triggersTitle": "🔴 引き金",
+      "talkTitle": "💬 話しかけ方",
+      "trigger1": "大きな音",
+      "trigger2": "人混み",
+      "trigger3": "予期しない変化",
+      "talk1": "短い文章",
+      "talk2": "絵を見せる",
+      "talk3": "落ち着いて対応する",
+      "contactRelation": "保護者",
+      "expandHint": "▼ 医療情報・日課・行動戦略"
+    },
+    "nav": {
+      "features": "機能",
+      "howItWorks": "使い方",
+      "privacy": "プライバシー",
+      "faq": "よくある質問",
+      "signIn": "サインイン",
+      "getStarted": "無料で始める"
+    },
+    "hero": {
+      "badge": "ASD のあるお子さまを持つご家族向け",
+      "headline": "お子さまの世界を、いつも正しく理解してもらう",
+      "subheadline": "Myndigo は、自閉症のお子さまを持つ保護者が大切な情報をひとつの場所にまとめ、必要な人とすぐに共有できるようサポートします。",
+      "cta": "無料で始める",
+      "ctaSub": "ずっと無料。クレジットカード不要。商業化しません。",
+      "secondaryCta": "使い方を見る"
+    },
+    "features": {
+      "title": "支援者が知っておくべきすべてのこと",
+      "subtitle": "緊急連絡先から感覚的な引き金まで——Myndigo はすべてを整理し、安全に、数秒で共有できるようにします。",
+      "items": [
+        { "icon": "🚨", "title": "重要な警告を最上部に表示", "description": "アレルギー、てんかん、糖尿病、徘徊リスク——最も重要な情報は常に最上部に表示され、見逃すことはありません。" },
+        { "icon": "💬", "title": "コミュニケーションプロフィール", "description": "お子さまのコミュニケーション方法——言語的・非言語的、AAC 機器、反響言語——および話しかけ方を他者に知らせましょう。" },
+        { "icon": "🔴", "title": "引き金と落ち着かせ方", "description": "何が苦痛を引き起こし、何が実際に助けになるかを記録しましょう。どの支援者も自信を持って困難な場面に対処できるようにします。" },
+        { "icon": "📞", "title": "緊急連絡先", "description": "共有ページでワンタップ通話。検索不要、遅延なし——ひとつのタップで適切な人に繋がります。" },
+        { "icon": "🔄", "title": "日課と感覚的なニーズ", "description": "お子さまの日課、それを乱すもの、不快感を引き起こす音・光・感触を説明しましょう。" },
+        { "icon": "💊", "title": "医療情報", "description": "薬・アレルギー・病状・医師の連絡先——すべてひとつの場所に、常に最新の状態で。" },
+        { "icon": "🔒", "title": "共有内容はあなたが管理", "description": "各セクションのオン・オフを切り替えられます。必要な情報だけ表示し、残りはプライベートに。常にあなたがコントロールします。" },
+        { "icon": "🌍", "title": "どの言語でも動作", "description": "共有プロフィールは 10 言語で表示できます。世界中どこにいる救急隊員も、お子さまのニーズを理解できます。" }
+      ]
+    },
+    "howItWorks": {
+      "title": "使い方",
+      "subtitle": "一度設定すれば、ずっと共有できます。",
+      "steps": [
+        { "number": "1", "title": "プロフィールを作成", "description": "お子さまの情報を追加します——警告、コミュニケーションスタイル、引き金、医療情報、緊急連絡先。" },
+        { "number": "2", "title": "共有する内容を選ぶ", "description": "各セクションをオン・オフで切り替えます。選んだ内容だけが共有ページに表示されます。" },
+        { "number": "3", "title": "QR コードまたは NFC で共有", "description": "カード・バッジ・ランドセルタグに QR コードを印刷するか、NFC チップをプログラムします。一度スキャンするだけでプロフィールがすぐに開きます。" },
+        { "number": "4", "title": "常に最新の情報", "description": "アプリで詳細を更新するとすぐに反映されます。再印刷や再共有は不要——QR コードはそのままです。" }
+      ]
+    },
+    "shareDemo": {
+      "title": "救急隊員が見る画面",
+      "subtitle": "共有プロフィールは 3 秒以内に最も重要な情報を伝えられるよう設計されています——ログイン不要、アプリ不要。"
+    },
+    "privacy": {
+      "title": "プライバシーを核心に構築",
+      "subtitle": "お子さまのデータは世界で最も機密性の高い情報のひとつです。私たちはそのように扱います。",
+      "items": [
+        { "icon": "🔐", "title": "エンドツーエンドのアクセス制御", "description": "行レベルセキュリティにより、あなたのデータへのアクセスはあなただけです。私たちのチームでも閲覧できません。" },
+        { "icon": "🪪", "title": "匿名の共有リンク", "description": "共有プロフィールはランダムなトークンを使用し、レコード ID は使用しません。プロフィールの推測や列挙はできません。" },
+        { "icon": "📵", "title": "共有ページでのトラッキングなし", "description": "共有プロフィールページには広告・サードパーティトラッキング・Cookie は一切ありません。" },
+        { "icon": "🗑️", "title": "いつでもすべて削除可能", "description": "アカウントとすべての関連データはワンクリックで完全に削除できます。確認なしで。" }
+      ]
+    },
+    "notifications": {
+      "title": "プロフィールが閲覧されたときに通知",
+      "description": "誰かがお子さまの QR コードをスキャンするたびに、Myndigo は閲覧を記録し、メールで通知することができます——プロフィールがいつ使用されているかを常に把握できます。"
+    },
+    "faq": {
+      "title": "よくある質問",
+      "items": [
+        { "q": "Myndigo は無料ですか？", "a": "はい、Myndigo は無料でご利用いただけます。アカウントを作成し、費用なしでお子さまのプロフィールを追加できます。" },
+        { "q": "閲覧者は何かインストールする必要がありますか？", "a": "いいえ。共有プロフィールはどのブラウザでも直接開きます。アプリ・アカウント・ログインは不要です。" },
+        { "q": "緊急で情報を更新する必要がある場合は？", "a": "変更はすぐに反映されます。アプリを開いて詳細を更新すれば、QR コードをスキャンする人に新しい情報がすぐに表示されます。" },
+        { "q": "いつでも共有を停止できますか？", "a": "はい。ワンタップで共有を無効にできます。QR コードと NFC チップはすぐに機能しなくなります。同じくらい簡単に共有を再開できます。" },
+        { "q": "誰かが QR コードを見つけた場合はどうなりますか？", "a": "あなたが共有を選んだ情報しか見ることができません。各セクションはあなたが管理しています。また、いつでも QR コードを再生成して古いものを無効にできます。" },
+        { "q": "お子さまのデータは安全に保存されていますか？", "a": "はい。すべてのデータは保存時および転送時に暗号化されています。行レベルセキュリティポリシーにより、データへのアクセスはあなたのアカウントからのみ可能です。" },
+        { "q": "複数の子どもを追加できますか？", "a": "はい。必要なだけ多くの子どもを追加でき、それぞれが独自のプロフィールと QR コードを持ちます。" },
+        { "q": "どの言語がサポートされていますか？", "a": "保護者ポータルと共有プロフィールは英語・スペイン語・フランス語・ドイツ語・ポルトガル語・イタリア語・アラビア語・中国語・日本語・ポーランド語に対応しています。" }
+      ]
+    },
+    "cta": {
+      "title": "すべての支援者に必要な情報を届ける",
+      "subtitle": "完全なプロフィールの設定には約 10 分かかります。その 10 分が大きな違いをもたらす可能性があります。",
+      "button": "無料アカウントを作成"
+    },
+    "footer": {
+      "tagline": "ASD のあるご家族がどこにいても理解されるようサポートします。",
+      "privacy": "プライバシー",
+      "terms": "利用規約",
+      "contact": "お問い合わせ"
+    }
+  },
+  "dashboard": {
+    "title": "子どもたち",
+    "addChild": "子どもを追加",
+    "noChildren": "まだ子どもが追加されていません。",
+    "noChildrenHint": "最初の子どもを追加して始めましょう。"
+  },
+  "child": {
+    "newChild": "子どもを追加",
+    "editProfile": "プロフィールを編集",
+    "sections": {
+      "personalInfo": "個人情報",
+      "alerts": "警告",
+      "communication": "コミュニケーション",
+      "triggers": "引き金",
+      "sensoryProfile": "感覚プロフィール",
+      "routines": "日課",
+      "medicalInfo": "医療情報",
+      "emergencyContacts": "緊急連絡先",
+      "behavioralNotes": "行動メモ",
+      "educationalInfo": "教育に関する詳細"
+    },
+    "personalInfo": {
+      "name": "氏名",
+      "dateOfBirth": "生年月日",
+      "pronouns": "呼びかけの言葉",
+      "pronounsPlaceholder": "例：ぼうや、坊ちゃん、チャンプ",
+      "namePlaceholder": "例：エマ",
+      "photo": "写真",
+      "addPhoto": "写真を追加",
+      "changePhoto": "写真を変更",
+      "removePhoto": "削除",
+      "photoHint": "最大 200 KB、JPG または PNG",
+      "photoVisible": "写真は共有ページに表示されます",
+      "photoHidden": "写真は共有ページで非表示になります"
+    },
+    "alerts": {
+      "noAlerts": "まだ警告が追加されていません。",
+      "addAlert": "+ 警告を追加",
+      "alertType": "警告の種類",
+      "alertLabel": "警告ラベル",
+      "note": "メモ",
+      "notePlaceholder": "例：ランドセルの赤いポーチに EpiPen を携帯",
+      "noteOptional": "メモ（任意）",
+      "editNote": "メモを編集",
+      "addNote": "+ メモを追加"
+    },
+    "communication": {
+      "level": "コミュニケーションレベル",
+      "usesAac": "AAC 機器 / コミュニケーション補助機器を使用",
+      "deviceName": "機器名",
+      "devicePlaceholder": "例：Proloquo2Go、PECS ボード",
+      "echolalia": "反響言語を使うことがある（言葉やフレーズを繰り返す）",
+      "instructions": "コミュニケーション方法——他者への重要な指示",
+      "instructionPlaceholder": "例：短くシンプルな文章を使う",
+      "addInstruction": "追加"
+    },
+    "triggers": {
+      "noTriggers": "まだ引き金が追加されていません。",
+      "addTrigger": "+ 引き金を追加",
+      "triggerPlaceholder": "何が引き金になるか、例：突然の大きな音",
+      "deEscalationPlaceholder": "落ち着かせ方（任意）"
+    },
+    "sensory": {
+      "noItems": "感覚的な敏感性が追加されていません。",
+      "addItem": "+ 敏感性を追加",
+      "detailsPlaceholder": "詳細、例：うるさい場所では耳をふさぐ"
+    },
+    "routines": {
+      "noRoutines": "まだ日課が追加されていません。",
+      "addRoutine": "+ 日課を追加",
+      "descriptionPlaceholder": "日課、例：朝：いつも同じ朝食を食べる",
+      "disruptionPlaceholder": "乱された場合に何が起きるか（任意）"
+    },
+    "medical": {
+      "medications": "薬",
+      "conditions": "病状",
+      "doctors": "医師・専門家",
+      "noneAdded": "追加なし。",
+      "addMedication": "+ 薬を追加",
+      "addCondition": "+ 病状を追加",
+      "addDoctor": "+ 医師を追加",
+      "medicationName": "薬の名前",
+      "medNamePlaceholder": "薬の名前 *",
+      "dose": "用量",
+      "dosePlaceholder": "用量、例：5 mg",
+      "frequency": "頻度",
+      "frequencyPlaceholder": "頻度、例：毎日",
+      "conditionName": "病状名",
+      "conditionNamePlaceholder": "病状名 *",
+      "details": "詳細",
+      "detailsOptional": "詳細（任意）",
+      "doctorName": "医師名",
+      "doctorNamePlaceholder": "医師名 *",
+      "specialty": "専門",
+      "specialtyPlaceholder": "専門、例：小児神経科"
+    },
+    "contacts": {
+      "noContacts": "緊急連絡先が追加されていません。",
+      "addContact": "+ 緊急連絡先を追加",
+      "name": "名前",
+      "namePlaceholder": "名前 *",
+      "relation": "続柄",
+      "relationPlaceholder": "続柄、例：お母さん、お父さん、おばあちゃん",
+      "phone": "電話番号",
+      "phonePlaceholder": "電話番号 *"
+    },
+    "behavioral": {
+      "hint": "効果的な方法、避けるべきこと、落ち着いて安心できるために助けになること。",
+      "placeholder": "例：ゆっくり 10 まで数えると落ち着く。フィジェットトイを渡すと気持ちが切り替わる。パニック中は身体的な接触を避ける..."
+    },
+    "education": {
+      "schoolName": "学校名",
+      "classGrade": "クラス・学年",
+      "teacherName": "担任の名前",
+      "teacherContact": "担任の連絡先",
+      "supportWorker": "支援員",
+      "notes": "メモ",
+      "schoolPlaceholder": "例：グリーンフィールド小学校",
+      "classPlaceholder": "例：2年B組",
+      "teacherPlaceholder": "例：ジョンソン先生",
+      "contactPlaceholder": "例：電話番号またはメールアドレス",
+      "workerPlaceholder": "例：サラ先生（1対1サポート）",
+      "notesPlaceholder": "例：個別支援計画があり、火曜日にリソースルームに通っています"
+    },
+    "dangerZone": "危険ゾーン",
+    "deleteProfile": "このプロフィールを削除",
+    "deleteConfirm": "{{name}} のプロフィールとすべてのデータが完全に削除されます。この操作は元に戻せません。",
+    "deleteConfirmButton": "はい、完全に削除します"
+  },
+  "share": {
+    "title": "プロフィールを共有",
+    "sharingOn": "共有オン",
+    "sharingOff": "共有オフ",
+    "sharingOnHint": "QR コードまたはリンクを持つ誰でも共有プロフィールを閲覧できます。",
+    "sharingOffHint": "共有プロフィールにはアクセスできません。QR コードは保持されます。",
+    "enableSharing": "共有を有効にする",
+    "disableSharing": "共有を無効にする",
+    "qrCode": "QR コード",
+    "qrInactiveHint": "共有を有効にしてこの QR コードを有効化してください。",
+    "copyLink": "リンクをコピー",
+    "linkCopied": "リンクをコピーしました！",
+    "downloadQr": "QRコードをダウンロード",
+    "invalidateQrTitle": "QR コードと NFC チップを無効化",
+    "invalidateQrHint": "新しいリンクを生成します。現在の QR コードとプログラムされた NFC チップはすぐに使用できなくなります。",
+    "invalidateQrButton": "無効化して再生成",
+    "regenerateWarning": "現在の QR コードと NFC チップが無効になります。よろしいですか？",
+    "regenerating": "再生成中…",
+    "yesRegenerate": "はい、再生成します",
+    "auditLog": "履歴を表示",
+    "noViews": "まだ閲覧記録がありません。",
+    "clearHistory": "履歴を削除",
+    "clearHistoryWarning": "このプロフィールの閲覧履歴がすべて完全に削除されます。この操作は元に戻せません。",
+    "yesClearHistory": "はい、削除します",
+    "visibilitySettings": "表示設定",
+    "sectionVisible": "共有ページで表示",
+    "sectionHidden": "共有ページで非表示",
+    "alertsHideWarning": "警告を非表示にするとお子さまが危険にさらされる可能性があります。よろしいですか？",
+    "hideAnyway": "それでも非表示にする",
+    "notFound": "見つかりません",
+    "defaultLanguage": "共有カードのデフォルト言語",
+    "defaultLanguageHint": "閲覧者はこの言語でプロフィールを確認します。変更することもできます。",
+    "themeLabel": "ページのスタイル",
+    "theme": {
+      "professional": "プロフェッショナル",
+      "warm": "ウォーム",
+      "playful": "ポップ"
+    },
+    "themeDesc": {
+      "professional": "明確・整理された",
+      "warm": "やわらか・親しみやすい",
+      "playful": "カラフル・にぎやか"
+    },
+    "childFallback": "お子様",
+    "printBadge": "バッジを印刷",
+    "printBadgePreview": "バッジのプレビュー",
+    "printBadgePrint": "印刷",
+    "printBadgeClose": "閉じる",
+    "printBadgeNameLabel": "こんにちは、私の名前は",
+    "printBadgeMessageShort": "私のことをもっと知っていただくため、または緊急時に助けていただくため、このQRコードをスキャンしてください。"
+  },
+  "notFound": {
+    "title": "ページが見つかりません",
+    "hint": "お探しのページは存在しません。",
+    "goToDashboard": "ダッシュボードへ"
+  },
+  "errors": {
+    "profileNotFound": "プロフィールが見つかりません",
+    "backToDashboard": "ダッシュボードに戻る",
+    "childProfile": "子どものプロフィール",
+    "photoTooLarge": "写真は 200 KB 未満である必要があります。サイズを変更して再試行してください。",
+    "failedToCreate": "プロフィールの作成に失敗しました"
+  },
+  "sharedPage": {
+    "notShared": "このプロフィールは現在共有されていません。",
+    "notSharedHint": "保護者がこのプロフィールの共有を無効にしました。",
+    "alerts": "重要な警告",
+    "showAll": "すべて表示",
+    "callNow": "電話する",
+    "language": "言語",
+    "expandSection": "もっと見る",
+    "collapseSection": "折りたたむ",
+    "triggers": "引き金",
+    "talkToMe": "話しかけ方",
+    "usesAac": "AAC 機器 / コミュニケーション補助を使用",
+    "usesAacDevice": "AAC 機器を使用：{{device}}",
+    "echolalia": "言葉やフレーズを繰り返すことがあります（反響言語）",
+    "moreAlerts": "他 {{count}} 件",
+    "moreContacts": "他 {{count}} 件の連絡先を以下に表示",
+    "alertTypes": {
+      "food_allergy": "食物アレルギー",
+      "epilepsy": "てんかん",
+      "diabetes": "糖尿病",
+      "asthma": "喘息",
+      "elopement_risk": "徘徊リスク",
+      "non_swimmer": "水泳不可",
+      "heart_condition": "心疾患",
+      "custom": "警告",
+      "severityRed": "重大",
+      "severityOrange": "重要"
+    },
+    "communicationLevels": {
+      "verbal": "言語的",
+      "limited_verbal": "限られた言語",
+      "non_verbal": "非言語的"
+    },
+    "sensorySections": {
+      "title": "感覚的な敏感性",
+      "sound": "音",
+      "light": "光",
+      "touch": "触覚",
+      "smell": "嗅覚",
+      "taste": "味覚",
+      "movement": "動き"
+    },
+    "sections": {
+      "allTriggers": "すべての引き金と落ち着かせ方",
+      "routines": "日課と好み",
+      "medical": "医療情報",
+      "moreContacts": "その他の緊急連絡先",
+      "behavioral": "行動戦略",
+      "medications": "薬",
+      "conditions": "病状",
+      "doctors": "医師"
+    }
+  },
+  "account": {
+    "title": "アカウント",
+    "sectionHeading": "アカウント",
+    "email": "メールアドレス",
+    "memberSince": "登録日",
+    "interfaceLanguage": "インターフェース言語",
+    "languageHint": "保護者ポータルの言語を設定します。共有プロフィールの言語はお子さまごとに設定します。",
+    "notifications": "通知",
+    "notifyOnViewLabel": "プロフィール閲覧アラート",
+    "notifyOnViewHint": "誰かがお子さまの QR コードをスキャンして共有プロフィールを閲覧したときにメールで通知を受け取ります。",
+    "notifyFootnote": "メール通知にはアプリ管理者による Resend の設定が必要です。無効にしても、すべての閲覧は監査ログに記録されます。",
+    "mfa": "二要素認証",
+    "mfaEnabled": "有効",
+    "mfaDisabled": "無効",
+    "mfaProtected": "アカウントは時間ベースの認証アプリで保護されています。",
+    "mfaIncorrectCode": "コードが正しくありません。もう一度お試しください。",
+    "mfaDisable": "二要素認証を無効にする",
+    "mfaDisableConfirm": "二要素認証を無効にするとアカウントのセキュリティが低下します。続行しますか？",
+    "mfaDisabling": "無効化中…",
+    "mfaYesDisable": "はい、無効にします",
+    "mfaScanQr": "認証アプリ（Google Authenticator、Authy など）でこの QR コードをスキャンしてください：",
+    "mfaOrManual": "またはこのコードを手動で入力してください：",
+    "mfaEnterCode": "アプリの 6 桁のコードを入力",
+    "mfaVerifying": "確認中…",
+    "mfaActivate": "二要素認証を有効にする",
+    "mfaSecurityHint": "アカウントにセキュリティの追加レイヤーを追加します。",
+    "mfaSettingUp": "設定中…",
+    "mfaChallengeTitle": "二要素認証",
+    "mfaChallengeHint": "続けるには、認証アプリの6桁のコードを入力してください。",
+    "mfaChallengeVerify": "確認",
+    "mfaChallengeVerifying": "確認中…",
+    "mfaChallengeError": "コードが正しくありません。もう一度お試しください。",
+    "setupMfa": "二要素認証を設定",
+    "dangerZone": "危険ゾーン",
+    "deleteAccount": "アカウントを削除",
+    "deleteAccountWarning": "アカウントとすべての子どものプロフィールが完全に削除されます。この操作は元に戻せません。",
+    "deleting": "削除中…",
+    "deleteConfirmButton": "はい、すべて削除します",
+    "toggleNotificationsLabel": "プロフィール閲覧通知のオン・オフ切り替え",
+    "upcomingFeature": "近日公開"
+  }
+}

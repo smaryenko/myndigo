@@ -1,0 +1,425 @@
+{
+  "common": {
+    "appName": "Myndigo",
+    "save": "Salva",
+    "saved": "✓ Salvato",
+    "saving": "Salvataggio…",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "add": "Aggiungi",
+    "back": "Indietro",
+    "loading": "Caricamento...",
+    "error": "Qualcosa è andato storto",
+    "poweredBy": "Sviluppato da Myndigo",
+    "deleteFailed": "Eliminazione non riuscita",
+    "saveFailed": "Salvataggio non riuscito",
+    "removeInstruction": "Rimuovi istruzione",
+    "removeAlert": "Rimuovi allerta",
+    "toggleMenu": "Attiva/disattiva menu",
+    "selectLanguage": "Seleziona lingua",
+    "photoAlt": "Foto del bambino",
+    "qrCodeAlt": "Codice QR per l'autenticazione a due fattori"
+  },
+  "auth": {
+    "signIn": "Accedi",
+    "signOut": "Esci",
+    "signInWithGoogle": "Continua con Google",
+    "signUpWithGoogle": "Registrati con Google",
+    "email": "E-mail",
+    "password": "Password",
+    "forgotPassword": "Password dimenticata?",
+    "noAccount": "Non hai un account?",
+    "hasAccount": "Hai già un account?",
+    "signUp": "Registrati",
+    "orContinueWith": "oppure continua con",
+    "tagline": "Mantieni il mondo di tuo figlio sicuro e compreso.",
+    "checkEmail": "Controlla la tua e-mail per confermare il tuo account.",
+    "signUpTitle": "Crea il tuo account",
+    "signUpTagline": "Registrati gratuitamente su Myndigo per iniziare."
+  },
+  "landing": {
+    "mockProfile": {
+      "alertsTitle": "Allerte importanti",
+      "nonVerbal": "💬 Non verbale",
+      "triggersTitle": "🔴 Trigger",
+      "talkTitle": "💬 Parlami così",
+      "trigger1": "Rumori forti",
+      "trigger2": "Folla",
+      "trigger3": "Cambiamenti improvvisi",
+      "talk1": "Frasi brevi",
+      "talk2": "Mostra immagini",
+      "talk3": "Resta calmo",
+      "contactRelation": "Genitore",
+      "expandHint": "▼ Informazioni mediche · Routine · Strategie comportamentali"
+    },
+    "nav": {
+      "features": "Funzionalità",
+      "howItWorks": "Come funziona",
+      "privacy": "Privacy",
+      "faq": "FAQ",
+      "signIn": "Accedi",
+      "getStarted": "Inizia gratuitamente"
+    },
+    "hero": {
+      "badge": "Creato per le famiglie con DSA",
+      "headline": "Il mondo di tuo figlio, sempre compreso",
+      "subheadline": "Myndigo aiuta i genitori di bambini autistici a tenere tutto ciò che è importante in un unico posto — e a condividerlo istantaneamente con chiunque ne abbia bisogno.",
+      "cta": "Inizia gratuitamente",
+      "ctaSub": "Sempre gratuito. Senza carta di credito. Mai commercializzato.",
+      "secondaryCta": "Scopri come funziona"
+    },
+    "features": {
+      "title": "Tutto ciò che un caregiver ha bisogno di sapere",
+      "subtitle": "Dai contatti di emergenza ai trigger sensoriali — Myndigo mantiene tutto organizzato, sicuro e condivisibile in pochi secondi.",
+      "items": [
+        { "icon": "🚨", "title": "Allerte critiche per prime", "description": "Allergie, epilessia, diabete, rischio di fuga — le informazioni più importanti sono sempre mostrate in cima, impossibili da ignorare." },
+        { "icon": "💬", "title": "Profilo di comunicazione", "description": "Informa gli altri su come tuo figlio comunica — verbale, non verbale, dispositivo CAA, ecolalia — e esattamente come parlargli." },
+        { "icon": "🔴", "title": "Trigger e de-escalation", "description": "Documenta cosa causa angoscia e cosa aiuta davvero. Dai a ogni caregiver gli strumenti per gestire un momento difficile con fiducia." },
+        { "icon": "📞", "title": "Contatti di emergenza", "description": "Contatti con chiamata diretta sulla pagina condivisa. Nessuna ricerca, nessun ritardo — basta un tocco per raggiungere la persona giusta." },
+        { "icon": "🔄", "title": "Routine e bisogni sensoriali", "description": "Spiega le routine di tuo figlio, cosa le disturba e quali suoni, luci o texture causano disagio." },
+        { "icon": "💊", "title": "Informazioni mediche", "description": "Farmaci, allergie, condizioni e contatti dei medici — tutto in un unico posto, sempre aggiornato." },
+        { "icon": "🔒", "title": "Sei tu a controllare cosa viene condiviso", "description": "Ogni sezione può essere attivata o disattivata. Mostra ciò che è rilevante, mantieni il resto privato. Sei sempre tu al controllo." },
+        { "icon": "🌍", "title": "Funziona in qualsiasi lingua", "description": "Il profilo condiviso può essere visualizzato in 10 lingue. Un soccorritore in qualsiasi parte del mondo può capire le esigenze di tuo figlio." }
+      ]
+    },
+    "howItWorks": {
+      "title": "Come funziona",
+      "subtitle": "Configura una volta. Condividi per sempre.",
+      "steps": [
+        { "number": "1", "title": "Crea un profilo", "description": "Aggiungi le informazioni di tuo figlio — allerte, stile di comunicazione, trigger, dettagli medici e contatti di emergenza." },
+        { "number": "2", "title": "Scegli cosa condividere", "description": "Attiva o disattiva ogni sezione. Solo ciò che scegli apparirà sulla pagina condivisa." },
+        { "number": "3", "title": "Condividi tramite QR o NFC", "description": "Stampa il codice QR su una carta, un badge o un'etichetta per lo zaino. O programma un chip NFC. Una scansione apre il profilo istantaneamente." },
+        { "number": "4", "title": "Sempre aggiornato", "description": "Aggiorna qualsiasi dettaglio nell'app ed è disponibile immediatamente. Non è necessario ristampare o ricondividere — il codice QR rimane lo stesso." }
+      ]
+    },
+    "shareDemo": {
+      "title": "Cosa vede un soccorritore",
+      "subtitle": "Il profilo condiviso è progettato per fornire le informazioni più critiche in meno di 3 secondi — senza login, senza app necessaria."
+    },
+    "privacy": {
+      "title": "Costruito con la privacy al centro",
+      "subtitle": "I dati di tuo figlio sono tra le informazioni più sensibili che esistano. Li trattiamo come tali.",
+      "items": [
+        { "icon": "🔐", "title": "Controllo degli accessi completo", "description": "La sicurezza a livello di riga garantisce che i tuoi dati siano accessibili solo a te. Nemmeno il nostro team può leggerli." },
+        { "icon": "🪪", "title": "Link di condivisione anonimi", "description": "I profili condivisi usano token casuali, mai ID di record. I profili non possono essere indovinati né enumerati." },
+        { "icon": "📵", "title": "Nessun tracciamento sulle pagine condivise", "description": "La pagina del profilo condiviso non ha pubblicità, tracciamento di terze parti né cookie." },
+        { "icon": "🗑️", "title": "Elimina tutto, in qualsiasi momento", "description": "Il tuo account e tutti i dati associati possono essere eliminati definitivamente in un clic. Senza domande." }
+      ]
+    },
+    "notifications": {
+      "title": "Sappi quando il tuo profilo viene visualizzato",
+      "description": "Ogni volta che qualcuno scansiona il codice QR di tuo figlio, Myndigo registra la visualizzazione e può notificarti via e-mail — così sai sempre quando il profilo viene utilizzato."
+    },
+    "faq": {
+      "title": "Domande frequenti",
+      "items": [
+        { "q": "Myndigo è gratuito?", "a": "Sì, Myndigo è gratuito. Crea un account e aggiungi il profilo di tuo figlio senza alcun costo." },
+        { "q": "Il visualizzatore deve installare qualcosa?", "a": "No. Il profilo condiviso si apre direttamente in qualsiasi browser. Non è richiesta nessuna app, account o login." },
+        { "q": "Cosa succede se devo aggiornare informazioni urgentemente?", "a": "Le modifiche sono immediate. Apri l'app, aggiorna il dettaglio e chiunque scansioni il codice QR vedrà le nuove informazioni subito." },
+        { "q": "Posso smettere di condividere in qualsiasi momento?", "a": "Sì. Puoi disabilitare la condivisione con un tocco. Il codice QR e il chip NFC smetteranno di funzionare istantaneamente. Riabilita la condivisione altrettanto facilmente." },
+        { "q": "Cosa succede se qualcuno trova il codice QR?", "a": "Può vedere solo le informazioni che hai scelto di condividere. Controlli ogni sezione. Puoi anche rigenerare il codice QR in qualsiasi momento per invalidare quello vecchio." },
+        { "q": "I dati di mio figlio sono archiviati in modo sicuro?", "a": "Sì. Tutti i dati sono cifrati a riposo e in transito. Le politiche di sicurezza a livello di riga garantiscono che i tuoi dati siano accessibili solo dal tuo account." },
+        { "q": "Posso aggiungere più di un figlio?", "a": "Sì. Puoi aggiungere tutti i figli che desideri, ciascuno con il proprio profilo e codice QR." },
+        { "q": "Quali lingue sono supportate?", "a": "Il portale per genitori e il profilo condiviso supportano inglese, spagnolo, francese, tedesco, portoghese, italiano, arabo, cinese, giapponese e polacco." }
+      ]
+    },
+    "cta": {
+      "title": "Dai a ogni caregiver le informazioni di cui ha bisogno",
+      "subtitle": "Creare un profilo completo richiede circa 10 minuti. Quei 10 minuti potrebbero fare tutta la differenza.",
+      "button": "Crea il tuo account gratuito"
+    },
+    "footer": {
+      "tagline": "Aiutiamo le famiglie con DSA a sentirsi comprese ovunque.",
+      "privacy": "Privacy",
+      "terms": "Termini",
+      "contact": "Contatto"
+    }
+  },
+  "dashboard": {
+    "title": "I miei figli",
+    "addChild": "Aggiungi un figlio",
+    "noChildren": "Nessun figlio aggiunto ancora.",
+    "noChildrenHint": "Aggiungi il tuo primo figlio per iniziare."
+  },
+  "child": {
+    "newChild": "Aggiungi un figlio",
+    "editProfile": "Modifica profilo",
+    "sections": {
+      "personalInfo": "Informazioni personali",
+      "alerts": "Allerte",
+      "communication": "Comunicazione",
+      "triggers": "Trigger",
+      "sensoryProfile": "Profilo sensoriale",
+      "routines": "Routine",
+      "medicalInfo": "Informazioni mediche",
+      "emergencyContacts": "Contatti di emergenza",
+      "behavioralNotes": "Note comportamentali",
+      "educationalInfo": "Dettagli scolastici"
+    },
+    "personalInfo": {
+      "name": "Nome",
+      "dateOfBirth": "Data di nascita",
+      "pronouns": "Risponde a",
+      "pronounsPlaceholder": "es. tesoro, campione, cucciolo",
+      "namePlaceholder": "es. Emma",
+      "photo": "Foto",
+      "addPhoto": "Aggiungi foto",
+      "changePhoto": "Cambia foto",
+      "removePhoto": "Rimuovi",
+      "photoHint": "Max 200 KB, JPG o PNG",
+      "photoVisible": "Foto visibile sulla pagina condivisa",
+      "photoHidden": "Foto nascosta dalla pagina condivisa"
+    },
+    "alerts": {
+      "noAlerts": "Nessuna allerta aggiunta ancora.",
+      "addAlert": "+ Aggiungi allerta",
+      "alertType": "Tipo di allerta",
+      "alertLabel": "Etichetta allerta",
+      "note": "Nota",
+      "notePlaceholder": "es. porta EpiPen nella borsa rossa nello zaino",
+      "noteOptional": "Nota (facoltativo)",
+      "editNote": "Modifica nota",
+      "addNote": "+ Aggiungi nota"
+    },
+    "communication": {
+      "level": "Livello di comunicazione",
+      "usesAac": "Usa dispositivo CAA / ausilio comunicativo",
+      "deviceName": "Nome dispositivo",
+      "devicePlaceholder": "es. Proloquo2Go, tavola PECS",
+      "echolalia": "Può usare l'ecolalia (ripetizione di parole o frasi)",
+      "instructions": "Come comunicare — istruzioni chiave per gli altri",
+      "instructionPlaceholder": "es. Usare frasi brevi e semplici",
+      "addInstruction": "Aggiungi"
+    },
+    "triggers": {
+      "noTriggers": "Nessun trigger aggiunto ancora.",
+      "addTrigger": "+ Aggiungi trigger",
+      "triggerPlaceholder": "Cosa lo/la scatena, es. Rumori forti inaspettati",
+      "deEscalationPlaceholder": "Come de-escalare (facoltativo)"
+    },
+    "sensory": {
+      "noItems": "Nessuna sensibilità sensoriale aggiunta.",
+      "addItem": "+ Aggiungi sensibilità",
+      "detailsPlaceholder": "Dettagli, es. si copre le orecchie nei posti rumorosi"
+    },
+    "routines": {
+      "noRoutines": "Nessuna routine aggiunta ancora.",
+      "addRoutine": "+ Aggiungi routine",
+      "descriptionPlaceholder": "Routine, es. Mattina: fa sempre la stessa colazione",
+      "disruptionPlaceholder": "Cosa succede se viene interrotta (facoltativo)"
+    },
+    "medical": {
+      "medications": "Farmaci",
+      "conditions": "Condizioni mediche",
+      "doctors": "Medici e specialisti",
+      "noneAdded": "Nessuno aggiunto.",
+      "addMedication": "+ Aggiungi farmaco",
+      "addCondition": "+ Aggiungi condizione",
+      "addDoctor": "+ Aggiungi medico",
+      "medicationName": "Nome del farmaco",
+      "medNamePlaceholder": "Nome del farmaco *",
+      "dose": "Dose",
+      "dosePlaceholder": "Dose, es. 5 mg",
+      "frequency": "Frequenza",
+      "frequencyPlaceholder": "Frequenza, es. quotidiana",
+      "conditionName": "Nome della condizione",
+      "conditionNamePlaceholder": "Nome della condizione *",
+      "details": "Dettagli",
+      "detailsOptional": "Dettagli (facoltativo)",
+      "doctorName": "Nome del medico",
+      "doctorNamePlaceholder": "Nome del medico *",
+      "specialty": "Specialità",
+      "specialtyPlaceholder": "Specialità, es. Neuropsichiatra infantile"
+    },
+    "contacts": {
+      "noContacts": "Nessun contatto di emergenza aggiunto.",
+      "addContact": "+ Aggiungi contatto di emergenza",
+      "name": "Nome",
+      "namePlaceholder": "Nome *",
+      "relation": "Relazione",
+      "relationPlaceholder": "Relazione, es. Mamma, Papà, Nonna",
+      "phone": "Numero di telefono",
+      "phonePlaceholder": "Numero di telefono *"
+    },
+    "behavioral": {
+      "hint": "Strategie che funzionano, cose da evitare, cosa lo aiuta a sentirsi calmo e al sicuro.",
+      "placeholder": "es. Contare lentamente fino a 10 aiuta. Dare un giocattolo sensoriale ridirige l'attenzione. Evitare il contatto fisico durante una crisi..."
+    },
+    "education": {
+      "schoolName": "Nome della scuola",
+      "classGrade": "Classe",
+      "teacherName": "Nome dell'insegnante",
+      "teacherContact": "Contatto dell'insegnante",
+      "supportWorker": "Assistente educativo",
+      "notes": "Note",
+      "schoolPlaceholder": "es. Scuola Primaria Greenfield",
+      "classPlaceholder": "es. Classe 2ª, sezione B",
+      "teacherPlaceholder": "es. Maestra Johnson",
+      "contactPlaceholder": "es. telefono o e-mail",
+      "workerPlaceholder": "es. Sara (supporto 1:1)",
+      "notesPlaceholder": "es. Ha un PEI, frequenta l'aula di sostegno il martedì"
+    },
+    "dangerZone": "Zona pericolosa",
+    "deleteProfile": "Elimina questo profilo",
+    "deleteConfirm": "Questo eliminerà definitivamente il profilo di {{name}} e tutti i dati correlati. Questa azione non può essere annullata.",
+    "deleteConfirmButton": "Sì, elimina definitivamente"
+  },
+  "share": {
+    "title": "Condividi profilo",
+    "sharingOn": "Condivisione attivata",
+    "sharingOff": "Condivisione disattivata",
+    "sharingOnHint": "Chiunque abbia il codice QR o il link può visualizzare il profilo condiviso.",
+    "sharingOffHint": "Il profilo condiviso non è accessibile. Il tuo codice QR viene conservato.",
+    "enableSharing": "Attiva condivisione",
+    "disableSharing": "Disattiva condivisione",
+    "qrCode": "Codice QR",
+    "qrInactiveHint": "Attiva la condivisione per rendere attivo questo codice QR.",
+    "copyLink": "Copia link",
+    "linkCopied": "Link copiato!",
+    "downloadQr": "Scarica il codice QR",
+    "invalidateQrTitle": "Invalida codice QR e chip NFC",
+    "invalidateQrHint": "Genera un nuovo link. Il codice QR attuale e qualsiasi chip NFC programmato smetteranno di funzionare immediatamente.",
+    "invalidateQrButton": "Invalida e rigenera",
+    "regenerateWarning": "Questo invaliderà il codice QR e il chip NFC attuali. Sei sicuro?",
+    "regenerating": "Rigenerazione…",
+    "yesRegenerate": "Sì, rigenera",
+    "auditLog": "Visualizza cronologia",
+    "noViews": "Nessuna visualizzazione registrata ancora.",
+    "clearHistory": "Cancella cronologia",
+    "clearHistoryWarning": "Questo eliminerà definitivamente tutta la cronologia delle visualizzazioni di questo profilo. L'azione non può essere annullata.",
+    "yesClearHistory": "Sì, cancella cronologia",
+    "visibilitySettings": "Impostazioni di visibilità",
+    "sectionVisible": "Visibile sulla pagina condivisa",
+    "sectionHidden": "Nascosto dalla pagina condivisa",
+    "alertsHideWarning": "Nascondere le allerte potrebbe mettere a rischio tuo figlio. Sei sicuro?",
+    "hideAnyway": "Nascondi comunque",
+    "notFound": "Non trovato",
+    "defaultLanguage": "Lingua predefinita per la scheda condivisa",
+    "defaultLanguageHint": "I visitatori vedranno il profilo condiviso in questa lingua per impostazione predefinita. Possono comunque cambiare.",
+    "themeLabel": "Stile della pagina",
+    "theme": {
+      "professional": "Professionale",
+      "warm": "Caldo",
+      "playful": "Giocoso"
+    },
+    "themeDesc": {
+      "professional": "Chiaro & strutturato",
+      "warm": "Morbido e amichevole",
+      "playful": "Colorato e allegro"
+    },
+    "childFallback": "Bambino",
+    "printBadge": "Stampa il badge",
+    "printBadgePreview": "Anteprima del badge",
+    "printBadgePrint": "Stampa",
+    "printBadgeClose": "Chiudi",
+    "printBadgeNameLabel": "Ciao, il mio nome è",
+    "printBadgeMessageShort": "Per conoscermi meglio o per aiutarmi in caso di emergenza, scansiona questo codice QR."
+  },
+  "notFound": {
+    "title": "Pagina non trovata",
+    "hint": "La pagina che stai cercando non esiste.",
+    "goToDashboard": "Vai alla dashboard"
+  },
+  "errors": {
+    "profileNotFound": "Profilo non trovato",
+    "backToDashboard": "Torna alla dashboard",
+    "childProfile": "Profilo del bambino",
+    "photoTooLarge": "La foto deve essere inferiore a 200 KB. Ridimensionala e riprova.",
+    "failedToCreate": "Creazione del profilo non riuscita"
+  },
+  "sharedPage": {
+    "notShared": "Questo profilo non è attualmente condiviso.",
+    "notSharedHint": "Il genitore ha disabilitato la condivisione per questo profilo.",
+    "alerts": "Allerte importanti",
+    "showAll": "Mostra tutto",
+    "callNow": "Chiama",
+    "language": "Lingua",
+    "expandSection": "Mostra di più",
+    "collapseSection": "Mostra meno",
+    "triggers": "Trigger",
+    "talkToMe": "Come parlarmi",
+    "usesAac": "Usa dispositivo CAA / comunicazione aumentativa",
+    "usesAacDevice": "Usa dispositivo CAA: {{device}}",
+    "echolalia": "Può ripetere parole o frasi (ecolalia)",
+    "moreAlerts": "+{{count}} altre",
+    "moreContacts": "+{{count}} altri contatti sotto",
+    "alertTypes": {
+      "food_allergy": "ALLERGIA ALIMENTARE",
+      "epilepsy": "EPILESSIA",
+      "diabetes": "DIABETE",
+      "asthma": "ASMA",
+      "elopement_risk": "RISCHIO DI FUGA",
+      "non_swimmer": "NON SA NUOTARE",
+      "heart_condition": "PROBLEMA CARDIACO",
+      "custom": "ALLERTA",
+      "severityRed": "CRITICO",
+      "severityOrange": "IMPORTANTE"
+    },
+    "communicationLevels": {
+      "verbal": "Verbale",
+      "limited_verbal": "Verbale limitato",
+      "non_verbal": "Non verbale"
+    },
+    "sensorySections": {
+      "title": "Sensibilità sensoriali",
+      "sound": "Suono",
+      "light": "Luce",
+      "touch": "Tatto",
+      "smell": "Olfatto",
+      "taste": "Gusto",
+      "movement": "Movimento"
+    },
+    "sections": {
+      "allTriggers": "Tutti i trigger e de-escalation",
+      "routines": "Routine e preferenze",
+      "medical": "Informazioni mediche",
+      "moreContacts": "Altri contatti di emergenza",
+      "behavioral": "Strategie comportamentali",
+      "medications": "Farmaci",
+      "conditions": "Condizioni mediche",
+      "doctors": "Medici"
+    }
+  },
+  "account": {
+    "title": "Account",
+    "sectionHeading": "Account",
+    "email": "E-mail",
+    "memberSince": "Membro dal",
+    "interfaceLanguage": "Lingua dell'interfaccia",
+    "languageHint": "Questo imposta la lingua del tuo portale genitori. La lingua del profilo condiviso è impostata per ogni figlio.",
+    "notifications": "Notifiche",
+    "notifyOnViewLabel": "Avvisi di visualizzazione del profilo",
+    "notifyOnViewHint": "Ricevi un'e-mail quando qualcuno scansiona il codice QR di tuo figlio e visualizza il suo profilo condiviso.",
+    "notifyFootnote": "Le notifiche e-mail richiedono che Resend sia configurato dall'amministratore dell'app. Disabilitando questa opzione, tutte le visualizzazioni vengono comunque registrate nel registro di controllo.",
+    "mfa": "Autenticazione a due fattori",
+    "mfaEnabled": "Attivata",
+    "mfaDisabled": "Non attivata",
+    "mfaProtected": "Il tuo account è protetto con un'app di autenticazione basata sul tempo.",
+    "mfaIncorrectCode": "Codice errato. Riprova.",
+    "mfaDisable": "Disattiva 2FA",
+    "mfaDisableConfirm": "Disattivare il 2FA renderà il tuo account meno sicuro. Continuare?",
+    "mfaDisabling": "Disattivazione…",
+    "mfaYesDisable": "Sì, disattiva",
+    "mfaScanQr": "Scansiona questo codice QR con la tua app di autenticazione (Google Authenticator, Authy, ecc.):",
+    "mfaOrManual": "Oppure inserisci questo codice manualmente:",
+    "mfaEnterCode": "Inserisci il codice a 6 cifre dalla tua app",
+    "mfaVerifying": "Verifica in corso…",
+    "mfaActivate": "Attiva 2FA",
+    "mfaSecurityHint": "Aggiungi un ulteriore livello di sicurezza al tuo account.",
+    "mfaSettingUp": "Configurazione…",
+    "mfaChallengeTitle": "Autenticazione a due fattori",
+    "mfaChallengeHint": "Inserisci il codice a 6 cifre dalla tua app di autenticazione per continuare.",
+    "mfaChallengeVerify": "Verifica",
+    "mfaChallengeVerifying": "Verifica in corso…",
+    "mfaChallengeError": "Codice errato. Per favore riprova.",
+    "setupMfa": "Configura 2FA",
+    "dangerZone": "Zona pericolosa",
+    "deleteAccount": "Elimina account",
+    "deleteAccountWarning": "Questo eliminerà definitivamente il tuo account e tutti i profili dei figli. Questa azione non può essere annullata.",
+    "deleting": "Eliminazione…",
+    "deleteConfirmButton": "Sì, elimina tutto",
+    "toggleNotificationsLabel": "Attiva/disattiva notifiche di visualizzazione del profilo",
+    "upcomingFeature": "Disponibile a breve"
+  }
+}

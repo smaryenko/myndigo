@@ -1,0 +1,425 @@
+{
+  "common": {
+    "appName": "Myndigo",
+    "save": "保存",
+    "saved": "✓ 已保存",
+    "saving": "保存中…",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "add": "添加",
+    "back": "返回",
+    "loading": "加载中...",
+    "error": "出现了一些问题",
+    "poweredBy": "由 Myndigo 提供支持",
+    "deleteFailed": "删除失败",
+    "saveFailed": "保存失败",
+    "removeInstruction": "删除说明",
+    "removeAlert": "删除警报",
+    "toggleMenu": "切换菜单",
+    "selectLanguage": "选择语言",
+    "photoAlt": "孩子的照片",
+    "qrCodeAlt": "双重身份验证二维码"
+  },
+  "auth": {
+    "signIn": "登录",
+    "signOut": "退出登录",
+    "signInWithGoogle": "使用 Google 继续",
+    "signUpWithGoogle": "使用 Google 注册",
+    "email": "电子邮件",
+    "password": "密码",
+    "forgotPassword": "忘记密码？",
+    "noAccount": "还没有账号？",
+    "hasAccount": "已有账号？",
+    "signUp": "注册",
+    "orContinueWith": "或使用以下方式继续",
+    "tagline": "让您的孩子的世界始终安全、被理解。",
+    "checkEmail": "请查看您的电子邮件以确认您的账号。",
+    "signUpTitle": "创建账号",
+    "signUpTagline": "免费注册 Myndigo 账号，立即开始。"
+  },
+  "landing": {
+    "mockProfile": {
+      "alertsTitle": "重要警报",
+      "nonVerbal": "💬 非语言",
+      "triggersTitle": "🔴 触发因素",
+      "talkTitle": "💬 如何与我交谈",
+      "trigger1": "大声噪音",
+      "trigger2": "人群",
+      "trigger3": "意外的变化",
+      "talk1": "简短的句子",
+      "talk2": "展示图片",
+      "talk3": "保持冷静",
+      "contactRelation": "家长",
+      "expandHint": "▼ 医疗信息 · 日常规律 · 行为策略"
+    },
+    "nav": {
+      "features": "功能特色",
+      "howItWorks": "使用方法",
+      "privacy": "隐私政策",
+      "faq": "常见问题",
+      "signIn": "登录",
+      "getStarted": "免费开始"
+    },
+    "hero": {
+      "badge": "专为自闭症家庭打造",
+      "headline": "您孩子的世界，始终被理解",
+      "subheadline": "Myndigo 帮助自闭症儿童的家长将所有重要信息集中在一处——并随时与需要的人分享。",
+      "cta": "免费开始",
+      "ctaSub": "永久免费。无需信用卡。永不商业化。",
+      "secondaryCta": "了解使用方法"
+    },
+    "features": {
+      "title": "照护者需要了解的一切",
+      "subtitle": "从紧急联系人到感官触发因素——Myndigo 让一切井然有序、安全可靠，几秒钟即可分享。",
+      "items": [
+        { "icon": "🚨", "title": "关键警报优先显示", "description": "过敏、癫痫、糖尿病、走失风险——最重要的信息始终显示在顶部，绝对不会被错过。" },
+        { "icon": "💬", "title": "沟通档案", "description": "让他人了解您的孩子如何沟通——口语、非语言、AAC 辅助沟通设备、仿说——以及如何与他/她交谈。" },
+        { "icon": "🔴", "title": "触发因素与危机缓解", "description": "记录什么会引发困扰，以及什么真正有帮助。让每位照护者都能自信地处理困难时刻。" },
+        { "icon": "📞", "title": "紧急联系人", "description": "在共享页面上一键拨号。无需搜索，无需等待——一触即达正确的人。" },
+        { "icon": "🔄", "title": "日常规律与感官需求", "description": "说明孩子的日常规律、什么会打乱它，以及哪些声音、光线或触感会引起不适。" },
+        { "icon": "💊", "title": "医疗信息", "description": "药物、过敏、病症和医生联系方式——全部集中在一处，随时保持最新。" },
+        { "icon": "🔒", "title": "您掌控分享内容", "description": "每个部分都可以开启或关闭。显示相关内容，其余保持私密。您始终拥有控制权。" },
+        { "icon": "🌍", "title": "支持任何语言", "description": "共享档案可以用 10 种语言查看。世界上任何地方的急救人员都能理解您孩子的需求。" }
+      ]
+    },
+    "howItWorks": {
+      "title": "使用方法",
+      "subtitle": "设置一次，永久分享。",
+      "steps": [
+        { "number": "1", "title": "创建档案", "description": "添加孩子的信息——警报、沟通方式、触发因素、医疗详情和紧急联系人。" },
+        { "number": "2", "title": "选择分享内容", "description": "开启或关闭每个部分。只有您选择的内容才会显示在共享页面上。" },
+        { "number": "3", "title": "通过 QR 码或 NFC 分享", "description": "将二维码打印在卡片、徽章或书包标签上。或者编程一个 NFC 芯片。一次扫描即可立即打开档案。" },
+        { "number": "4", "title": "始终保持最新", "description": "在应用中更新任何细节，立即生效。无需重新打印或重新分享——二维码保持不变。" }
+      ]
+    },
+    "shareDemo": {
+      "title": "急救人员看到的内容",
+      "subtitle": "共享档案设计为在 3 秒内传达最关键的信息——无需登录，无需任何应用。"
+    },
+    "privacy": {
+      "title": "以隐私为核心构建",
+      "subtitle": "您孩子的数据是最敏感的信息之一。我们如此对待它。",
+      "items": [
+        { "icon": "🔐", "title": "端到端访问控制", "description": "行级安全确保您的数据只有您才能访问。连我们的团队也无法读取。" },
+        { "icon": "🪪", "title": "匿名分享链接", "description": "共享档案使用随机令牌，而非记录 ID。无法猜测或枚举档案。" },
+        { "icon": "📵", "title": "共享页面无跟踪", "description": "共享档案页面没有广告、没有第三方跟踪、没有 Cookie。" },
+        { "icon": "🗑️", "title": "随时删除一切", "description": "您的账号和所有相关数据可以一键永久删除。无需任何解释。" }
+      ]
+    },
+    "notifications": {
+      "title": "了解档案何时被查看",
+      "description": "每次有人扫描孩子的二维码，Myndigo 都会记录查看情况，并可通过电子邮件通知您——让您随时知道档案何时被使用。"
+    },
+    "faq": {
+      "title": "常见问题",
+      "items": [
+        { "q": "Myndigo 是免费的吗？", "a": "是的，Myndigo 免费使用。创建账号并添加孩子的档案，无需任何费用。" },
+        { "q": "查看者需要安装什么吗？", "a": "不需要。共享档案可直接在任何浏览器中打开。无需应用、账号或登录。" },
+        { "q": "如果我需要紧急更新信息怎么办？", "a": "更改立即生效。打开应用，更新详情，任何扫描二维码的人都会立即看到新信息。" },
+        { "q": "我可以随时停止分享吗？", "a": "可以。您可以一触停用分享。二维码和 NFC 芯片将立即停止工作。同样轻松地重新启用分享。" },
+        { "q": "如果有人发现二维码会怎样？", "a": "他们只能看到您选择分享的信息。您控制每个部分。您还可以随时重新生成二维码以使旧码失效。" },
+        { "q": "我孩子的数据安全存储吗？", "a": "是的。所有数据在存储和传输过程中均已加密。行级安全策略确保您的数据只能从您的账号访问。" },
+        { "q": "我可以添加多个孩子吗？", "a": "可以。您可以添加任意数量的孩子，每个孩子都有自己的档案和二维码。" },
+        { "q": "支持哪些语言？", "a": "家长门户和共享档案支持英语、西班牙语、法语、德语、葡萄牙语、意大利语、阿拉伯语、中文、日语和波兰语。" }
+      ]
+    },
+    "cta": {
+      "title": "让每位照护者获得所需的信息",
+      "subtitle": "创建一个完整的档案大约需要 10 分钟。这 10 分钟可能改变一切。",
+      "button": "创建您的免费账号"
+    },
+    "footer": {
+      "tagline": "帮助自闭症家庭在任何地方都能被理解。",
+      "privacy": "隐私政策",
+      "terms": "服务条款",
+      "contact": "联系我们"
+    }
+  },
+  "dashboard": {
+    "title": "我的孩子",
+    "addChild": "添加孩子",
+    "noChildren": "尚未添加任何孩子。",
+    "noChildrenHint": "添加您的第一个孩子以开始使用。"
+  },
+  "child": {
+    "newChild": "添加孩子",
+    "editProfile": "编辑档案",
+    "sections": {
+      "personalInfo": "个人信息",
+      "alerts": "警报",
+      "communication": "沟通",
+      "triggers": "触发因素",
+      "sensoryProfile": "感官档案",
+      "routines": "日常规律",
+      "medicalInfo": "医疗信息",
+      "emergencyContacts": "紧急联系人",
+      "behavioralNotes": "行为笔记",
+      "educationalInfo": "教育信息"
+    },
+    "personalInfo": {
+      "name": "姓名",
+      "dateOfBirth": "出生日期",
+      "pronouns": "对以下称呼有反应",
+      "pronounsPlaceholder": "例如：宝贝、乖乖、小冠军",
+      "namePlaceholder": "例如：Emma",
+      "photo": "照片",
+      "addPhoto": "添加照片",
+      "changePhoto": "更换照片",
+      "removePhoto": "删除",
+      "photoHint": "最大 200 KB，JPG 或 PNG",
+      "photoVisible": "照片在共享页面上可见",
+      "photoHidden": "照片在共享页面上隐藏"
+    },
+    "alerts": {
+      "noAlerts": "尚未添加任何警报。",
+      "addAlert": "+ 添加警报",
+      "alertType": "警报类型",
+      "alertLabel": "警报标签",
+      "note": "备注",
+      "notePlaceholder": "例如：书包中红色袋子里放有 EpiPen",
+      "noteOptional": "备注（可选）",
+      "editNote": "编辑备注",
+      "addNote": "+ 添加备注"
+    },
+    "communication": {
+      "level": "沟通水平",
+      "usesAac": "使用 AAC 辅助沟通设备",
+      "deviceName": "设备名称",
+      "devicePlaceholder": "例如：Proloquo2Go、PECS 卡片",
+      "echolalia": "可能使用仿说（重复词语或短语）",
+      "instructions": "如何沟通——给他人的关键指示",
+      "instructionPlaceholder": "例如：使用简短的句子",
+      "addInstruction": "添加"
+    },
+    "triggers": {
+      "noTriggers": "尚未添加任何触发因素。",
+      "addTrigger": "+ 添加触发因素",
+      "triggerPlaceholder": "什么会触发，例如：突然的大声噪音",
+      "deEscalationPlaceholder": "如何缓解（可选）"
+    },
+    "sensory": {
+      "noItems": "尚未添加感官敏感性。",
+      "addItem": "+ 添加敏感性",
+      "detailsPlaceholder": "详情，例如：在嘈杂的地方会捂耳朵"
+    },
+    "routines": {
+      "noRoutines": "尚未添加任何日常规律。",
+      "addRoutine": "+ 添加日常规律",
+      "descriptionPlaceholder": "日常规律，例如：早上：总是吃同样的早餐",
+      "disruptionPlaceholder": "被打乱时会发生什么（可选）"
+    },
+    "medical": {
+      "medications": "药物",
+      "conditions": "病症",
+      "doctors": "医生和专家",
+      "noneAdded": "尚未添加。",
+      "addMedication": "+ 添加药物",
+      "addCondition": "+ 添加病症",
+      "addDoctor": "+ 添加医生",
+      "medicationName": "药物名称",
+      "medNamePlaceholder": "药物名称 *",
+      "dose": "剂量",
+      "dosePlaceholder": "剂量，例如：5 毫克",
+      "frequency": "频率",
+      "frequencyPlaceholder": "频率，例如：每日",
+      "conditionName": "病症名称",
+      "conditionNamePlaceholder": "病症名称 *",
+      "details": "详情",
+      "detailsOptional": "详情（可选）",
+      "doctorName": "医生姓名",
+      "doctorNamePlaceholder": "医生姓名 *",
+      "specialty": "专科",
+      "specialtyPlaceholder": "专科，例如：儿童神经科"
+    },
+    "contacts": {
+      "noContacts": "尚未添加紧急联系人。",
+      "addContact": "+ 添加紧急联系人",
+      "name": "姓名",
+      "namePlaceholder": "姓名 *",
+      "relation": "关系",
+      "relationPlaceholder": "关系，例如：妈妈、爸爸、奶奶",
+      "phone": "电话号码",
+      "phonePlaceholder": "电话号码 *"
+    },
+    "behavioral": {
+      "hint": "有效的策略、需要避免的事情，以及有助于让他/她感到平静和安全的方法。",
+      "placeholder": "例如：慢慢数到 10 有帮助。给一个感官玩具可以转移注意力。崩溃期间避免身体接触..."
+    },
+    "education": {
+      "schoolName": "学校名称",
+      "classGrade": "班级 / 年级",
+      "teacherName": "老师姓名",
+      "teacherContact": "老师联系方式",
+      "supportWorker": "支持人员",
+      "notes": "备注",
+      "schoolPlaceholder": "例如：格林菲尔德小学",
+      "classPlaceholder": "例如：二年级 B 班",
+      "teacherPlaceholder": "例如：约翰逊老师",
+      "contactPlaceholder": "例如：电话或电子邮件",
+      "workerPlaceholder": "例如：莎拉（一对一支持）",
+      "notesPlaceholder": "例如：有个别教育计划，周二参加资源教室"
+    },
+    "dangerZone": "危险区域",
+    "deleteProfile": "删除此档案",
+    "deleteConfirm": "这将永久删除 {{name}} 的档案及所有数据。此操作无法撤销。",
+    "deleteConfirmButton": "是的，永久删除"
+  },
+  "share": {
+    "title": "分享档案",
+    "sharingOn": "分享已开启",
+    "sharingOff": "分享已关闭",
+    "sharingOnHint": "任何拥有二维码或链接的人都可以查看共享档案。",
+    "sharingOffHint": "共享档案无法访问。您的二维码已保留。",
+    "enableSharing": "开启分享",
+    "disableSharing": "关闭分享",
+    "qrCode": "二维码",
+    "qrInactiveHint": "开启分享以激活此二维码。",
+    "copyLink": "复制链接",
+    "linkCopied": "链接已复制！",
+    "downloadQr": "下载二维码",
+    "invalidateQrTitle": "使二维码和 NFC 芯片失效",
+    "invalidateQrHint": "生成新链接。当前的二维码和任何已编程的 NFC 芯片将立即停止工作。",
+    "invalidateQrButton": "失效并重新生成",
+    "regenerateWarning": "这将使当前的二维码和 NFC 芯片失效。您确定吗？",
+    "regenerating": "重新生成中…",
+    "yesRegenerate": "是的，重新生成",
+    "auditLog": "查看历史记录",
+    "noViews": "尚未记录任何查看。",
+    "clearHistory": "清除历史记录",
+    "clearHistoryWarning": "这将永久删除此个人资料的所有查看历史记录。此操作无法撤消。",
+    "yesClearHistory": "是的，清除历史记录",
+    "visibilitySettings": "可见性设置",
+    "sectionVisible": "在共享页面上可见",
+    "sectionHidden": "在共享页面上隐藏",
+    "alertsHideWarning": "隐藏警报可能会使您的孩子面临风险。您确定吗？",
+    "hideAnyway": "仍然隐藏",
+    "notFound": "未找到",
+    "defaultLanguage": "共享卡片的默认语言",
+    "defaultLanguageHint": "访客默认将以此语言查看共享档案。他们仍可切换。",
+    "themeLabel": "页面样式",
+    "theme": {
+      "professional": "专业",
+      "warm": "温馨",
+      "playful": "活泼"
+    },
+    "themeDesc": {
+      "professional": "清晰有条理",
+      "warm": "柔和友好",
+      "playful": "缤纷欢乐"
+    },
+    "childFallback": "孩子",
+    "printBadge": "打印徽章",
+    "printBadgePreview": "徽章预览",
+    "printBadgePrint": "打印",
+    "printBadgeClose": "关闭",
+    "printBadgeNameLabel": "嗨，我的名字是",
+    "printBadgeMessageShort": "如需更了解我，或在紧急情况下帮助我，请扫描此二维码。"
+  },
+  "notFound": {
+    "title": "页面未找到",
+    "hint": "您查找的页面不存在。",
+    "goToDashboard": "前往控制面板"
+  },
+  "errors": {
+    "profileNotFound": "档案未找到",
+    "backToDashboard": "返回控制面板",
+    "childProfile": "孩子档案",
+    "photoTooLarge": "照片必须小于 200 KB。请调整大小后重试。",
+    "failedToCreate": "创建档案失败"
+  },
+  "sharedPage": {
+    "notShared": "此档案当前未共享。",
+    "notSharedHint": "家长已为此档案禁用共享。",
+    "alerts": "重要警报",
+    "showAll": "显示全部",
+    "callNow": "拨打",
+    "language": "语言",
+    "expandSection": "显示更多",
+    "collapseSection": "显示更少",
+    "triggers": "触发因素",
+    "talkToMe": "如何与我交谈",
+    "usesAac": "使用 AAC 辅助沟通设备",
+    "usesAacDevice": "使用 AAC 设备：{{device}}",
+    "echolalia": "可能会重复词语或短语（仿说）",
+    "moreAlerts": "还有 {{count}} 项",
+    "moreContacts": "以下还有 {{count}} 个联系人",
+    "alertTypes": {
+      "food_allergy": "食物过敏",
+      "epilepsy": "癫痫",
+      "diabetes": "糖尿病",
+      "asthma": "哮喘",
+      "elopement_risk": "走失风险",
+      "non_swimmer": "不会游泳",
+      "heart_condition": "心脏疾病",
+      "custom": "警报",
+      "severityRed": "严重",
+      "severityOrange": "重要"
+    },
+    "communicationLevels": {
+      "verbal": "口语",
+      "limited_verbal": "有限口语",
+      "non_verbal": "非语言"
+    },
+    "sensorySections": {
+      "title": "感官敏感性",
+      "sound": "声音",
+      "light": "光线",
+      "touch": "触觉",
+      "smell": "嗅觉",
+      "taste": "味觉",
+      "movement": "运动"
+    },
+    "sections": {
+      "allTriggers": "所有触发因素与缓解方法",
+      "routines": "日常规律与偏好",
+      "medical": "医疗信息",
+      "moreContacts": "更多紧急联系人",
+      "behavioral": "行为策略",
+      "medications": "药物",
+      "conditions": "病症",
+      "doctors": "医生"
+    }
+  },
+  "account": {
+    "title": "账号",
+    "sectionHeading": "账号",
+    "email": "电子邮件",
+    "memberSince": "加入时间",
+    "interfaceLanguage": "界面语言",
+    "languageHint": "这设置您的家长门户语言。共享档案的语言按每个孩子单独设置。",
+    "notifications": "通知",
+    "notifyOnViewLabel": "档案查看提醒",
+    "notifyOnViewHint": "当有人扫描孩子的二维码并查看其共享档案时，您将收到电子邮件通知。",
+    "notifyFootnote": "电子邮件通知需要应用管理员配置 Resend。禁用此功能仍会在审计日志中记录所有查看。",
+    "mfa": "双重身份验证",
+    "mfaEnabled": "已启用",
+    "mfaDisabled": "未启用",
+    "mfaProtected": "您的账号受基于时间的身份验证器应用保护。",
+    "mfaIncorrectCode": "代码不正确，请重试。",
+    "mfaDisable": "禁用双重验证",
+    "mfaDisableConfirm": "禁用双重验证将使您的账号安全性降低。是否继续？",
+    "mfaDisabling": "禁用中…",
+    "mfaYesDisable": "是的，禁用",
+    "mfaScanQr": "使用您的身份验证器应用（Google Authenticator、Authy 等）扫描此二维码：",
+    "mfaOrManual": "或手动输入此代码：",
+    "mfaEnterCode": "输入应用中的 6 位数代码",
+    "mfaVerifying": "验证中…",
+    "mfaActivate": "启用双重验证",
+    "mfaSecurityHint": "为您的账号添加额外的安全保障。",
+    "mfaSettingUp": "设置中…",
+    "mfaChallengeTitle": "双重身份验证",
+    "mfaChallengeHint": "请输入您的验证器应用中的6位数字代码以继续。",
+    "mfaChallengeVerify": "验证",
+    "mfaChallengeVerifying": "验证中…",
+    "mfaChallengeError": "代码不正确，请重试。",
+    "setupMfa": "设置双重验证",
+    "dangerZone": "危险区域",
+    "deleteAccount": "删除账号",
+    "deleteAccountWarning": "这将永久删除您的账号和所有孩子的档案。此操作无法撤销。",
+    "deleting": "删除中…",
+    "deleteConfirmButton": "是的，删除全部",
+    "toggleNotificationsLabel": "切换档案查看通知",
+    "upcomingFeature": "即将推出"
+  }
+}
