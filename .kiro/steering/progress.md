@@ -592,3 +592,226 @@ all 11 locale files.
 - `.env` contains real, live credentials (Supabase anon key, DeepL API key) — these
   were used directly (curl, CLI) to debug against the real production project
   during this session, not just local/test values.
+
+## Session update — GitHub publish + GitHub Pages deployment + migration/security review
+
+This session covered: assessing Supabase migration difficulty, publishing the repo to
+GitHub, standing up GitHub Pages hosting, fixing several bugs found while getting the
+live site actually working end-to-end, and one i18n correction.
+
+### Supabase migration assessment (discussion only, no architecture change)
+
+- Discussed how hard it would be to leave Supabase. Conclusion: data layer (`db.ts`,
+  ~20 functions) is a clean seam; RLS is the real coupling point (owner-only access +
+  anon-read-if-shared for `/s/:token` currently lives only in Postgres policies,
+  `owns_child()`/`child_is_shared()`).
+- **Decision recorded, no code changed:** did NOT add redundant app-layer ownership
+  checks in `db.ts`. There's no active plan to leave Supabase — duplicating every
+  ownership check in both RLS and application code would be real ongoing maintenance
+  cost for a migration that isn't scheduled. RLS remains the sole authorization layer.
+  Revisit only if/when an actual migration is scheduled. (See "Architecture decision —
+  RLS stays as the sole authorization layer" section above, added same session.)
+- Centralized remaining direct Supabase SDK usage as prep work (this part WAS done):
+  `auth.tsx` now wraps all MFA/AAL/account operations (`getAccessToken`,
+  `checkAalStepUp`, `getVerifiedTotpFactor`, `enrollTotp`, `challengeTotp`,
+  `verifyTotp`, `unenrollTotp`) — previously called directly via raw `supabase.auth.*`
+  from `AccountPage.tsx`, `MfaChallengePage.tsx`, `ProtectedRoute.tsx`. `db.ts` gained
+  `getShareManagementData()` to remove the one remaining direct `supabase.from()` call
+  in `ShareManagementPage.tsx`. No component/page now imports the raw `supabase`
+  client — everything goes through `db.ts` or `auth.tsx`.
+
+### Published to GitHub + pre-publish secret audit
+
+- Repo pushed to `git@github.com:smaryenko/myndigo.git` (`smaryenko/myndigo`, branch
+  `master`). This workspace now has a real `.git` (previously did not).
+- Pre-publish audit found and fixed two real gaps before the first push:
+  - `supabase/.temp/` (Supabase CLI local link-state — project ref, pooler/DB
+    connection string) was untracked but **not** gitignored. Added to `.gitignore`.
+  - The real Supabase project ref was written in plain prose in this progress.md
+    file (added by a previous session) — scrubbed to generic phrasing before
+    publishing, since this file is now in a public repo.
+  - `.env` (live DeepL key, Supabase URL/anon key) was already correctly gitignored
+    and confirmed via `git check-ignore` + `git add -A --dry-run` before every push.
+  - **Live DeepL API key was echoed into this chat session multiple times** (both by
+    the user pasting `.env` into the editor context and by file reads) — flagged as
+    exposed regardless of the git-ignore outcome and the user was told to rotate it.
+    Not confirmed whether it was actually rotated.
+
+### GitHub Pages deployment (chosen over Vercel — user wants the `github.io` URL)
+
+Target: `https://smaryenko.github.io/myndigo/`. Vercel was discussed first (matches
+existing `DEPLOY.md` Step 9) but user wants the GitHub Pages URL specifically, so
+Vercel steps are skipped entirely — the two are alternatives, not both-required.
+
+- `vite.config.ts`: `base = process.env.BASE_PATH ?? '/'` (defaults to root for
+  Vercel/local dev; the workflow sets `BASE_PATH=/myndigo/`). Also had to fix the
+  PWA `manifest.icons[0].src` (build-time, fine) and the `urlPattern` function for
+  the `/s/` route cache rule — **that function is serialized as a string into the
+  generated `sw.js` and runs in the service worker's own scope**, so it cannot close
+  over the `base` variable from this Node config module. First attempt did close
+  over it and broke production with `Uncaught ReferenceError: base is not defined`
+  in `sw.js`. Fixed by using `new Function(...)` to bake the literal path string in
+  before Workbox stringifies it — verified by grepping the built `sw.js` for a bare
+  `base` identifier (none) and confirming the literal `"/myndigo/s/"` is present.
+- `src/App.tsx`: `BrowserRouter` now takes `basename={import.meta.env.BASE_URL.replace(/\/$/, '')}`
+  so React Router resolves correctly under the `/myndigo` subpath.
+- `index.html` / `public/404.html`: added the standard SPA-on-GitHub-Pages redirect
+  trick (rafgraph/spa-github-pages pattern) — GitHub Pages has no server-side
+  rewrites, so a direct visit or refresh on a client route (e.g. `/myndigo/s/token`)
+  would otherwise 404. `404.html` redirects to `/?/<path>`, and a small inline
+  script in `index.html`'s `<head>` restores the real path via
+  `history.replaceState` before React mounts. No-op on any other host.
+- `.github/workflows/deploy-pages.yml`: builds on push to `master` (+ manual
+  `workflow_dispatch`), sets `BASE_PATH=/myndigo/` and reads
+  `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` from GitHub Actions secrets, uses
+  `actions/upload-pages-artifact` + `actions/deploy-pages@v4`. The `build` job also
+  declares `environment: github-pages` (added after a real failure — see below) so
+  it can read secrets regardless of whether they were added as repo-level or
+  environment-scoped secrets.
+- **`window.location.origin` never includes a path** — three call sites needed a
+  base-aware helper instead, or they'd 404 one level too high on GitHub Pages
+  (`https://host/dashboard` instead of `https://host/myndigo/dashboard`):
+  - `src/lib/auth.tsx` — added `appOrigin()` helper (`window.location.origin` +
+    `import.meta.env.BASE_URL` trimmed), used by `signInWithGoogle()`'s `redirectTo`
+    and `signUpWithEmail()`'s `emailRedirectTo`.
+  - `src/pages/ShareManagementPage.tsx` — the QR-code/share-link `shareUrl` builder
+    needed the same fix (this one matters most in practice — it's what gets printed
+    on physical badges/QR codes).
+
+### Real deploy failures hit and fixed, in the order encountered
+
+1. **404 at the root URL** — first workflow run failed outright:
+   `actions/deploy-pages@v4` errored `Failed to create deployment ... Ensure GitHub
+   Pages has been enabled`. Root cause: repo Settings → Pages → Source was still
+   "Deploy from a branch" (GitHub's default), not "GitHub Actions". This also meant
+   GitHub's own auto-generated `pages-build-deployment` (Jekyll) workflow existed
+   alongside ours and was the one actually serving content — confirmed via
+   `GET /repos/.../actions/workflows` showing two active workflows. Fixed by the
+   user switching the Source dropdown to "GitHub Actions" in repo settings (manual,
+   requires GitHub web UI — not something doable from this workspace).
+2. **`Missing Supabase environment variables` at runtime, blank page** — the
+   `build` job ran successfully but baked in empty strings for
+   `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`. Root cause: repo secrets weren't
+   visible to the `build` job. Fixed by adding `environment: github-pages` to the
+   `build` job in the workflow (in case secrets were added as environment-scoped
+   rather than repository-scoped) — see workflow section above.
+3. **`sw.js` runtime crash** (`Uncaught ReferenceError: base is not defined`) — see
+   the `vite.config.ts` `urlPattern` bug described above. Fixed by baking the base
+   path into the function's source text via `new Function(...)` before Workbox
+   serializes it, instead of closing over the config-module-level `base` const.
+4. **Google OAuth redirect landed on `http://localhost:3000/?code=...`** — Supabase
+   falls back to the Site URL when `redirectTo` doesn't match anything in the
+   Redirect URLs allowlist; the allowlist still had Supabase's default. Fixed by the
+   user updating Supabase dashboard → Authentication → URL Configuration: Site URL
+   → `https://smaryenko.github.io/myndigo/`, Redirect URLs →
+   `https://smaryenko.github.io/myndigo/**`, `.../dashboard`, and later
+   `http://localhost:5173/**` for local dev (see below).
+5. **OAuth redirect landed on `https://smaryenko.github.io/dashboard` (404, missing
+   `/myndigo`)** — root cause was the `window.location.origin`-without-base bug
+   described above, not a Supabase config issue this time. Fixed in code
+   (`appOrigin()` helper).
+6. **Local dev Google login still redirected to production** — root cause was a
+   **typo** in the Supabase Redirect URLs allowlist: `ttp://localhost:5173/**`
+   (missing the leading `h`). User confirmed via screenshot and fixed it directly
+   in the Supabase dashboard. Both local (`localhost:5173`) and production
+   (`github.io/myndigo`) redirect URLs now coexist in the same allowlist — this
+   requires no code branching since the app builds `redirectTo` from
+   `window.location.origin` + base at runtime, which is already environment-aware.
+
+### Mobile UX fix — SectionCard visibility toggle label
+
+- `SectionCard.tsx`'s per-section visibility toggle had its text label
+  (`t('share.sectionVisible')` / `t('share.sectionHidden')`) wrapped in
+  `hidden sm:inline` — on mobile this left only the 👁/🙈 emoji pair visible, which
+  read as ambiguous (nearly identical at small size, subtle color-only
+  differentiation). Fixed by always showing the label; header now uses
+  `flex-wrap` so it drops to a second line on narrow screens instead of truncating
+  the section title or cramping the toggle.
+
+### Bug fix — visibility toggle silently no-ops on empty sections (real schema change)
+
+User reported the hide/show toggle does nothing when a section has no content yet
+(specifically: communication section with only Verbal/non-verbal selected; also
+Emergency Contacts with zero contacts added). Root cause, in two parts:
+
+- **Single-entry sections** (communication, behavioral_notes, education):
+  `SingleEntrySection`'s `handleVisibility` in `DynamicSection.tsx` returned early
+  if `entry` was `null` — no row existed yet, so there was nothing to persist the
+  flag to, and the toggle just silently did nothing. Fixed: now creates the entry
+  (using whatever's in the in-memory `values`, even empty/partial) via
+  `upsertProfileEntry` when no entry exists yet, instead of no-op'ing.
+- **Repeatable list sections** (triggers, contacts, medications, conditions,
+  doctors, sensory, routines, alerts): `handleVisibility` called
+  `setSectionVisibility(entries.map(e => e.id), visible)` — with zero entries this
+  is an update over an empty ID list, inherently a no-op, and `sectionVisible` was
+  always computed as `entries[0]?.section_visible ?? section.default_visible`,
+  which can never read as anything but the static `default_visible` when empty.
+  There was no per-child place to persist "hide this while it's empty."
+  **Real schema change**, reflected in `supabase/schema.sql` same response per
+  project rules: added `children.hidden_empty_sections text[] not null default
+  '{}'` — section_keys the parent explicitly hid while the section had zero
+  entries. `ListSection`/`ContactListSection`/`AlertBarSection` now read/write this
+  when `entries.length === 0`, and the first entry added to a previously-empty
+  section inherits this preference as its initial `section_visible`. New `db.ts`
+  function: `setEmptySectionHidden(childId, sectionKey, hidden)`. `ChildRow` type
+  gained `hidden_empty_sections: string[]`. `DynamicSection`'s `Props` gained
+  `hiddenEmptySections`/`onHiddenEmptySectionsChange`, threaded from
+  `ChildProfilePage.tsx`.
+  **Manual migration step, given to and run by the user:**
+  ```sql
+  alter table children add column if not exists hidden_empty_sections text[] not null default '{}';
+  ```
+  User confirmed this was run against the live DB.
+- Also added error surfacing to all four `handleVisibility` implementations in
+  `DynamicSection.tsx` (single-entry + all three repeatable variants) — previously
+  none of them had any try/catch anywhere in the call chain, so a failure (RLS
+  rejection, network error) would produce a silent unhandled promise rejection with
+  zero UI feedback. Now shows a red inline error message on failure.
+
+### i18n fix — Ukrainian communication level labels
+
+- `sharedPage.communicationLevels.*` in `uk.json` used neuter adjective endings
+  (`Вербальне`, `Обмежено вербальне`, `Невербальне`) where masculine agreement is
+  grammatically correct for a standalone label (implied "рівень" — level, masculine).
+  User flagged `non_verbal` specifically; fixed all three for consistent agreement:
+  `Вербальний` / `Обмежено вербальний` / `Невербальний`. This single key is shared
+  between the profile editor's level-select buttons and the public shared-page
+  communication badge (`field_definitions` seed data in `schema.sql` points
+  `option.label_key` at the same `sharedPage.communicationLevels.*` keys) — one fix
+  covers both surfaces.
+
+### New standing rule — git workflow (added to `.kiro/steering/project.md`)
+
+User asked to never auto-commit/push. Added a "Git Workflow" section to the
+always-included `project.md` steering file: changes are made and verified
+(build/lint) locally but never committed or pushed without an explicit ask in that
+turn. Also noted this means changes won't auto-deploy via the Pages workflow until
+the developer (or an explicit request) pushes them.
+
+### Commits made this session (all pushed, in order)
+
+1. `426cc17` — Initial commit (first publish to GitHub)
+2. `5029706` — Add GitHub Pages deployment support
+3. `d60493a` — Allow build job to read github-pages environment secrets
+4. `a357003` — Fix service worker: bake base path into urlPattern instead of closing over it
+5. `9cf00d9` — Fix OAuth/email redirects and share URLs to respect base path
+6. `da75756` — Show visibility toggle label on mobile (was hidden below sm breakpoint)
+7. `1dbb8f8` — Fix visibility toggles that no-op on empty sections; add git workflow steering rule
+8. `08eed01` — Fix Ukrainian communication level labels to masculine agreement
+
+### State at end of session
+
+- Live at `https://smaryenko.github.io/myndigo/`, deploying via GitHub Actions on
+  every push to `master`. Google OAuth confirmed working in this session (both
+  local dev on `localhost:5173` and production).
+- `hidden_empty_sections` migration has been run against the live DB — the empty-
+  section visibility fix should be fully functional in production once the latest
+  push's deploy finishes.
+- **Outstanding, not confirmed done:** DeepL API key rotation (flagged twice this
+  session as exposed via chat context — user acknowledged but rotation itself was
+  never explicitly confirmed).
+- **Not verified end-to-end by the agent** (would require actually clicking through
+  the live site as a user): whether the empty-section visibility fix behaves
+  correctly after deploy, whether the Ukrainian label fix rendered correctly on the
+  live shared page. These were verified via `npm run build`/`npm run lint` locally
+  only, plus the user's own testing feedback during the session.
