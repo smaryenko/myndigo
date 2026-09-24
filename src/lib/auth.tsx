@@ -37,6 +37,16 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
+// window.location.origin never includes a path (e.g. "/myndigo"), so on a
+// host serving from a subpath (GitHub Pages) it must be combined with
+// Vite's configured BASE_URL — otherwise OAuth/email redirects land one
+// level too high and 404 (e.g. https://host/dashboard instead of
+// https://host/myndigo/dashboard).
+function appOrigin(): string {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+  return `${window.location.origin}${base}`
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
@@ -69,7 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/dashboard`,
+        redirectTo: `${appOrigin()}/dashboard`,
       },
     })
   }
@@ -84,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
+        emailRedirectTo: `${appOrigin()}/dashboard`,
       },
     })
     return { error: error?.message ?? null }

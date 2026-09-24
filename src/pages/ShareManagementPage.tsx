@@ -93,8 +93,12 @@ export function ShareManagementPage() {
       .finally(() => setLoading(false))
   }, [id])
 
+  // window.location.origin never includes a path (e.g. "/myndigo"), so on a
+  // host serving from a subpath (GitHub Pages) the app's base must be
+  // prepended too, or QR codes/printed badges point at a URL that 404s.
+  const appBase = import.meta.env.BASE_URL.replace(/\/$/, '')
   const shareUrl = child
-    ? `${window.location.origin}/s/${child.share_token}`
+    ? `${window.location.origin}${appBase}/s/${child.share_token}`
     : ''
 
   const handleToggleSharing = async () => {
