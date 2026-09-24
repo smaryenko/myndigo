@@ -807,9 +807,11 @@ the developer (or an explicit request) pushes them.
 - `hidden_empty_sections` migration has been run against the live DB — the empty-
   section visibility fix should be fully functional in production once the latest
   push's deploy finishes.
-- **Outstanding, not confirmed done:** DeepL API key rotation (flagged twice this
-  session as exposed via chat context — user acknowledged but rotation itself was
-  never explicitly confirmed).
+- DeepL API key rotation: confirmed done by the user. The old key (exposed via chat
+  context earlier this session) should be treated as fully retired — if
+  `.env`/Supabase Edge Function secrets still reference the old value anywhere,
+  that's now stale and should be updated to the new key, not the one seen earlier
+  in this session's transcript.
 - **Not verified end-to-end by the agent** (would require actually clicking through
   the live site as a user): whether the empty-section visibility fix behaves
   correctly after deploy, whether the Ukrainian label fix rendered correctly on the
