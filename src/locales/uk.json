@@ -357,9 +357,9 @@
       "severityOrange": "ВАЖЛИВО"
     },
     "communicationLevels": {
-      "verbal": "Вербальне",
-      "limited_verbal": "Обмежено вербальне",
-      "non_verbal": "Невербальне"
+      "verbal": "Розмовляє",
+      "limited_verbal": "Розмовляє обмежено",
+      "non_verbal": "Не розмовляє"
     },
     "sensorySections": {
       "title": "Сенсорні чутливості",
