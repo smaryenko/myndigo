@@ -35,7 +35,7 @@ function buildBadgeSVG(
   message: string,
 ): string {
   // Sunflower petal path helper — 8 ellipses around origin
-  function petals(r: number, fill = '#fbbf24', stroke = '#f59e0b'): string {
+  function petals(r: number, fill = '#f59e0b', stroke = '#b45309'): string {
     const pw = r * 0.38
     const ph = (r * 0.9) / 2
     return Array.from({ length: 8 }, (_, i) => {
@@ -62,23 +62,23 @@ function buildBadgeSVG(
     width="${BADGE_W_PX}" height="${BADGE_H_PX}" viewBox="0 0 ${BADGE_W_PX} ${BADGE_H_PX}">
 
   <!-- Warm cream base -->
-  <rect width="${BADGE_W_PX}" height="${BADGE_H_PX}" fill="#fffbeb"/>
+  <rect width="${BADGE_W_PX}" height="${BADGE_H_PX}" fill="#fef3c7"/>
 
   <!-- Stems -->
-  <line x1="28" y1="60" x2="40" y2="120" stroke="#65a30d" stroke-width="2" stroke-linecap="round"/>
-  <line x1="205" y1="73" x2="195" y2="130" stroke="#65a30d" stroke-width="2" stroke-linecap="round"/>
-  <line x1="14" y1="208" x2="25" y2="260" stroke="#65a30d" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="222" y1="216" x2="210" y2="265" stroke="#65a30d" stroke-width="1.5" stroke-linecap="round"/>
-  <line x1="32" y1="310" x2="45" y2="260" stroke="#65a30d" stroke-width="2" stroke-linecap="round"/>
-  <line x1="210" y1="305" x2="200" y2="258" stroke="#65a30d" stroke-width="2" stroke-linecap="round"/>
+  <line x1="28" y1="60" x2="40" y2="120" stroke="#4d7c0f" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="205" y1="73" x2="195" y2="130" stroke="#4d7c0f" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="14" y1="208" x2="25" y2="260" stroke="#4d7c0f" stroke-width="2" stroke-linecap="round"/>
+  <line x1="222" y1="216" x2="210" y2="265" stroke="#4d7c0f" stroke-width="2" stroke-linecap="round"/>
+  <line x1="32" y1="310" x2="45" y2="260" stroke="#4d7c0f" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="210" y1="305" x2="200" y2="258" stroke="#4d7c0f" stroke-width="2.5" stroke-linecap="round"/>
 
   <!-- Leaves -->
-  <ellipse cx="36" cy="92" rx="7" ry="3.5" fill="#84cc16" transform="rotate(-40 36 92)"/>
-  <ellipse cx="198" cy="105" rx="6" ry="3" fill="#84cc16" transform="rotate(35 198 105)"/>
-  <ellipse cx="20" cy="238" rx="5" ry="2.5" fill="#84cc16" transform="rotate(-30 20 238)"/>
-  <ellipse cx="215" cy="245" rx="5" ry="2.5" fill="#84cc16" transform="rotate(30 215 245)"/>
-  <ellipse cx="40" cy="285" rx="6" ry="3" fill="#84cc16" transform="rotate(-45 40 285)"/>
-  <ellipse cx="204" cy="282" rx="6" ry="3" fill="#84cc16" transform="rotate(45 204 282)"/>
+  <ellipse cx="36" cy="92" rx="7" ry="3.5" fill="#65a30d" transform="rotate(-40 36 92)"/>
+  <ellipse cx="198" cy="105" rx="6" ry="3" fill="#65a30d" transform="rotate(35 198 105)"/>
+  <ellipse cx="20" cy="238" rx="5" ry="2.5" fill="#65a30d" transform="rotate(-30 20 238)"/>
+  <ellipse cx="215" cy="245" rx="5" ry="2.5" fill="#65a30d" transform="rotate(30 215 245)"/>
+  <ellipse cx="40" cy="285" rx="6" ry="3" fill="#65a30d" transform="rotate(-45 40 285)"/>
+  <ellipse cx="204" cy="282" rx="6" ry="3" fill="#65a30d" transform="rotate(45 204 282)"/>
 
   <!-- Sunflowers -->
   ${sunflower(28, 38, -15, 22)}
@@ -90,9 +90,6 @@ function buildBadgeSVG(
   ${sunflower(119, 18, 0, 11)}
   ${sunflower(119, 370, 5, 10)}
 
-  <!-- Overlay to soften background -->
-  <rect width="${BADGE_W_PX}" height="${BADGE_H_PX}" fill="rgba(255,251,235,0.55)"/>
-
   <!-- Name label + child name — real HTML so text wraps/renders like the preview -->
   <foreignObject x="10" y="70" width="${BADGE_W_PX - 20}" height="60">
     <div xmlns="http://www.w3.org/1999/xhtml" style="
@@ -101,20 +98,20 @@ function buildBadgeSVG(
     ">
       <p style="
         margin: 0 0 6px 0;
-        font-size: 10px; font-weight: 600; letter-spacing: 2px;
-        color: #b45309; text-transform: uppercase;
+        font-size: 10px; font-weight: 700; letter-spacing: 2px;
+        color: #92400e; text-transform: uppercase;
       ">${escapeHtml(nameLabel)}</p>
       <p style="
         margin: 0;
-        font-size: 28px; font-weight: 700; line-height: 1.15;
-        color: #0f172a; word-break: break-word;
+        font-size: 28px; font-weight: 800; line-height: 1.15;
+        color: #000000; word-break: break-word;
       ">${escapeHtml(childName)}</p>
     </div>
   </foreignObject>
 
   <!-- QR white background card -->
   <rect x="${qrX - 8}" y="145" width="${qrSize + 16}" height="${qrSize + 16}"
-    rx="10" ry="10" fill="white"
+    rx="10" ry="10" fill="white" stroke="#78350f" stroke-width="1.5"
     filter="url(#shadow)"/>
 
   <!-- Drop shadow filter -->
@@ -130,15 +127,15 @@ function buildBadgeSVG(
 
   <!-- Bottom message pill — y=283 to y=353, safely above bottom sunflowers -->
   <rect x="20" y="283" width="${BADGE_W_PX - 40}" height="62"
-    rx="8" ry="8" fill="white"/>
+    rx="8" ry="8" fill="white" stroke="#78350f" stroke-width="1.5"/>
 
   <!-- Bottom message — real HTML, wraps naturally within the pill -->
   <foreignObject x="28" y="291" width="${BADGE_W_PX - 56}" height="46">
     <p xmlns="http://www.w3.org/1999/xhtml" style="
       margin: 0;
       font-family: system-ui, -apple-system, sans-serif;
-      font-size: 9.5px; font-weight: 500; line-height: 1.4;
-      color: #1e293b; text-align: center;
+      font-size: 9.5px; font-weight: 700; line-height: 1.4;
+      color: #000000; text-align: center;
     ">${escapeHtml(message)}</p>
   </foreignObject>
 </svg>`
@@ -181,6 +178,9 @@ export function BadgePreviewModal({ childName, shareUrl, onClose }: BadgePreview
     width: ${BADGE_W_MM}mm;
     height: ${BADGE_H_MM}mm;
     overflow: hidden;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    color-adjust: exact;
   }
   @page {
     size: ${BADGE_W_MM}mm ${BADGE_H_MM}mm;
@@ -251,19 +251,19 @@ export function BadgePreviewModal({ childName, shareUrl, onClose }: BadgePreview
               xmlns="http://www.w3.org/2000/svg"
               preserveAspectRatio="xMidYMid slice"
             >
-              <rect width={BADGE_W_PX} height={BADGE_H_PX} fill="#fffbeb" />
-              <line x1="28" y1="60" x2="40" y2="120" stroke="#65a30d" strokeWidth="2" strokeLinecap="round" />
-              <line x1="205" y1="73" x2="195" y2="130" stroke="#65a30d" strokeWidth="2" strokeLinecap="round" />
-              <line x1="14" y1="208" x2="25" y2="260" stroke="#65a30d" strokeWidth="1.5" strokeLinecap="round" />
-              <line x1="222" y1="216" x2="210" y2="265" stroke="#65a30d" strokeWidth="1.5" strokeLinecap="round" />
-              <line x1="32" y1="310" x2="45" y2="260" stroke="#65a30d" strokeWidth="2" strokeLinecap="round" />
-              <line x1="210" y1="305" x2="200" y2="258" stroke="#65a30d" strokeWidth="2" strokeLinecap="round" />
-              <ellipse cx="36" cy="92" rx="7" ry="3.5" fill="#84cc16" transform="rotate(-40 36 92)" />
-              <ellipse cx="198" cy="105" rx="6" ry="3" fill="#84cc16" transform="rotate(35 198 105)" />
-              <ellipse cx="20" cy="238" rx="5" ry="2.5" fill="#84cc16" transform="rotate(-30 20 238)" />
-              <ellipse cx="215" cy="245" rx="5" ry="2.5" fill="#84cc16" transform="rotate(30 215 245)" />
-              <ellipse cx="40" cy="285" rx="6" ry="3" fill="#84cc16" transform="rotate(-45 40 285)" />
-              <ellipse cx="204" cy="282" rx="6" ry="3" fill="#84cc16" transform="rotate(45 204 282)" />
+              <rect width={BADGE_W_PX} height={BADGE_H_PX} fill="#fef3c7" />
+              <line x1="28" y1="60" x2="40" y2="120" stroke="#4d7c0f" strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="205" y1="73" x2="195" y2="130" stroke="#4d7c0f" strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="14" y1="208" x2="25" y2="260" stroke="#4d7c0f" strokeWidth="2" strokeLinecap="round" />
+              <line x1="222" y1="216" x2="210" y2="265" stroke="#4d7c0f" strokeWidth="2" strokeLinecap="round" />
+              <line x1="32" y1="310" x2="45" y2="260" stroke="#4d7c0f" strokeWidth="2.5" strokeLinecap="round" />
+              <line x1="210" y1="305" x2="200" y2="258" stroke="#4d7c0f" strokeWidth="2.5" strokeLinecap="round" />
+              <ellipse cx="36" cy="92" rx="7" ry="3.5" fill="#65a30d" transform="rotate(-40 36 92)" />
+              <ellipse cx="198" cy="105" rx="6" ry="3" fill="#65a30d" transform="rotate(35 198 105)" />
+              <ellipse cx="20" cy="238" rx="5" ry="2.5" fill="#65a30d" transform="rotate(-30 20 238)" />
+              <ellipse cx="215" cy="245" rx="5" ry="2.5" fill="#65a30d" transform="rotate(30 215 245)" />
+              <ellipse cx="40" cy="285" rx="6" ry="3" fill="#65a30d" transform="rotate(-45 40 285)" />
+              <ellipse cx="204" cy="282" rx="6" ry="3" fill="#65a30d" transform="rotate(45 204 282)" />
               <SunflowerGroup tx={28}  ty={38}  rot={-15} r={22} />
               <SunflowerGroup tx={205} ty={55}  rot={20}  r={18} />
               <SunflowerGroup tx={14}  ty={195} rot={5}   r={13} />
@@ -272,29 +272,28 @@ export function BadgePreviewModal({ childName, shareUrl, onClose }: BadgePreview
               <SunflowerGroup tx={218} ty={328} rot={-8}  r={16} />
               <SunflowerGroup tx={119} ty={18}  rot={0}   r={11} />
               <SunflowerGroup tx={119} ty={370} rot={5}   r={10} />
-              <rect width={BADGE_W_PX} height={BADGE_H_PX} fill="rgba(255,251,235,0.55)" />
             </svg>
 
             {/* Badge content — positions mirror the SVG text/image positions in buildBadgeSVG */}
             <div className="relative z-10 h-full flex flex-col items-center px-5">
               {/* "Hi, my name is" + child name — top area, matches SVG y=90 / y=122 */}
               <div className="text-center mt-[74px]">
-                <p className="text-[10px] font-semibold uppercase tracking-[2px] text-amber-700 mb-1.5">
+                <p className="text-[10px] font-bold uppercase tracking-[2px] text-amber-900 mb-1.5">
                   {nameLabel}
                 </p>
-                <p className="text-[28px] font-bold text-slate-900 leading-tight break-words">
+                <p className="text-[28px] font-extrabold text-black leading-tight break-words">
                   {childName}
                 </p>
               </div>
 
               {/* QR — starts at y=145, matches SVG */}
-              <div className="mt-[18px] bg-white rounded-xl p-2 shadow-md" ref={qrRef}>
+              <div className="mt-[18px] bg-white rounded-xl p-2 shadow-md border border-amber-900" ref={qrRef}>
                 <QRCodeSVG value={shareUrl} size={110} level="M" includeMargin={false} />
               </div>
 
               {/* Bottom message pill — matches SVG rect y=283 */}
-              <div className="mt-[16px] bg-white rounded-lg px-3 py-2 text-center">
-                <p className="text-[9.5px] leading-snug text-slate-800 font-medium">
+              <div className="mt-[16px] bg-white rounded-lg px-3 py-2 text-center border border-amber-900">
+                <p className="text-[9.5px] leading-snug text-black font-bold">
                   {message}
                 </p>
               </div>
@@ -350,8 +349,8 @@ function Petals({ r }: { r: number }) {
           cy={-(r * 0.55)}
           rx={pw}
           ry={ph}
-          fill="#fbbf24"
-          stroke="#f59e0b"
+          fill="#f59e0b"
+          stroke="#b45309"
           strokeWidth="0.5"
           transform={`rotate(${i * 45})`}
         />

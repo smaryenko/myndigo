@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "i18n Locale Completeness Check",
+      "trigger": "PostFileSave",
+      "description": "Runs the i18n key-diff audit automatically whenever any file in src/locales/ is saved, so translation drift is caught immediately instead of relying on someone remembering to ask for a check.",
+      "matcher": "src/locales/.*\\.json$",
+      "action": {
+        "type": "command",
+        "command": "node .kiro/skills/i18n-check/scripts/check-locales.mjs"
+      }
+    }
+  ]
+}
