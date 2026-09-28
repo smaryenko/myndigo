@@ -60,6 +60,19 @@ Parents can create and maintain a detailed profile for their child, including:
 - **Never run `git commit` or `git push` automatically.** Make and verify code changes (build/lint) as normal, but leave committing and pushing to the developer unless they explicitly ask for it in that turn.
 - This also means: changes won't auto-deploy via the GitHub Actions Pages workflow (it only triggers on push to `master`) until the developer commits and pushes themselves, or explicitly asks for that to be done.
 
+## Architecture Conventions
+
+These reflect the codebase after the Sept 2026 code-review refactor. Follow them for new work; see `progress.md` for the full detail.
+
+- **Authorization lives in Postgres.** Owner access is RLS; the public page reads **only** through `get_shared_profile(p_token)` (security definer). There are deliberately no anon read policies/grants on child tables — never add one. `npm run check:anon` guards this.
+- **Dynamic profile schema is the model.** Sections/fields are data in `section_definitions` / `field_definitions`. Both the editor and the shared page render from those definitions, so a new section or field should need no component changes — extend the data first.
+- **One data layer:** all Supabase queries, RPCs and Edge Function calls go through `src/lib/db.ts`. Components never import `supabase` directly.
+- **Error convention (`src/lib/errors.ts`):** data/auth functions throw; only `UserFacingError` text is shown to users; use `toUserMessage(err, fallback)` in catch blocks and `<InlineError>` to display.
+- **Shared building blocks:** styles in `src/lib/styles.ts` (+ `cx`), the translation field-path format in `supabase/functions/_shared/fieldPath.ts` (imported by the frontend too), the language list in `supabase/functions/_shared/languages.ts`. Don't re-inline these.
+- **i18n:** every user-facing string is a key in all 11 locales; run the i18n-check skill after touching `src/locales`. New DB-backed content that should be translatable is marked `translatable` in `field_definitions`.
+- **Tests:** `npm test` (vitest, pinned to 4.x for Node 20). CI runs lint + test before build.
+- **Edge Functions** import from `supabase/functions/_shared/`; redeploy all three after changing anything there, and note it as a manual step (the CLI can't be run from CI).
+
 ## Design Principles
 
 - Simple and fast — parents are busy and stressed
