@@ -955,13 +955,21 @@ Ran the Supabase database linter (2 ERROR, 10 WARN). Fixed in `supabase/schema.s
 - Don't "fix" these in a future session; re-read the Anonymous access comment in
   `schema.sql` first.
 
+### Applied + verified against the live DB (2026-09-28)
+`schema.sql` was re-run on the live project. Verified over the REST API with the anon key:
+- `npm run check:anon` — all six child tables `401`.
+- `section_definitions` + `field_definitions` → `200` **with rows**. This is the check that
+  matters after the RLS swap: had the policy been wrong, both the editor and the shared page
+  would render blank.
+- `log_share_view` → `404 PGRST202` (dropped).
+- `rls_auto_enable` → `401 / 42501 permission denied for function` — i.e. still present
+  (backing `ensure_rls`) but no longer callable via `/rest/v1/rpc/`. Correct outcome.
+- `get_shared_profile` → `200`, returns `null` for an unknown token. Anon read path intact.
+
 ### Outstanding
-- **Manual step not yet done:** re-run `schema.sql` on the live DB, then `npm run check:anon`
-  (six child tables must PASS — that script doesn't cover the definitions tables) and load
-  both a `/s/<token>` link and a child profile editor, since both read the definitions
-  tables through the new policies.
 - **Dashboard toggle not done:** Auth → leaked password protection (HaveIBeenPwned) is
-  still disabled.
+  still disabled. Only remaining linter finding that needs action.
+- Remaining linter warnings are the intentional ones (`get_shared_profile`,
+  `regenerate_share_token`, `rls_auto_enable`) — see the "deliberately NOT changed" list above.
 - No caller of a 5-arg `log_share_view` exists anywhere in this repo (the Edge Function
-  uses `service_role`), so dropping it should be inert — unverified against anything
-  outside the repo.
+  uses `service_role`); the live `404` now confirms nothing in the app depended on it.
