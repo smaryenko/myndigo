@@ -73,6 +73,32 @@ These reflect the codebase after the Sept 2026 code-review refactor. Follow them
 - **Tests:** `npm test` (vitest, pinned to 4.x for Node 20). CI runs lint + test before build.
 - **Edge Functions** import from `supabase/functions/_shared/`; redeploy all three after changing anything there, and note it as a manual step (the CLI can't be run from CI).
 
+### Postgres gotchas (learned the hard way — see `progress.md`)
+
+- **Never use `alter table ... disable row level security`.** This project has an
+  `ensure_rls` event trigger (`ddl_command_end` → `rls_auto_enable()`) that re-enables RLS
+  on tables in `public`, so "disabled" is never stable. For a table that should be
+  world-readable (e.g. the `section_definitions` / `field_definitions` metadata), **enable
+  RLS and add an explicit permissive policy** (`for select to anon, authenticated using (true)`).
+  RLS enabled with zero policies blocks *all* reads silently — and both the editor and the
+  shared page render from those definitions, so that blanks the app with no error.
+- **`drop function if exists` matches on the argument list.** If the signature doesn't match
+  exactly it's a silent no-op — no warning, and the old function stays live (this left an
+  anon-callable `SECURITY DEFINER` function in place for a whole release). Confirm against
+  `pg_proc` (`select oid::regprocedure from pg_proc where proname = '...'`) before trusting a drop.
+- **Some Supabase linter warnings are this project's design — don't "fix" them.**
+  `get_shared_profile(uuid)` is intentionally an anon-executable `SECURITY DEFINER` function:
+  it's the only anonymous read path into child data and validates the token plus
+  `sharing_enabled` itself, which is why no anon table policies exist.
+  `regenerate_share_token(uuid)` likewise checks `owns_child()` internally. `rls_auto_enable()`
+  is a fail-closed guardrail — revoke its `EXECUTE` from API roles, don't drop it.
+- **`owns_child(uuid)` must keep `EXECUTE` for `authenticated`.** The owner RLS policies call
+  it, and function-execute permission is checked against the calling role — revoking it
+  breaks every owner policy in the schema. Revoking from `anon` is safe.
+- **`service_role` bypasses RLS but not table GRANTs.** Anything an Edge Function touches
+  needs an explicit `grant` (this previously caused `translate` to return empty results with
+  no surfaced error).
+
 ## Design Principles
 
 - Simple and fast — parents are busy and stressed

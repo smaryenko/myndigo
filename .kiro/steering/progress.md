@@ -909,3 +909,59 @@ client-side (512px JPEG, EXIF/GPS stripped); legacy large photos auto-shrink whe
   left light — the shared page has its own viewer themes (`sharedThemes.ts`),
   and the QR code container is forced white so it stays scannable.
 - No DB changes (device-local preference, like the UI language).
+
+
+## Supabase database-linter fixes (Sept 2026)
+
+Ran the Supabase database linter (2 ERROR, 10 WARN). Fixed in `supabase/schema.sql`.
+**Not yet applied to the live DB** — re-run `schema.sql` (idempotent) in the SQL Editor.
+
+### The two findings that mattered
+
+- **Stale `log_share_view` was still live.** The earlier cleanup dropped a **7-arg**
+  signature, but the live function had **5** args (`uuid, text, double precision,
+  double precision, text`). `drop function` matches on the argument list, so the drop
+  silently no-op'd and left an anon-`EXECUTE`-able `SECURITY DEFINER` function that could
+  insert forged `share_audit_log` rows — audit inserts are supposed to be service_role
+  only, via the log-share-view Edge Function. Schema now drops **both** signatures.
+  *Lesson: `drop function if exists` is a no-op when the signature doesn't match — it
+  gives no warning. Always confirm against `pg_proc` (`oid::regprocedure`).*
+- **`section_definitions` / `field_definitions` had RLS disabled** (both ERRORs). Replaced
+  `disable row level security` with RLS **enabled** + an explicitly permissive
+  `for select to anon, authenticated using (true)` policy. Reason this was urgent, not
+  cosmetic: this project has an **`ensure_rls` event trigger** (`ddl_command_end` →
+  `rls_auto_enable()`) that re-enables RLS on tables in `public`. So "disabled" was never
+  stable — any future DDL on those tables could flip RLS back on, and with **zero
+  policies** every read returns nothing. Both the editor and the shared page render from
+  these definitions, so that failure mode is the whole app going blank with no error
+  (same silent-empty-results class as the earlier missing service_role grants).
+
+### Also fixed
+- `update_updated_at()` — the one function missing `set search_path = ''`.
+- `owns_child(uuid)` — revoked `EXECUTE` from `public, anon`. **`authenticated` must keep
+  it**: the owner RLS policies call it and execute permission is checked against the
+  calling role, so revoking it there would break every owner policy.
+- `rls_auto_enable()` — **kept** (it's a fail-closed guardrail, not ours to delete), but
+  `EXECUTE` revoked from `public, anon, authenticated` so it isn't reachable via
+  `/rest/v1/rpc/`. Wrapped in a `do $$ ... exception` block so a non-owner run just
+  raises a notice instead of failing the whole script.
+
+### Deliberately NOT changed (linter warnings that are the design)
+- `get_shared_profile(uuid)` anon + authenticated `SECURITY DEFINER` — this *is* the
+  architecture: the only anonymous read path into child data, validating the token and
+  `sharing_enabled` internally. That's precisely why there are no anon table policies.
+- `regenerate_share_token(uuid)` authenticated `SECURITY DEFINER` — does its own
+  `owns_child()` check.
+- Don't "fix" these in a future session; re-read the Anonymous access comment in
+  `schema.sql` first.
+
+### Outstanding
+- **Manual step not yet done:** re-run `schema.sql` on the live DB, then `npm run check:anon`
+  (six child tables must PASS — that script doesn't cover the definitions tables) and load
+  both a `/s/<token>` link and a child profile editor, since both read the definitions
+  tables through the new policies.
+- **Dashboard toggle not done:** Auth → leaked password protection (HaveIBeenPwned) is
+  still disabled.
+- No caller of a 5-arg `log_share_view` exists anywhere in this repo (the Edge Function
+  uses `service_role`), so dropping it should be inert — unverified against anything
+  outside the repo.

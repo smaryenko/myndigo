@@ -185,8 +185,13 @@ create index if not exists share_audit_log_child_id_idx on share_audit_log(child
 -- FUNCTION: update_updated_at
 -- Automatically stamps updated_at on row changes
 -- ============================================================
+-- search_path = '' like every other function here; now() resolves from
+-- pg_catalog (always implicitly searched) and updated_at is a record field,
+-- so an empty search_path is safe.
 create or replace function update_updated_at()
-returns trigger language plpgsql as $$
+returns trigger language plpgsql
+set search_path = ''
+as $$
 begin
   new.updated_at = now();
   return new;
@@ -252,7 +257,14 @@ create trigger profile_entries_translation_invalidate
 -- ============================================================
 
 -- Removed helpers (were never referenced by any policy or client code).
+-- log_share_view existed in two shapes across the life of this project and
+-- BOTH must be dropped by exact signature — `drop function` matches on
+-- arguments, so the 7-arg drop below silently no-op'd while the live 5-arg
+-- version survived as an anon-executable SECURITY DEFINER function that could
+-- insert forged share_audit_log rows (audit inserts are service_role only, via
+-- the log-share-view Edge Function). Confirmed live on 2026-09-28 and dropped.
 drop function if exists auth_uid();
+drop function if exists log_share_view(uuid, text, double precision, double precision, text);
 drop function if exists log_share_view(uuid, text, double precision, double precision, text, text, text);
 
 -- Helper: does the current user own this child?
@@ -269,6 +281,13 @@ as $$
     where id = p_child_id and user_id = auth.uid()
   );
 $$;
+
+-- anon never needs this (it has no table access to reach a policy that calls
+-- it). `authenticated` MUST keep EXECUTE: the owner RLS policies below invoke
+-- owns_child(), and function-execute permission is checked against the calling
+-- role — revoking it here would break every owner policy in the schema.
+revoke execute on function owns_child(uuid) from public, anon;
+grant execute on function owns_child(uuid) to authenticated;
 
 -- child_is_shared() used to back anonymous read policies; both were
 -- removed — see "Anonymous access" below.
@@ -381,12 +400,30 @@ revoke all on share_audit_log from anon;
 revoke all on user_preferences from anon;
 
 -- section_definitions / field_definitions: pure schema metadata, same for
--- every user regardless of who's looking or which child — no RLS needed.
--- Explicitly disabled: some Supabase projects auto-enable RLS on new tables,
--- which combined with zero policies would silently block ALL access (including
--- the owner), even with the grants above in place.
-alter table section_definitions disable row level security;
-alter table field_definitions disable row level security;
+-- every user regardless of who's looking or which child — every role may read
+-- it, nobody but the owner may write it.
+--
+-- RLS is ENABLED with an explicitly permissive SELECT policy rather than
+-- disabled. This project has an `ensure_rls` event trigger (ddl_command_end →
+-- rls_auto_enable()) that turns RLS back on for tables in public, so
+-- `disable row level security` here was a workaround that any future DDL on
+-- these two tables could undo — and with zero policies that means every read
+-- returns nothing. Both the editor and the shared page render from these
+-- definitions, so that failure mode is the whole app going blank with no error.
+-- A permissive policy is equivalent in effect and immune to the trigger.
+-- Writes: no policy → owner/service_role only (service_role bypasses RLS, so
+-- the translate Edge Function is unaffected).
+alter table section_definitions enable row level security;
+alter table field_definitions  enable row level security;
+
+drop policy if exists "definitions readable by all" on section_definitions;
+create policy "definitions readable by all" on section_definitions
+  for select to anon, authenticated using (true);
+
+drop policy if exists "definitions readable by all" on field_definitions;
+create policy "definitions readable by all" on field_definitions
+  for select to anon, authenticated using (true);
+
 grant select on section_definitions to authenticated, anon;
 grant select on field_definitions to authenticated, anon;
 
@@ -867,5 +904,26 @@ end;
 $$;
 
 -- Anon + authenticated callers may invoke this — it performs its own
--- token + sharing_enabled check internally.
+-- token + sharing_enabled check internally. This is the ONLY anon read path
+-- into child data, which is why there are no anon table policies above.
 grant execute on function get_shared_profile(uuid) to anon, authenticated;
+
+-- ============================================================
+-- HARDENING: rls_auto_enable()
+-- Not defined by this file — it backs the project's `ensure_rls` event
+-- trigger (ddl_command_end), which re-enables RLS on new tables in public.
+-- Kept deliberately: it's a fail-closed guardrail. But it was reachable as a
+-- SECURITY DEFINER function over the REST API (/rest/v1/rpc/rls_auto_enable)
+-- by anon and authenticated. The event trigger fires as superuser and needs no
+-- grant, so no API role needs EXECUTE.
+-- If this errors with "must be owner of function", skip it — it's hardening,
+-- not correctness, and the function is harmless when called by a non-owner.
+-- ============================================================
+do $$
+begin
+  execute 'revoke execute on function public.rls_auto_enable() from public, anon, authenticated';
+exception
+  when undefined_function then raise notice 'rls_auto_enable() not present — skipping';
+  when insufficient_privilege then raise notice 'not owner of rls_auto_enable() — skipping';
+end;
+$$;
