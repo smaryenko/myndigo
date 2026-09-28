@@ -14,7 +14,7 @@ export function InlineError({ message, size = 'sm', className }: Props) {
     <p
       role="alert"
       className={cx(
-        'text-red-600 bg-red-50 border border-red-200',
+        'text-red-600 bg-red-50 border border-red-200 dark:text-red-300 dark:bg-red-950/40 dark:border-red-900',
         size === 'sm' ? 'text-xs rounded-lg px-2.5 py-1.5' : 'text-sm rounded-xl px-3 py-2',
         className,
       )}

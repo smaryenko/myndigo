@@ -17,13 +17,13 @@ interface Props {
 
 const TONES = {
   danger: {
-    box: 'border border-red-100 bg-red-50',
-    text: 'text-red-700',
+    box: 'border border-red-100 bg-red-50 dark:border-red-900 dark:bg-red-950/40',
+    text: 'text-red-700 dark:text-red-300',
     confirm: BTN_DANGER,
   },
   warning: {
-    box: 'border border-amber-100 bg-amber-50',
-    text: 'text-amber-800',
+    box: 'border border-amber-100 bg-amber-50 dark:border-amber-900 dark:bg-amber-950/40',
+    text: 'text-amber-800 dark:text-amber-300',
     confirm: 'bg-amber-600 hover:bg-amber-700 disabled:opacity-50 text-white text-sm px-4 py-2 rounded-xl transition-colors',
   },
 }

@@ -14,10 +14,10 @@ export function AppLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Top nav */}
-      <header className="bg-white border-b border-slate-100 px-4 py-3 flex items-center justify-between gap-3">
-        <NavLink to="/" className="text-xl font-bold text-indigo-600 tracking-tight flex-shrink-0">
+      <header className="bg-white border-b border-slate-100 px-4 py-3 flex items-center justify-between gap-3 dark:bg-slate-900 dark:border-slate-800">
+        <NavLink to="/" className="text-xl font-bold text-indigo-600 dark:text-indigo-400 tracking-tight flex-shrink-0">
           {t('common.appName')}
         </NavLink>
 
@@ -26,7 +26,7 @@ export function AppLayout() {
           {/* Dashboard link — icon on mobile, text on larger screens */}
           <NavLink
             to="/dashboard"
-            className="text-slate-500 hover:text-slate-800 transition-colors flex-shrink-0"
+            className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 transition-colors flex-shrink-0"
             aria-label={t('dashboard.title')}
           >
             <svg className="w-5 h-5 sm:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
@@ -37,7 +37,7 @@ export function AppLayout() {
           {/* Account link — icon on mobile, email text on larger screens */}
           <NavLink
             to="/account"
-            className="text-slate-500 hover:text-slate-800 transition-colors flex-shrink-0"
+            className="text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 transition-colors flex-shrink-0"
             aria-label={t('account.title')}
           >
             <svg className="w-5 h-5 sm:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
@@ -48,7 +48,7 @@ export function AppLayout() {
           <button
             type="button"
             onClick={handleSignOut}
-            className="text-sm text-slate-500 hover:text-red-600 transition-colors flex-shrink-0"
+            className="text-sm text-slate-500 hover:text-red-600 dark:text-slate-400 dark:hover:text-red-400 transition-colors flex-shrink-0"
           >
             {t('auth.signOut')}
           </button>

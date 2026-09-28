@@ -27,17 +27,17 @@ export function AuditLogCard({ childId, initialEntries, initialTotal }: Props) {
   return (
     <SettingsCard>
       <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
-        <h2 className="font-semibold text-slate-800 whitespace-nowrap">{t('share.auditLog')}</h2>
+        <h2 className="font-semibold text-slate-800 dark:text-slate-100 whitespace-nowrap">{t('share.auditLog')}</h2>
         {log.total > 0 && (
           <div className="flex items-center gap-3 flex-wrap justify-end">
-            <span className="text-xs text-slate-400 whitespace-nowrap">{log.entries.length} / {log.total}</span>
+            <span className="text-xs text-slate-400 dark:text-slate-500 whitespace-nowrap">{log.entries.length} / {log.total}</span>
             <ConfirmAction
               triggerLabel={t('share.clearHistory')}
               warningMessage={t('share.clearHistoryWarning')}
               confirmLabel={t('share.yesClearHistory')}
               onConfirm={log.clear}
               loading={log.clearing}
-              triggerClassName="text-xs text-red-500 border border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors whitespace-nowrap"
+              triggerClassName="text-xs text-red-500 border border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors whitespace-nowrap dark:text-red-400 dark:border-red-900 dark:hover:bg-red-950/40"
               expandBelow
             />
           </div>
@@ -47,26 +47,26 @@ export function AuditLogCard({ childId, initialEntries, initialTotal }: Props) {
       <InlineError message={log.error} size="md" className="mb-3" />
 
       {log.entries.length === 0 ? (
-        <p className="text-sm text-slate-400 text-center py-4">{t('share.noViews')}</p>
+        <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-4">{t('share.noViews')}</p>
       ) : (
         <>
           <ul className="space-y-2">
             {log.entries.map(entry => {
               const location = locationText(entry)
               return (
-                <li key={entry.id} className="flex items-start gap-3 py-2 border-b border-slate-50 last:border-0">
+                <li key={entry.id} className="flex items-start gap-3 py-2 border-b border-slate-50 dark:border-slate-700 last:border-0">
                   <span className="text-lg" aria-hidden="true">👁</span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-slate-700">
+                    <p className="text-sm text-slate-700 dark:text-slate-200">
                       <time dateTime={entry.viewed_at}>{new Date(entry.viewed_at).toLocaleString(currentLanguage())}</time>
                     </p>
                     {entry.user_agent && (
-                      <p className="text-xs text-slate-400 mt-0.5 break-all select-all" dir="ltr">{entry.user_agent}</p>
+                      <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5 break-all select-all" dir="ltr">{entry.user_agent}</p>
                     )}
                     {location && (
-                      <p className="text-xs text-slate-400 mt-0.5">
+                      <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
                         <span aria-hidden="true">📍 </span>{location}{' '}
-                        <span className="text-slate-300">
+                        <span className="text-slate-300 dark:text-slate-600">
                           ({entry.geo_source === 'browser' ? t('share.geoGps') : t('share.geoIp')})
                         </span>
                       </p>
@@ -81,7 +81,7 @@ export function AuditLogCard({ childId, initialEntries, initialTotal }: Props) {
               type="button"
               onClick={log.loadMore}
               disabled={log.loadingMore}
-              className="mt-4 w-full text-sm text-slate-500 border border-slate-200 rounded-xl py-2 hover:bg-slate-50 disabled:opacity-50 transition-colors"
+              className="mt-4 w-full text-sm text-slate-500 border border-slate-200 rounded-xl py-2 hover:bg-slate-50 disabled:opacity-50 transition-colors dark:text-slate-400 dark:border-slate-600 dark:hover:bg-slate-700"
             >
               {log.loadingMore ? t('common.loading') : t('share.loadMore', { count: remaining })}
             </button>

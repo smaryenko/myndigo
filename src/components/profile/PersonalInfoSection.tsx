@@ -116,7 +116,7 @@ export function PersonalInfoSection({ childId, data, onChange }: Props) {
             type="button"
             onClick={() => fileRef.current?.click()}
             aria-label={photoButtonLabel}
-            className="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden hover:opacity-80 transition-opacity flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="w-16 h-16 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center overflow-hidden hover:opacity-80 transition-opacity flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           >
             {photo ? (
               <img src={photo} alt="" className="w-full h-full object-cover" />
@@ -130,17 +130,17 @@ export function PersonalInfoSection({ childId, data, onChange }: Props) {
                 type="button"
                 onClick={() => fileRef.current?.click()}
                 disabled={processingPhoto}
-                className="text-sm text-indigo-600 font-medium hover:underline disabled:opacity-50"
+                className="text-sm text-indigo-600 dark:text-indigo-400 font-medium hover:underline disabled:opacity-50"
               >
                 {processingPhoto ? t('common.loading') : photoButtonLabel}
               </button>
               {photo && (
-                <button type="button" onClick={() => setPhoto(null)} className="text-sm text-red-400 hover:underline">
+                <button type="button" onClick={() => setPhoto(null)} className="text-sm text-red-400 dark:text-red-400 hover:underline">
                   {t('child.personalInfo.removePhoto')}
                 </button>
               )}
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">{t('child.personalInfo.photoHint')}</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{t('child.personalInfo.photoHint')}</p>
             {photo && (
               <button
                 type="button"
@@ -148,7 +148,7 @@ export function PersonalInfoSection({ childId, data, onChange }: Props) {
                 onClick={() => saveFlag('photo_visible', !photoVisible)}
                 className={cx(
                   'mt-2 flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border transition-colors',
-                  photoVisible ? 'border-green-200 bg-green-50 text-green-700' : 'border-slate-200 bg-slate-50 text-slate-400',
+                  photoVisible ? 'border-green-200 bg-green-50 text-green-700 dark:border-green-900 dark:bg-green-950/40 dark:text-green-400' : 'border-slate-200 bg-slate-50 text-slate-400 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-400',
                 )}
               >
                 <span aria-hidden="true">{photoVisible ? '👁' : '🙈'}</span>

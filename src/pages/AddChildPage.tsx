@@ -38,7 +38,7 @@ export function AddChildPage() {
     <div>
       <PageHeader title={t('child.newChild')} onBack={() => navigate(-1)} />
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-100 p-6 space-y-4">
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-100 p-6 space-y-4 dark:bg-slate-800 dark:border-slate-700">
         <PersonalInfoFields
           values={values}
           onChange={(field, value) => setValues(v => ({ ...v, [field]: value }))}

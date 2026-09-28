@@ -14,8 +14,8 @@ import { cx } from '../../../lib/cx'
 import { LABEL_SM, SELECT_SM } from '../../../lib/styles'
 
 const SEVERITY_CARD = {
-  red: 'bg-red-50 border-red-200 text-red-800',
-  orange: 'bg-orange-50 border-orange-200 text-orange-800',
+  red: 'bg-red-50 border-red-200 text-red-800 dark:bg-red-950/40 dark:border-red-900 dark:text-red-200',
+  orange: 'bg-orange-50 border-orange-200 text-orange-800 dark:bg-orange-950/40 dark:border-orange-900 dark:text-orange-200',
 }
 
 /**
@@ -71,7 +71,7 @@ export function AlertBarSection(props: RepeatableSectionProps) {
       <div className="space-y-3">
         <InlineError message={s.error} />
         {s.sorted.length === 0 && (
-          <p className="text-sm text-slate-400 text-center py-2">{t('child.alerts.noAlerts')}</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-2">{t('child.alerts.noAlerts')}</p>
         )}
 
         <ul className="space-y-3">
@@ -94,7 +94,7 @@ export function AlertBarSection(props: RepeatableSectionProps) {
                         onChange={e => setNoteInput(e.target.value)}
                         placeholder={t('child.alerts.notePlaceholder')}
                         aria-label={`${t('child.alerts.note')}: ${label}`}
-                        className="w-full rounded-lg border border-current/20 bg-white/60 px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                        className="w-full rounded-lg border border-current/20 bg-white/60 dark:bg-black/20 px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-400"
                         autoFocus
                       />
                       <div className="flex gap-2">
@@ -128,7 +128,7 @@ export function AlertBarSection(props: RepeatableSectionProps) {
         </ul>
 
         {s.adding ? (
-          <div className="border border-slate-200 rounded-xl p-3 space-y-3">
+          <div className="border border-slate-200 dark:border-slate-600 rounded-xl p-3 space-y-3">
             <div>
               <label htmlFor={typeSelectId} className={LABEL_SM}>{t('child.alerts.alertType')}</label>
               <select

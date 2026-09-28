@@ -33,11 +33,11 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
     const t = i18n.t.bind(i18n)
 
     return (
-      <div role="alert" className="min-h-screen flex flex-col items-center justify-center px-4 text-center bg-slate-50">
-        <h1 className="text-lg font-semibold text-slate-800 mb-1">
+      <div role="alert" className="min-h-screen flex flex-col items-center justify-center px-4 text-center bg-slate-50 dark:bg-slate-950">
+        <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-1">
           {isChunkError ? t('errors.newVersionTitle') : t('errors.unexpectedTitle')}
         </h1>
-        <p className="text-sm text-slate-500 mb-6">
+        <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
           {isChunkError ? t('errors.newVersionHint') : t('errors.unexpectedHint')}
         </p>
         <button type="button" onClick={() => window.location.reload()} className={`${BTN_PRIMARY} px-6`}>

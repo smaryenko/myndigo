@@ -17,11 +17,11 @@ export function PageHeader({ title, onBack, action }: Props) {
           type="button"
           onClick={onBack}
           aria-label={t('common.back')}
-          className="text-slate-400 hover:text-slate-700 text-sm"
+          className="text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-200 text-sm"
         >
           <span aria-hidden="true" className="rtl:inline-block rtl:rotate-180">←</span>
         </button>
-        <h1 className="text-xl font-bold text-slate-800 truncate">{title}</h1>
+        <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100 truncate">{title}</h1>
       </div>
       {action && <div className="flex-shrink-0">{action}</div>}
     </div>

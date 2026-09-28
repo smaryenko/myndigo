@@ -23,7 +23,7 @@ export function ListSection(props: RepeatableSectionProps) {
       <div className="space-y-3">
         <InlineError message={s.error} />
         {s.sorted.length === 0 && (
-          <p className="text-sm text-slate-400 text-center py-2">{t('child.medical.noneAdded')}</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-2">{t('child.medical.noneAdded')}</p>
         )}
 
         <ul className="space-y-3">
@@ -32,7 +32,7 @@ export function ListSection(props: RepeatableSectionProps) {
               .map(f => ({ key: f.id, text: formatFieldValue(f, entry.values[f.field_key], t) }))
               .filter((l): l is { key: string; text: string } => l.text !== null)
             return (
-              <li key={entry.id} className="border border-slate-100 rounded-xl overflow-hidden">
+              <li key={entry.id} className="border border-slate-100 dark:border-slate-700 rounded-xl overflow-hidden">
                 {s.editingId === entry.id ? (
                   <EntryForm
                     size="sm"
@@ -48,7 +48,7 @@ export function ListSection(props: RepeatableSectionProps) {
                   <div className="flex items-start gap-3 p-3">
                     <div className="flex-1 min-w-0 space-y-1">
                       {lines.map((line, i) => (
-                        <p key={line.key} className={i === 0 ? 'text-sm font-medium text-slate-800' : 'text-xs text-slate-500 whitespace-pre-wrap'}>
+                        <p key={line.key} className={i === 0 ? 'text-sm font-medium text-slate-800 dark:text-slate-100' : 'text-xs text-slate-500 dark:text-slate-400 whitespace-pre-wrap'}>
                           {line.text}
                         </p>
                       ))}

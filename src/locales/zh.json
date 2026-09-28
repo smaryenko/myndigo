@@ -395,6 +395,13 @@
     "memberSince": "加入时间",
     "interfaceLanguage": "界面语言",
     "languageHint": "这设置您的家长门户语言。共享档案的语言按每个孩子单独设置。",
+    "appearance": "外观",
+    "appearanceHint": "选择 Myndigo 的外观。「跟随系统」将采用您的设备设置。",
+    "theme": {
+      "system": "跟随系统",
+      "light": "浅色",
+      "dark": "深色"
+    },
     "notifications": "通知",
     "notifyOnViewLabel": "档案查看提醒",
     "notifyOnViewHint": "当有人扫描孩子的二维码并查看其共享档案时，您将收到电子邮件通知。",

@@ -823,8 +823,8 @@ the developer (or an explicit request) pushes them.
 ## Session update — full code review + fix-everything refactor (Sept 2026)
 
 Supersedes older notes above where they conflict (file structure, RLS model, shared page, i18n).
-Nothing committed — developer commits/pushes. **Manual steps are in DEPLOY.md → "Code-review fixes"
-(re-run schema.sql, one-off cleanup SQL, redeploy all 3 functions BEFORE pushing the frontend).**
+**Committed, pushed to `master`, and deployed** (see "State at end of this session" below).
+Manual DB/function steps were run against the live project this session (verified — see below).
 User decision: **no Storage bucket** — photos stay base64 in `personal_info`, but are resized
 client-side (512px JPEG, EXIF/GPS stripped); legacy large photos auto-shrink when the editor opens.
 
@@ -866,9 +866,46 @@ client-side (512px JPEG, EXIF/GPS stripped); legacy large photos auto-shrink whe
 - Styles: `lib/styles.ts` (+ `lib/cx.ts`); `cn.ts` removed. `ErrorBoundary` handles stale-chunk errors.
 - Tests: vitest **4.1.11** (v5 needs Node 22; local + CI are Node 20). `npm test`; CI runs lint + test.
 
+### State at end of this session (all done)
+- **Committed + pushed to `master`:** `639d19e` (the refactor) and `8839052` (BadgePreviewModal
+  edits + the i18n-check skill/hook under `.kiro/`). Both triggered the Pages deploy.
+- **Live DB migration was run** (re-ran `schema.sql` + the one-off cleanup SQL from DEPLOY.md).
+  Verified via `npm run check:anon`: all six tables return 401 to the anon key. `set_empty_section_hidden`
+  exists (anon call → "permission denied", not "function not found").
+- **All 3 Edge Functions redeployed** before the frontend push; verified the CORS preflight now
+  allows the `authorization` header on `translate` and `log-share-view`.
+- Verified locally: `tsc -b`, `oxlint` (0 warnings), `npm test` (23 pass), `npm run build`,
+  i18n-check (all 11 locales complete), strict type-check of Edge Functions via a temp Deno shim.
+
 ### Not done / follow-ups
-- Generated Supabase types (`supabase gen types`) — do after the schema is applied to the live DB.
-- A DB size constraint on `photo_base64` — add once legacy photos have been shrunk (would block
-  updates of existing oversized rows today).
-- Not verified in a browser or against the live DB by the agent — only tsc, oxlint, vitest, build,
-  i18n-check and a strict type-check of the Edge Functions.
+- Generated Supabase types (`supabase gen types typescript`) — schema is now live, so this can be
+  done next session; then type the client as `createClient<Database>()` and drop the `as X` casts in db.ts.
+- A DB size constraint on `photo_base64` — add once legacy photos have all been shrunk (adding it now
+  would block updates of existing oversized rows).
+- **Not verified by clicking through the deployed site as a user** (agent has no browser): whether the
+  Pages deploy for `8839052` finished, and whether the shared page + language switch render correctly
+  live. Worth a manual pass on a real `/s/<token>` link.
+- Per-field visibility (`field_definitions.can_hide_independently`, `hidden_fields`) is enforced
+  end-to-end (server strips hidden fields) but still has **no editor UI** to toggle it.
+
+
+## Dark theme (parent portal)
+
+- Tailwind `darkMode: 'class'`. The resolved theme is applied by toggling the
+  `dark` class on `<html>`.
+- `src/lib/theme.ts` is the single source: preference is `'system' | 'light' | 'dark'`
+  (default `'system'`), persisted in `localStorage` under `myndigo.theme`.
+  `applyStoredTheme()` runs in `main.tsx` before render (no flash), and
+  `watchSystemTheme()` keeps `'system'` in sync with the OS live.
+- Colours live in `src/lib/styles.ts` — every shared constant now carries its
+  own `dark:` variants, so most of the portal follows the theme from one place.
+  Components with inline slate/white classes got `dark:` variants directly.
+- Account settings has a 3-way **Appearance** picker (System / Light / Dark),
+  next to the language picker.
+- i18n: `account.appearance`, `account.appearanceHint`, `account.theme.{system,light,dark}`
+  added to all 11 locales (i18n-check clean, 330 keys).
+- **Scope is the authenticated portal + auth screens only.** The public
+  **landing page** and the **shared profile page** (`/s/:token`) are deliberately
+  left light — the shared page has its own viewer themes (`sharedThemes.ts`),
+  and the QR code container is forced white so it stays scannable.
+- No DB changes (device-local preference, like the UI language).

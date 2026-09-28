@@ -12,7 +12,7 @@ interface Props {
   itemLabel?: string
 }
 
-const ACTION = 'text-xs text-slate-400 hover:text-indigo-600 disabled:opacity-30'
+const ACTION = 'text-xs text-slate-400 hover:text-indigo-600 disabled:opacity-30 dark:text-slate-500 dark:hover:text-indigo-400'
 
 /**
  * Edit / delete (with inline confirmation) / optional move up & down for
@@ -35,11 +35,11 @@ export function ItemActions({ onEdit, onDelete, onMoveUp, onMoveDown, itemLabel 
             setBusy(true)
             try { await onDelete() } finally { setBusy(false); setConfirming(false) }
           }}
-          className="text-xs font-semibold text-red-600 hover:text-red-700 disabled:opacity-50"
+          className="text-xs font-semibold text-red-600 hover:text-red-700 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
         >
           {t('common.yesDelete')}
         </button>
-        <button type="button" onClick={() => setConfirming(false)} className="text-xs text-slate-400 hover:text-slate-600">
+        <button type="button" onClick={() => setConfirming(false)} className="text-xs text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300">
           {t('common.cancel')}
         </button>
       </span>
@@ -83,7 +83,7 @@ export function ItemActions({ onEdit, onDelete, onMoveUp, onMoveDown, itemLabel 
       <button
         type="button"
         onClick={() => setConfirming(true)}
-        className="text-xs text-slate-400 hover:text-red-500"
+        className="text-xs text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400"
         aria-label={itemLabel ? `${t('common.delete')}: ${itemLabel}` : undefined}
       >
         {t('common.delete')}

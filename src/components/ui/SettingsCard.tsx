@@ -12,7 +12,7 @@ export function SettingsCard({ title, children, className }: Props) {
   return (
     <section className={cx(CARD, className)} aria-label={title}>
       {title && (
-        <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
+        <h2 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">
           {title}
         </h2>
       )}

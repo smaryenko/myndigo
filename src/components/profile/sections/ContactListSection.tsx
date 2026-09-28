@@ -26,7 +26,7 @@ export function ContactListSection(props: RepeatableSectionProps) {
       <div className="space-y-3">
         <InlineError message={s.error} />
         {s.sorted.length === 0 && (
-          <p className="text-sm text-slate-400 text-center py-2">{t('child.contacts.noContacts')}</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-2">{t('child.contacts.noContacts')}</p>
         )}
 
         <ol className="space-y-3">
@@ -37,7 +37,7 @@ export function ContactListSection(props: RepeatableSectionProps) {
               .map(f => formatFieldValue(f, contact.values[f.field_key], t))
               .filter((d): d is string => d !== null)
             return (
-              <li key={contact.id} className="border border-slate-100 rounded-xl overflow-hidden">
+              <li key={contact.id} className="border border-slate-100 dark:border-slate-700 rounded-xl overflow-hidden">
                 {s.editingId === contact.id ? (
                   <EntryForm
                     size="sm"
@@ -52,16 +52,16 @@ export function ContactListSection(props: RepeatableSectionProps) {
                 ) : (
                   <div className="flex items-center gap-3 px-3 py-3">
                     <div
-                      className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 text-sm font-bold text-indigo-600"
+                      className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center flex-shrink-0 text-sm font-bold text-indigo-600 dark:text-indigo-400"
                       aria-hidden="true"
                     >
                       {index + 1}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-slate-800">{name}</p>
-                      {details.map(d => <p key={d} className="text-xs text-slate-500">{d}</p>)}
+                      <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{name}</p>
+                      {details.map(d => <p key={d} className="text-xs text-slate-500 dark:text-slate-400">{d}</p>)}
                       {phone && (
-                        <a href={`tel:${phone}`} className="text-sm text-indigo-600 font-medium mt-0.5 block" dir="ltr">
+                        <a href={`tel:${phone}`} className="text-sm text-indigo-600 dark:text-indigo-400 font-medium mt-0.5 block" dir="ltr">
                           {phone}
                         </a>
                       )}

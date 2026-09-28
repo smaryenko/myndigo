@@ -395,6 +395,13 @@
     "memberSince": "Mitglied seit",
     "interfaceLanguage": "Oberflächensprache",
     "languageHint": "Dies legt die Sprache für Ihr Elternportal fest. Die Sprache des geteilten Profils wird pro Kind eingestellt.",
+    "appearance": "Darstellung",
+    "appearanceHint": "Wählen Sie das Erscheinungsbild von Myndigo. Die Option „System“ folgt Ihren Geräteeinstellungen.",
+    "theme": {
+      "system": "System",
+      "light": "Hell",
+      "dark": "Dunkel"
+    },
     "notifications": "Benachrichtigungen",
     "notifyOnViewLabel": "Benachrichtigungen bei Profilaufrufen",
     "notifyOnViewHint": "Erhalten Sie eine E-Mail, wenn jemand den QR-Code Ihres Kindes scannt und dessen geteiltes Profil aufruft.",

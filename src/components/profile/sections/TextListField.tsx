@@ -32,7 +32,7 @@ export function TextListField({ field, value, onChange }: Props) {
 
   return (
     <fieldset>
-      <legend className="block text-sm font-medium text-slate-700 mb-2">{label}</legend>
+      <legend className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{label}</legend>
       <ul className="space-y-2 mb-2">
         {value.map((item, i) =>
           editingIndex === i ? (
@@ -46,20 +46,20 @@ export function TextListField({ field, value, onChange }: Props) {
                   if (e.key === 'Escape') setEditingIndex(null)
                 }}
                 aria-label={`${t('common.edit')}: ${item}`}
-                className="flex-1 rounded-lg border border-indigo-300 px-2.5 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="flex-1 rounded-lg border border-indigo-300 dark:border-indigo-500 px-2.5 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white text-slate-900 dark:bg-slate-800 dark:text-slate-100"
                 autoFocus
               />
-              <button type="button" onClick={() => handleSaveEdit(i)} className="text-xs text-indigo-600 font-medium">{t('common.save')}</button>
-              <button type="button" onClick={() => setEditingIndex(null)} className="text-xs text-slate-400">{t('common.cancel')}</button>
+              <button type="button" onClick={() => handleSaveEdit(i)} className="text-xs text-indigo-600 dark:text-indigo-400 font-medium">{t('common.save')}</button>
+              <button type="button" onClick={() => setEditingIndex(null)} className="text-xs text-slate-400 dark:text-slate-500">{t('common.cancel')}</button>
             </li>
           ) : (
-            <li key={i} className="flex items-center gap-2 bg-slate-50 rounded-lg px-3 py-2">
-              <span className="flex-1 text-sm text-slate-700">{item}</span>
+            <li key={i} className="flex items-center gap-2 bg-slate-50 dark:bg-slate-900 rounded-lg px-3 py-2">
+              <span className="flex-1 text-sm text-slate-700 dark:text-slate-200">{item}</span>
               <button
                 type="button"
                 onClick={() => { setEditingIndex(i); setEditingText(item) }}
                 aria-label={`${t('common.edit')}: ${item}`}
-                className="text-xs text-slate-400 hover:text-indigo-600"
+                className="text-xs text-slate-400 hover:text-indigo-600 dark:text-slate-500 dark:hover:text-indigo-400"
               >
                 {t('common.edit')}
               </button>
@@ -67,7 +67,7 @@ export function TextListField({ field, value, onChange }: Props) {
                 type="button"
                 onClick={() => onChange(value.filter((_, idx) => idx !== i))}
                 aria-label={`${t('common.delete')}: ${item}`}
-                className="text-xs text-slate-400 hover:text-red-500"
+                className="text-xs text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400"
               >
                 {t('common.delete')}
               </button>
@@ -90,7 +90,7 @@ export function TextListField({ field, value, onChange }: Props) {
           type="button"
           onClick={handleAdd}
           disabled={!draft.trim()}
-          className="px-3 py-2 bg-slate-100 hover:bg-slate-200 disabled:opacity-40 text-slate-700 rounded-xl text-sm font-medium transition-colors"
+          className="px-3 py-2 bg-slate-100 hover:bg-slate-200 disabled:opacity-40 text-slate-700 rounded-xl text-sm font-medium transition-colors dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-200"
         >
           {t('common.add')}
         </button>

@@ -5,6 +5,7 @@ import { useAuth } from '../lib/useAuth'
 import { deleteAccount } from '../lib/db'
 import { toUserMessage } from '../lib/errors'
 import { currentLanguage, setLanguage } from '../lib/i18n'
+import { getThemePreference, setThemePreference, THEME_PREFERENCES } from '../lib/theme'
 import { SUPPORTED_LANGS } from '../lib/languages'
 import { cx } from '../lib/cx'
 import { PILL, PILL_ACTIVE, PILL_INACTIVE } from '../lib/styles'
@@ -19,6 +20,7 @@ export function AccountPage() {
   const navigate = useNavigate()
   const [deleting, setDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
+  const [themePref, setThemePref] = useState(getThemePreference)
   const selectedLang = currentLanguage()
 
   const handleDeleteAccount = async () => {
@@ -36,13 +38,13 @@ export function AccountPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">{t('account.title')}</h1>
+      <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-6">{t('account.title')}</h1>
 
       <SettingsCard title={t('account.sectionHeading')}>
-        <p className="text-sm text-slate-700">
+        <p className="text-sm text-slate-700 dark:text-slate-300">
           <span className="font-medium">{t('account.email')}: </span>{user?.email}
         </p>
-        <p className="text-xs text-slate-400 mt-1">
+        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
           {t('account.memberSince')} {user?.created_at ? new Date(user.created_at).toLocaleDateString(selectedLang) : '—'}
         </p>
       </SettingsCard>
@@ -63,20 +65,41 @@ export function AccountPage() {
             </button>
           ))}
         </div>
-        <p className="text-xs text-slate-400 mt-3">{t('account.languageHint')}</p>
+        <p className="text-xs text-slate-400 dark:text-slate-500 mt-3">{t('account.languageHint')}</p>
+      </SettingsCard>
+
+      <SettingsCard title={t('account.appearance')}>
+        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={t('account.appearance')}>
+          {THEME_PREFERENCES.map(pref => (
+            <button
+              key={pref}
+              type="button"
+              role="radio"
+              aria-checked={themePref === pref}
+              onClick={() => {
+                setThemePreference(pref)
+                setThemePref(pref)
+              }}
+              className={cx(PILL, themePref === pref ? PILL_ACTIVE : PILL_INACTIVE)}
+            >
+              {t(`account.theme.${pref}`)}
+            </button>
+          ))}
+        </div>
+        <p className="text-xs text-slate-400 dark:text-slate-500 mt-3">{t('account.appearanceHint')}</p>
       </SettingsCard>
 
       {/* Notification preferences — not yet user-configurable (upcoming feature). */}
       <SettingsCard title={t('account.notifications')}>
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <p className="text-sm font-medium text-slate-500">{t('account.notifyOnViewLabel')}</p>
-            <p className="text-xs text-slate-400 mt-1">{t('account.notifyOnViewHint')}</p>
-            <p className="text-xs text-indigo-500 mt-1.5 font-medium">{t('account.upcomingFeature')}</p>
+            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{t('account.notifyOnViewLabel')}</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{t('account.notifyOnViewHint')}</p>
+            <p className="text-xs text-indigo-500 dark:text-indigo-400 mt-1.5 font-medium">{t('account.upcomingFeature')}</p>
           </div>
           <ToggleSwitch enabled={false} disabled label={t('account.toggleNotificationsLabel')} />
         </div>
-        <p className="text-xs text-slate-400 mt-4 border-t border-slate-50 pt-3">{t('account.notifyFootnote')}</p>
+        <p className="text-xs text-slate-400 dark:text-slate-500 mt-4 border-t border-slate-50 dark:border-slate-700 pt-3">{t('account.notifyFootnote')}</p>
       </SettingsCard>
 
       <MfaCard />

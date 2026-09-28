@@ -79,7 +79,7 @@ export function SingleEntrySection({ childId, section, fields, entry, onChange }
       <div className="space-y-4">
         <InlineError message={error} />
         {(saving || saved) && !isFreeTextOnly && (
-          <p className="text-xs text-slate-400 text-end" role="status">{saving ? t('common.saving') : t('common.saved')}</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500 text-end" role="status">{saving ? t('common.saving') : t('common.saved')}</p>
         )}
 
         {fields.map(field => {
@@ -97,7 +97,7 @@ export function SingleEntrySection({ childId, section, fields, entry, onChange }
           if (field.field_type === 'select' || field.field_type === 'severity_enum') {
             return (
               <fieldset key={field.id}>
-                <legend className="block text-sm font-medium text-slate-700 mb-2">{t(field.label_key)}</legend>
+                <legend className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{t(field.label_key)}</legend>
                 <div className="flex gap-2 flex-wrap" role="radiogroup" aria-label={t(field.label_key)}>
                   {(field.options ?? []).map(opt => {
                     const selected = values[field.field_key] === opt.value

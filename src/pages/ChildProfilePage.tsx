@@ -53,8 +53,8 @@ function ChildProfilePage({ childId }: { childId: string }) {
   if (error || !profile) {
     return (
       <div className="text-center py-16">
-        <p className="text-red-600 text-sm" role="alert">{userMessage(error, t('errors.profileNotFound'))}</p>
-        <button type="button" onClick={() => navigate('/dashboard')} className="mt-4 text-indigo-600 text-sm hover:underline">
+        <p className="text-red-600 dark:text-red-400 text-sm" role="alert">{userMessage(error, t('errors.profileNotFound'))}</p>
+        <button type="button" onClick={() => navigate('/dashboard')} className="mt-4 text-indigo-600 dark:text-indigo-400 text-sm hover:underline">
           {t('errors.backToDashboard')}
         </button>
       </div>
@@ -71,10 +71,10 @@ function ChildProfilePage({ childId }: { childId: string }) {
         action={
           <Link
             to={`/children/${childId}/share`}
-            className="flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm font-medium px-3 py-1.5 rounded-xl transition-colors"
+            className="flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm font-medium px-3 py-1.5 rounded-xl transition-colors dark:bg-indigo-950/50 dark:hover:bg-indigo-900/50 dark:text-indigo-300"
           >
             <span
-              className={cx('w-2 h-2 rounded-full flex-shrink-0', profile.child.sharing_enabled ? 'bg-green-500' : 'bg-slate-400')}
+              className={cx('w-2 h-2 rounded-full flex-shrink-0', profile.child.sharing_enabled ? 'bg-green-500' : 'bg-slate-400 dark:bg-slate-500')}
               aria-hidden="true"
             />
             <span aria-hidden="true">🔗</span> {t('share.title')}

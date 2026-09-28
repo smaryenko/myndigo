@@ -221,15 +221,15 @@ export function BadgePreviewModal({ childName, shareUrl, onClose }: BadgePreview
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
       {/* Modal shell */}
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm flex flex-col overflow-hidden">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-sm flex flex-col overflow-hidden">
         {/* Modal header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-          <h2 className="font-semibold text-slate-800">{t('share.printBadgePreview')}</h2>
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+          <h2 className="font-semibold text-slate-800 dark:text-slate-100">{t('share.printBadgePreview')}</h2>
           <button
             type="button"
             onClick={onClose}
             aria-label={t('share.printBadgeClose')}
-            className="text-slate-400 hover:text-slate-600 transition-colors"
+            className="text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -238,7 +238,7 @@ export function BadgePreviewModal({ childName, shareUrl, onClose }: BadgePreview
         </div>
 
         {/* Badge preview */}
-        <div className="flex items-center justify-center bg-slate-100 py-8 px-4">
+        <div className="flex items-center justify-center bg-slate-100 dark:bg-slate-900 py-8 px-4">
           <div
             className="badge-print-area relative overflow-hidden rounded-xl shadow-lg select-none"
             style={{ width: BADGE_W_PX, height: BADGE_H_PX }}
@@ -302,11 +302,11 @@ export function BadgePreviewModal({ childName, shareUrl, onClose }: BadgePreview
         </div>
 
         {/* Actions */}
-        <div className="flex gap-3 px-5 py-4 border-t border-slate-100">
+        <div className="flex gap-3 px-5 py-4 border-t border-slate-100 dark:border-slate-700">
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+            className="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
           >
             {t('share.printBadgeClose')}
           </button>

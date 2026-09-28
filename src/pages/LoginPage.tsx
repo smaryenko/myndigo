@@ -16,7 +16,7 @@ export function LoginPage() {
   const [submitting, setSubmitting] = useState(false)
   const [successMsg, setSuccessMsg] = useState<string | null>(null)
 
-  if (loading) return <LoadingSpinner variant="fullPage" className="bg-slate-50" />
+  if (loading) return <LoadingSpinner variant="fullPage" className="bg-slate-50 dark:bg-slate-950" />
 
   if (session) {
     return <Navigate to="/dashboard" replace />
@@ -44,40 +44,40 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-sm">
         {/* Logo / brand */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-indigo-600 tracking-tight">
+          <h1 className="text-3xl font-bold text-indigo-600 dark:text-indigo-400 tracking-tight">
             {t('common.appName')}
           </h1>
-          <p className="mt-2 text-slate-500 text-sm">
+          <p className="mt-2 text-slate-500 dark:text-slate-400 text-sm">
             {mode === 'signin' ? t('auth.tagline') : t('auth.signUpTagline')}
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 space-y-4">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 space-y-4 dark:bg-slate-800 dark:border-slate-700">
           {mode === 'signup' && (
-            <div className="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3 text-center">
-              <p className="text-sm font-semibold text-indigo-700">{t('auth.signUpTitle')}</p>
-              <p className="text-xs text-indigo-500 mt-0.5">{t('auth.noAccount').replace('?', '')} — {t('auth.signUp')}</p>
+            <div className="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3 text-center dark:bg-indigo-950/40 dark:border-indigo-900">
+              <p className="text-sm font-semibold text-indigo-700 dark:text-indigo-300">{t('auth.signUpTitle')}</p>
+              <p className="text-xs text-indigo-500 dark:text-indigo-400 mt-0.5">{t('auth.noAccount').replace('?', '')} — {t('auth.signUp')}</p>
             </div>
           )}
           {/* Google OAuth */}
           <button
             type="button"
             onClick={() => signInWithGoogle().catch(err => setError(toUserMessage(err, t('common.error'))))}
-            className="w-full flex items-center justify-center gap-3 border border-slate-200 rounded-xl py-2.5 px-4 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+            className="w-full flex items-center justify-center gap-3 border border-slate-200 rounded-xl py-2.5 px-4 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700"
           >
             <GoogleIcon />
             {mode === 'signin' ? t('auth.signInWithGoogle') : t('auth.signUpWithGoogle')}
           </button>
 
           {/* Divider */}
-          <div className="flex items-center gap-3 text-slate-400 text-xs">
-            <div className="flex-1 h-px bg-slate-100" />
+          <div className="flex items-center gap-3 text-slate-400 dark:text-slate-500 text-xs">
+            <div className="flex-1 h-px bg-slate-100 dark:bg-slate-700" />
             {t('auth.orContinueWith')}
-            <div className="flex-1 h-px bg-slate-100" />
+            <div className="flex-1 h-px bg-slate-100 dark:bg-slate-700" />
           </div>
 
           {/* Email / password form */}
@@ -113,13 +113,13 @@ export function LoginPage() {
             </div>
 
             {error && (
-              <p className="text-red-600 text-sm" role="alert">
+              <p className="text-red-600 dark:text-red-400 text-sm" role="alert">
                 {error}
               </p>
             )}
 
             {successMsg && (
-              <p className="text-green-600 text-sm" role="status">
+              <p className="text-green-600 dark:text-green-400 text-sm" role="status">
                 {successMsg}
               </p>
             )}
@@ -138,12 +138,12 @@ export function LoginPage() {
           </form>
 
           {/* Toggle signin / signup */}
-          <p className="text-center text-sm text-slate-500">
+          <p className="text-center text-sm text-slate-500 dark:text-slate-400">
             {mode === 'signin' ? t('auth.noAccount') : t('auth.hasAccount')}{' '}
             <button
               type="button"
               onClick={() => { setMode(m => m === 'signin' ? 'signup' : 'signin'); setError(null) }}
-              className="text-indigo-600 font-medium hover:underline"
+              className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline"
             >
               {mode === 'signin' ? t('auth.signUp') : t('auth.signIn')}
             </button>

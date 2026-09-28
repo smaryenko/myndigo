@@ -35,13 +35,13 @@ export function ThemePicker({ value, onChange, labelId }: Props) {
             onClick={() => onChange(key)}
             className={cx(
               'relative flex flex-col items-center gap-1.5 rounded-2xl border-2 p-3 transition-all text-center',
-              active ? `${theme.border} ${theme.bg} shadow-sm` : 'border-slate-100 bg-white hover:border-slate-200',
+              active ? `${theme.border} ${theme.bg} shadow-sm` : 'border-slate-100 bg-white hover:border-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-slate-600',
             )}
           >
             <div className={cx('w-full h-1.5 rounded-full opacity-70', theme.accent)} aria-hidden="true" />
             <span className="text-lg leading-none" aria-hidden="true">{theme.emoji}</span>
-            <span className="text-xs font-semibold text-slate-800 leading-tight">{t(`share.theme.${key}`)}</span>
-            <span className="text-[10px] text-slate-400 leading-tight">{t(`share.themeDesc.${key}`)}</span>
+            <span className={cx('text-xs font-semibold leading-tight', active ? 'text-slate-800' : 'text-slate-800 dark:text-slate-100')}>{t(`share.theme.${key}`)}</span>
+            <span className="text-[10px] text-slate-400 dark:text-slate-500 leading-tight">{t(`share.themeDesc.${key}`)}</span>
             {active && (
               <span className="absolute top-1.5 end-1.5 w-5 h-5 rounded-full bg-green-500 shadow flex items-center justify-center" aria-hidden="true">
                 <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

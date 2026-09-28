@@ -395,6 +395,13 @@
     "memberSince": "Membro desde",
     "interfaceLanguage": "Idioma da interface",
     "languageHint": "Isto define o idioma do seu portal para pais. O idioma do perfil partilhado é definido por criança.",
+    "appearance": "Aparência",
+    "appearanceHint": "Escolha o aspeto do Myndigo. A opção Sistema segue as definições do seu dispositivo.",
+    "theme": {
+      "system": "Sistema",
+      "light": "Claro",
+      "dark": "Escuro"
+    },
     "notifications": "Notificações",
     "notifyOnViewLabel": "Alertas de visualização do perfil",
     "notifyOnViewHint": "Receba um e-mail quando alguém digitalizar o código QR do seu filho e visualizar o seu perfil partilhado.",

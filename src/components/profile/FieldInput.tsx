@@ -46,7 +46,7 @@ export function FieldInput({ field, value, onChange, autoFocus, labelMode = 'sr-
           onChange={e => onChange(e.target.checked)}
           className="w-4 h-4 accent-indigo-600"
         />
-        <span className="text-sm text-slate-700">{label}</span>
+        <span className="text-sm text-slate-700 dark:text-slate-300">{label}</span>
       </label>
     )
   }

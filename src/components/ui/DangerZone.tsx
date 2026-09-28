@@ -37,11 +37,11 @@ export function DangerZone({
   const panelId = useId()
 
   return (
-    <div className={cx('rounded-2xl border-2 border-red-200 overflow-hidden', className)}>
+    <div className={cx('rounded-2xl border-2 border-red-200 dark:border-red-900 overflow-hidden', className)}>
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between px-5 py-4 bg-red-50 hover:bg-red-100 transition-colors text-left"
+        className="w-full flex items-center justify-between px-5 py-4 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-950/60 transition-colors text-left"
         aria-expanded={open}
         aria-controls={panelId}
       >
@@ -49,7 +49,7 @@ export function DangerZone({
           <svg className="w-4 h-4 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
           </svg>
-          <span className="text-sm font-semibold text-red-700">{label}</span>
+          <span className="text-sm font-semibold text-red-700 dark:text-red-300">{label}</span>
         </div>
         <svg
           className={cx('w-4 h-4 text-red-400 transition-transform', open && 'rotate-180')}
@@ -63,10 +63,10 @@ export function DangerZone({
       </button>
 
       {open && (
-        <div id={panelId} className="px-5 py-4 bg-white">
+        <div id={panelId} className="px-5 py-4 bg-white dark:bg-slate-800">
           <InlineError message={error} size="md" className="mb-3" />
-          <p className="text-sm font-semibold text-slate-800 mb-0.5">{actionLabel}</p>
-          <p className="text-sm text-slate-500 mb-3">{description}</p>
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-0.5">{actionLabel}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">{description}</p>
           <ConfirmAction
             triggerLabel={actionLabel}
             warningMessage={description}

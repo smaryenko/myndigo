@@ -69,7 +69,7 @@ export function QrCard({ shareUrl, childName, sharingEnabled }: Props) {
   return (
     <SettingsCard title={t('share.qrCode')} className="mb-4">
       <div className="flex flex-col items-center gap-4">
-        <div ref={qrRef} className={cx('p-4 rounded-2xl border-2', sharingEnabled ? 'border-indigo-100' : 'border-slate-100 opacity-50')}>
+        <div ref={qrRef} className={cx('p-4 rounded-2xl border-2 bg-white', sharingEnabled ? 'border-indigo-100 dark:border-indigo-900' : 'border-slate-100 dark:border-slate-700 opacity-50')}>
           <QRCodeSVG value={shareUrl} size={180} level="M" marginSize={0} title={t('share.qrCode')} />
         </div>
         {!sharingEnabled && <p className="text-xs text-amber-600 text-center">{t('share.qrInactiveHint')}</p>}
@@ -83,13 +83,13 @@ export function QrCard({ shareUrl, childName, sharingEnabled }: Props) {
             aria-label={t('share.shareLink')}
             dir="ltr"
             onFocus={e => e.target.select()}
-            className="flex-1 min-w-0 rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-500 bg-slate-50 focus:outline-none"
+            className="flex-1 min-w-0 rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-500 bg-slate-50 focus:outline-none dark:border-slate-600 dark:bg-slate-900 dark:text-slate-400"
           />
           <a
             href={shareUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-medium rounded-xl transition-colors whitespace-nowrap shrink-0"
+            className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-medium rounded-xl transition-colors whitespace-nowrap shrink-0 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-200"
             aria-label={t('share.openInNewTab')}
             title={t('share.openInNewTab')}
           >
@@ -108,7 +108,7 @@ export function QrCard({ shareUrl, childName, sharingEnabled }: Props) {
         <button
           type="button"
           onClick={() => downloadQrSvg(qrRef.current, `myndigo-qr-${fileSlug}.svg`)}
-          className="w-full flex items-center justify-center gap-2 text-sm text-slate-600 border border-slate-200 rounded-xl py-2 hover:bg-slate-50 transition-colors"
+          className="w-full flex items-center justify-center gap-2 text-sm text-slate-600 border border-slate-200 rounded-xl py-2 hover:bg-slate-50 transition-colors dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />

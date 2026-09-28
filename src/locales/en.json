@@ -395,6 +395,13 @@
     "memberSince": "Member since",
     "interfaceLanguage": "Interface language",
     "languageHint": "This sets the language for your parent portal. The shared profile language is set per child.",
+    "appearance": "Appearance",
+    "appearanceHint": "Choose how Myndigo looks. System follows your device settings.",
+    "theme": {
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    },
     "notifications": "Notifications",
     "notifyOnViewLabel": "Profile view alerts",
     "notifyOnViewHint": "Get an email when someone scans your child's QR code and views their shared profile.",

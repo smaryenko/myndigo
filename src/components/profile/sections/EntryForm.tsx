@@ -20,7 +20,7 @@ interface Props {
 export function EntryForm({ fields, values, onChange, onConfirm, onCancel, saving, disabled, size = 'md' }: Props) {
   const editable = fields.filter(f => isDisplayable(f) && f.field_type !== 'text_list')
   return (
-    <div className={cx('space-y-2', size === 'md' ? 'border border-slate-200 rounded-xl p-3' : 'p-3')}>
+    <div className={cx('space-y-2', size === 'md' ? 'border border-slate-200 dark:border-slate-600 rounded-xl p-3' : 'p-3')}>
       {editable.map((f, i) => (
         <FieldInput
           key={f.id}

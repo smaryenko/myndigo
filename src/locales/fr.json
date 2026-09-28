@@ -395,6 +395,13 @@
     "memberSince": "Membre depuis",
     "interfaceLanguage": "Langue de l'interface",
     "languageHint": "Ceci définit la langue de votre portail parent. La langue du profil partagé est définie par enfant.",
+    "appearance": "Apparence",
+    "appearanceHint": "Choisissez l'apparence de Myndigo. L'option Système suit les réglages de votre appareil.",
+    "theme": {
+      "system": "Système",
+      "light": "Clair",
+      "dark": "Sombre"
+    },
     "notifications": "Notifications",
     "notifyOnViewLabel": "Alertes de consultation du profil",
     "notifyOnViewHint": "Recevez un e-mail lorsque quelqu'un scanne le code QR de votre enfant et consulte son profil partagé.",

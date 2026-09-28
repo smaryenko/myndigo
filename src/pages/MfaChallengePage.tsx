@@ -55,21 +55,21 @@ export function MfaChallengePage() {
     }
   }
 
-  if (!factorId) return <LoadingSpinner variant="fullPage" className="bg-slate-50" />
+  if (!factorId) return <LoadingSpinner variant="fullPage" className="bg-slate-50 dark:bg-slate-950" />
 
   return (
-    <main className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
-      <form onSubmit={handleVerify} className="w-full max-w-sm bg-white rounded-2xl border border-slate-100 p-8 shadow-sm">
+    <main className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center px-4">
+      <form onSubmit={handleVerify} className="w-full max-w-sm bg-white rounded-2xl border border-slate-100 p-8 shadow-sm dark:bg-slate-800 dark:border-slate-700">
         <div className="flex justify-center mb-5">
-          <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center">
-            <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+          <div className="w-12 h-12 rounded-full bg-indigo-50 dark:bg-indigo-950/50 flex items-center justify-center">
+            <svg className="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
         </div>
 
-        <h1 className="text-xl font-bold text-slate-800 text-center mb-2">{t('account.mfaChallengeTitle')}</h1>
-        <p id="mfa-hint" className="text-sm text-slate-500 text-center mb-6">{t('account.mfaChallengeHint')}</p>
+        <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100 text-center mb-2">{t('account.mfaChallengeTitle')}</h1>
+        <p id="mfa-hint" className="text-sm text-slate-500 dark:text-slate-400 text-center mb-6">{t('account.mfaChallengeHint')}</p>
 
         <input
           type="text"
@@ -84,7 +84,7 @@ export function MfaChallengePage() {
           placeholder="000000"
           autoFocus
           dir="ltr"
-          className="w-full rounded-xl border border-slate-200 px-3 py-3 text-2xl text-center tracking-[0.5em] font-mono focus:outline-none focus:ring-2 focus:ring-indigo-400 mb-3"
+          className="w-full rounded-xl border border-slate-200 px-3 py-3 text-2xl text-center tracking-[0.5em] font-mono focus:outline-none focus:ring-2 focus:ring-indigo-400 mb-3 bg-white text-slate-900 placeholder:text-slate-400 dark:bg-slate-900 dark:text-slate-100 dark:border-slate-600 dark:placeholder:text-slate-600 dark:focus:ring-indigo-500"
           aria-label={t('account.mfaEnterCode')}
           aria-describedby="mfa-hint"
         />
@@ -98,7 +98,7 @@ export function MfaChallengePage() {
         <button
           type="button"
           onClick={() => signOut().then(() => navigate('/login', { replace: true }))}
-          className="w-full mt-3 text-sm text-slate-400 hover:text-slate-600 transition-colors"
+          className="w-full mt-3 text-sm text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors"
         >
           {t('auth.signOut')}
         </button>

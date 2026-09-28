@@ -92,10 +92,10 @@ export function ShareManagementPage() {
       <SettingsCard className="mb-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-semibold text-slate-800">
+            <p className="font-semibold text-slate-800 dark:text-slate-100">
               {child.sharing_enabled ? t('share.sharingOn') : t('share.sharingOff')}
             </p>
-            <p className="text-sm text-slate-500 mt-0.5">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
               {child.sharing_enabled ? t('share.sharingOnHint') : t('share.sharingOffHint')}
             </p>
           </div>
@@ -107,8 +107,8 @@ export function ShareManagementPage() {
           />
         </div>
 
-        <div className="mt-4 pt-4 border-t border-slate-50">
-          <label htmlFor={langSelectId} className="block text-sm font-medium text-slate-700 mb-2">
+        <div className="mt-4 pt-4 border-t border-slate-50 dark:border-slate-700">
+          <label htmlFor={langSelectId} className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
             {t('share.defaultLanguage')}
           </label>
           <select
@@ -125,11 +125,11 @@ export function ShareManagementPage() {
               <option key={lang.code} value={lang.code}>{lang.short} — {lang.label}</option>
             ))}
           </select>
-          <p id={`${langSelectId}-hint`} className="text-xs text-slate-400 mt-1.5">{t('share.defaultLanguageHint')}</p>
+          <p id={`${langSelectId}-hint`} className="text-xs text-slate-400 dark:text-slate-500 mt-1.5">{t('share.defaultLanguageHint')}</p>
         </div>
 
-        <div className="mt-4 pt-4 border-t border-slate-50">
-          <p id={themeLabelId} className="block text-sm font-medium text-slate-700 mb-3">{t('share.themeLabel')}</p>
+        <div className="mt-4 pt-4 border-t border-slate-50 dark:border-slate-700">
+          <p id={themeLabelId} className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">{t('share.themeLabel')}</p>
           <ThemePicker
             labelId={themeLabelId}
             value={child.share_theme}

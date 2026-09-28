@@ -395,6 +395,13 @@
     "memberSince": "登録日",
     "interfaceLanguage": "インターフェース言語",
     "languageHint": "保護者ポータルの言語を設定します。共有プロフィールの言語はお子さまごとに設定します。",
+    "appearance": "外観",
+    "appearanceHint": "Myndigoの表示を選択します。「システム」はお使いのデバイスの設定に従います。",
+    "theme": {
+      "system": "システム",
+      "light": "ライト",
+      "dark": "ダーク"
+    },
     "notifications": "通知",
     "notifyOnViewLabel": "プロフィール閲覧アラート",
     "notifyOnViewHint": "誰かがお子さまの QR コードをスキャンして共有プロフィールを閲覧したときにメールで通知を受け取ります。",

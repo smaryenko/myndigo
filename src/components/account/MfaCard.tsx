@@ -70,9 +70,9 @@ export function MfaCard() {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <span className="w-2 h-2 rounded-full bg-green-500 inline-block" aria-hidden="true" />
-            <span className="text-sm font-medium text-green-700">{t('account.mfaEnabled')}</span>
+            <span className="text-sm font-medium text-green-700 dark:text-green-400">{t('account.mfaEnabled')}</span>
           </div>
-          <p className="text-sm text-slate-500 mb-3">{t('account.mfaProtected')}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">{t('account.mfaProtected')}</p>
           <InlineError message={error} size="md" className="mb-2" />
           <ConfirmAction
             triggerLabel={t('account.mfaDisable')}
@@ -87,16 +87,16 @@ export function MfaCard() {
 
       {state.kind === 'enrolling' && (
         <div className="space-y-4">
-          <p className="text-sm text-slate-600">{t('account.mfaScanQr')}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-300">{t('account.mfaScanQr')}</p>
           <div className="flex justify-center">
-            <img src={state.enrollment.qrCode} alt={t('common.qrCodeAlt')} className="w-40 h-40 rounded-xl border border-slate-200" />
+            <img src={state.enrollment.qrCode} alt={t('common.qrCodeAlt')} className="w-40 h-40 rounded-xl border border-slate-200 dark:border-slate-600 bg-white" />
           </div>
-          <div className="bg-slate-50 rounded-xl px-3 py-2">
-            <p className="text-xs text-slate-500 mb-1">{t('account.mfaOrManual')}</p>
-            <p className="font-mono text-sm text-slate-800 break-all" dir="ltr">{state.enrollment.secret}</p>
+          <div className="bg-slate-50 dark:bg-slate-900 rounded-xl px-3 py-2">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{t('account.mfaOrManual')}</p>
+            <p className="font-mono text-sm text-slate-800 dark:text-slate-100 break-all" dir="ltr">{state.enrollment.secret}</p>
           </div>
           <div>
-            <label htmlFor={codeId} className="block text-sm font-medium text-slate-700 mb-1">{t('account.mfaEnterCode')}</label>
+            <label htmlFor={codeId} className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{t('account.mfaEnterCode')}</label>
             <input
               id={codeId}
               type="text"
@@ -107,7 +107,7 @@ export function MfaCard() {
               onChange={e => setCode(e.target.value.replace(/\D/g, ''))}
               placeholder="000000"
               dir="ltr"
-              className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-center tracking-widest font-mono focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-center tracking-widest font-mono focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white text-slate-900 placeholder:text-slate-400 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-600 dark:placeholder:text-slate-500 dark:focus:ring-indigo-500"
             />
           </div>
           <InlineError message={error} size="md" />
@@ -134,10 +134,10 @@ export function MfaCard() {
       {state.kind === 'disabled' && (
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <span className="w-2 h-2 rounded-full bg-slate-300 inline-block" aria-hidden="true" />
-            <span className="text-sm text-slate-500">{t('account.mfaDisabled')}</span>
+            <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-600 inline-block" aria-hidden="true" />
+            <span className="text-sm text-slate-500 dark:text-slate-400">{t('account.mfaDisabled')}</span>
           </div>
-          <p className="text-sm text-slate-500 mb-3">{t('account.mfaSecurityHint')}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">{t('account.mfaSecurityHint')}</p>
           <InlineError message={error} size="md" className="mb-2" />
           <button type="button" onClick={startEnroll} disabled={busy} className={`px-4 ${BTN_PRIMARY}`}>
             {busy ? t('account.mfaSettingUp') : t('account.setupMfa')}

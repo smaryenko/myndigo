@@ -31,11 +31,11 @@ export function ProtectedRoute() {
     return () => { cancelled = true }
   }, [loading, userId])
 
-  if (loading) return <LoadingSpinner variant="fullPage" className="bg-slate-50" />
+  if (loading) return <LoadingSpinner variant="fullPage" className="bg-slate-50 dark:bg-slate-950" />
   if (!userId) return <Navigate to="/login" replace />
 
   const status: AalStatus = aal.userId === userId ? aal.status : 'loading'
-  if (status === 'loading') return <LoadingSpinner variant="fullPage" className="bg-slate-50" />
+  if (status === 'loading') return <LoadingSpinner variant="fullPage" className="bg-slate-50 dark:bg-slate-950" />
   if (status === 'needs-mfa') return <Navigate to="/mfa-challenge" replace state={{ from: location.pathname }} />
   if (status === 'error') return <Navigate to="/login" replace />
 

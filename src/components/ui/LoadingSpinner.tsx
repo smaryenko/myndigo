@@ -32,7 +32,7 @@ export function LoadingSpinner({ variant = 'page', className }: Props) {
 
   if (variant === 'fullPage') {
     return (
-      <div className={cx('min-h-screen flex items-center justify-center', className ?? 'bg-white')}>
+      <div className={cx('min-h-screen flex items-center justify-center', className ?? 'bg-white dark:bg-slate-950')}>
         {spinner}
       </div>
     )
