@@ -817,3 +817,58 @@ the developer (or an explicit request) pushes them.
   correctly after deploy, whether the Ukrainian label fix rendered correctly on the
   live shared page. These were verified via `npm run build`/`npm run lint` locally
   only, plus the user's own testing feedback during the session.
+
+---
+
+## Session update — full code review + fix-everything refactor (Sept 2026)
+
+Supersedes older notes above where they conflict (file structure, RLS model, shared page, i18n).
+Nothing committed — developer commits/pushes. **Manual steps are in DEPLOY.md → "Code-review fixes"
+(re-run schema.sql, one-off cleanup SQL, redeploy all 3 functions BEFORE pushing the frontend).**
+User decision: **no Storage bucket** — photos stay base64 in `personal_info`, but are resized
+client-side (512px JPEG, EXIF/GPS stripped); legacy large photos auto-shrink when the editor opens.
+
+### Security / DB (schema.sql)
+- **Critical fix:** removed all anon/public read policies + anon grants on children, personal_info,
+  profile_entries, content_translations (anyone with the anon key could list every shared child,
+  token, photo and hidden field). Only anon read path = `get_shared_profile(p_token)`.
+  `child_is_shared()`, `auth_uid()`, `log_share_view()` dropped. `npm run check:anon` verifies.
+- `get_shared_profile` now also returns `sections` (+ embedded `fields`) and omits personal info
+  when its section is hidden. `search_path = ''` on security-definer functions.
+- New RPCs: `create_child(p_name, p_date_of_birth, p_pronouns)` (atomic child + personal_info),
+  `set_empty_section_hidden(...)` (atomic array update).
+- `section_definitions.share_label_key` / `share_group_label_key` (shared-page titles; medical group).
+- Translation cache: ONE field-path format everywhere `{section_key}.{entry_id}.{field_key}[.{i}]`
+  (`supabase/functions/_shared/fieldPath.ts`, imported by frontend too); trigger invalidates only
+  the edited/deleted entry and only when `values` change. Alert `label` is translatable and only
+  stored for custom alerts.
+
+### Edge Functions
+- `supabase/functions/_shared/{http,rest,fieldPath,languages}.ts`; all functions plain fetch (no
+  supabase-js). CORS allows `authorization` (needed by `supabase.functions.invoke`).
+- translate: skips hidden sections (previously translated + returned hidden content), upserts cache
+  with proper `on_conflict`. log-share-view: one call per view (was 2 when GPS granted), `EdgeRuntime.waitUntil`
+  for email, geolocation via HTTPS `ipwho.is` (free 1,000/day), coordinate validation.
+
+### Frontend architecture
+- Error convention (`lib/errors.ts`): data/auth functions throw; only `UserFacingError` text is shown;
+  `toUserMessage(err, fallback)` in catch blocks, `<InlineError>` for display.
+- `lib/db.ts` is the only backend access (incl. Edge Functions via `functions.invoke`).
+- Auth: `lib/auth.tsx` (provider, memoised) + `lib/useAuth.ts` (hook); MFA in `lib/mfa.ts`.
+- Hooks: `useAsync(fn, key)` (stale-response-safe loading), `useSaveState` (has `error`).
+- Editor: `profile/useRepeatableSection` shared by `sections/{ListSection,ContactListSection,AlertBarSection}`;
+  `SingleEntrySection` serializes saves (fixed duplicate-row race); contacts reorderable; deletes confirm.
+- Shared page: `components/shared/*` — featured layouts (alert_bar, contact_list, triggers, communication)
+  + generic definition-driven `SectionBody` for every other section (new sections/fields appear automatically).
+- i18n: detected language is actually loaded before first render (`i18nReady`), choice persisted
+  (`myndigo.lang`, only on explicit choice — shared page doesn't overwrite it), `<html dir/lang>` set
+  globally (Arabic RTL everywhere). Languages single source: `_shared/languages.ts`.
+- Styles: `lib/styles.ts` (+ `lib/cx.ts`); `cn.ts` removed. `ErrorBoundary` handles stale-chunk errors.
+- Tests: vitest **4.1.11** (v5 needs Node 22; local + CI are Node 20). `npm test`; CI runs lint + test.
+
+### Not done / follow-ups
+- Generated Supabase types (`supabase gen types`) — do after the schema is applied to the live DB.
+- A DB size constraint on `photo_base64` — add once legacy photos have been shrunk (would block
+  updates of existing oversized rows today).
+- Not verified in a browser or against the live DB by the agent — only tsc, oxlint, vitest, build,
+  i18n-check and a strict type-check of the Edge Functions.

@@ -1,222 +1,164 @@
+// ============================================================
+// Data layer — every Supabase query, RPC and Edge Function call.
+// Components never talk to `supabase` directly.
+//
+// Convention (see errors.ts): every function throws on failure.
+// Authorization is enforced by RLS / security-definer functions in
+// schema.sql; filters here only scope queries.
+// ============================================================
+
 import { supabase } from './supabase'
 import type {
   ChildRow,
   ChildProfile,
-  PersonalInfoRow,
-  SectionDefinition,
+  ChildSummary,
+  EntryValues,
   FieldDefinition,
+  PersonalInfoRow,
   ProfileEntryRow,
-  SharedProfile,
+  SectionDefinition,
   ShareAuditLogRow,
+  ShareManagementData,
+  SharedProfile,
 } from './types'
 
 // ============================================================
 // CHILDREN
 // ============================================================
 
-/** Fetch all children for the current user (summary for dashboard) */
-export async function getChildren(): Promise<(ChildRow & { name: string; photo_base64: string | null })[]> {
+/** All children for the current user, with name + photo for the dashboard. */
+export async function getChildren(): Promise<ChildSummary[]> {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return []
 
-  const { data: children, error } = await supabase
+  const { data, error } = await supabase
     .from('children')
-    .select('*')
+    .select('*, personal_info(name, photo_base64)')
     .eq('user_id', user.id)
     .order('created_at', { ascending: true })
-
-  if (error) throw error
-  if (!children?.length) return []
-
-  // Fetch names in one query
-  const ids = children.map(c => c.id)
-  const { data: infos, error: infoError } = await supabase
-    .from('personal_info')
-    .select('child_id, name, photo_base64')
-    .in('child_id', ids)
-
-  if (infoError) throw infoError
-
-  const infoMap = Object.fromEntries((infos ?? []).map(i => [i.child_id, i]))
-
-  return children.map(c => ({
-    ...c,
-    name: infoMap[c.id]?.name ?? 'Unnamed',
-    photo_base64: infoMap[c.id]?.photo_base64 ?? null,
-  }))
-}
-
-/** Create a new child record and seed empty sub-records */
-export async function createChild(): Promise<ChildRow> {
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('Not authenticated')
-
-  const { data: child, error } = await supabase
-    .from('children')
-    .insert({ user_id: user.id })
-    .select()
-    .single()
-
   if (error) throw error
 
-  // Seed empty personal_info row so we can always upsert rather than insert/update.
-  // Single-entry dynamic sections (communication, behavioral_notes, education) are
-  // created on first save instead — see upsertProfileEntry's insert-if-missing logic.
-  await supabase.from('personal_info').insert({ child_id: child.id, name: '' })
-
-  return child
+  return (data ?? []).map(({ personal_info, ...child }) => {
+    const info = firstOrNull(personal_info as Pick<PersonalInfoRow, 'name' | 'photo_base64'> | Pick<PersonalInfoRow, 'name' | 'photo_base64'>[] | null)
+    return {
+      ...(child as ChildRow),
+      name: info?.name ?? '',
+      photo_base64: info?.photo_base64 ?? null,
+    }
+  })
 }
 
-/** Delete a child and all related data (cascade handles sub-records) */
+/**
+ * Create a child and its personal_info row in one transaction
+ * (create_child RPC) — no orphan child if the second insert fails.
+ */
+export async function createChild(info: { name: string; dateOfBirth: string | null; pronouns: string | null }): Promise<ChildRow> {
+  const { data, error } = await supabase.rpc('create_child', {
+    p_name: info.name,
+    p_date_of_birth: info.dateOfBirth,
+    p_pronouns: info.pronouns,
+  })
+  if (error) throw error
+  return data as ChildRow
+}
+
+/** Delete a child and all related data (FK cascade handles sub-records). */
 export async function deleteChild(childId: string): Promise<void> {
   const { error } = await supabase.from('children').delete().eq('id', childId)
   if (error) throw error
 }
 
-/** Toggle sharing on/off */
-export async function setChildSharing(childId: string, enabled: boolean): Promise<void> {
-  const { error } = await supabase
-    .from('children')
-    .update({ sharing_enabled: enabled })
-    .eq('id', childId)
+async function updateChild(childId: string, patch: Partial<Pick<ChildRow, 'sharing_enabled' | 'share_language' | 'share_theme'>>): Promise<void> {
+  const { error } = await supabase.from('children').update(patch).eq('id', childId)
   if (error) throw error
 }
 
-/** Regenerate share token */
+export const setChildSharing = (childId: string, enabled: boolean) => updateChild(childId, { sharing_enabled: enabled })
+export const setChildShareLanguage = (childId: string, lang: string) => updateChild(childId, { share_language: lang })
+export const setChildShareTheme = (childId: string, theme: string) => updateChild(childId, { share_theme: theme })
+
+/** Regenerate the share token — old QR codes / NFC chips stop working. */
 export async function regenerateShareToken(childId: string): Promise<string> {
   const { data, error } = await supabase.rpc('regenerate_share_token', { p_child_id: childId })
   if (error) throw error
   return data as string
 }
 
-/** Change the default viewer language for the shared card */
-export async function setChildShareLanguage(childId: string, lang: string): Promise<void> {
-  const { error } = await supabase
-    .from('children')
-    .update({ share_language: lang })
-    .eq('id', childId)
-  if (error) throw error
-}
-
-/** Change the visual theme used on the shared card */
-export async function setChildShareTheme(childId: string, theme: string): Promise<void> {
-  const { error } = await supabase
-    .from('children')
-    .update({ share_theme: theme })
-    .eq('id', childId)
-  if (error) throw error
-}
-
 /**
- * Set whether a repeatable section (triggers, contacts, medications, etc.)
- * should be treated as hidden while it has zero entries — see
- * `children.hidden_empty_sections` in schema.sql. Once the section gets
- * its first entry, that entry's own `section_visible` takes over and this
- * flag no longer has any effect until the section is emptied again.
+ * Remember whether a repeatable section is hidden while it has zero
+ * entries (children.hidden_empty_sections). Atomic server-side
+ * array_append/array_remove — returns the updated array.
  */
-export async function setEmptySectionHidden(
-  childId: string,
-  sectionKey: string,
-  hidden: boolean
-): Promise<string[]> {
-  const { data: child, error: fetchError } = await supabase
-    .from('children')
-    .select('hidden_empty_sections')
-    .eq('id', childId)
-    .single()
-  if (fetchError) throw fetchError
-
-  const current: string[] = child?.hidden_empty_sections ?? []
-  const next = hidden
-    ? [...new Set([...current, sectionKey])]
-    : current.filter(k => k !== sectionKey)
-
-  const { error } = await supabase
-    .from('children')
-    .update({ hidden_empty_sections: next })
-    .eq('id', childId)
+export async function setEmptySectionHidden(childId: string, sectionKey: string, hidden: boolean): Promise<string[]> {
+  const { data, error } = await supabase.rpc('set_empty_section_hidden', {
+    p_child_id: childId,
+    p_section_key: sectionKey,
+    p_hidden: hidden,
+  })
   if (error) throw error
-
-  return next
+  if (!Array.isArray(data)) throw new Error('set_empty_section_hidden: child not found')
+  return data as string[]
 }
 
 // ============================================================
-// SECTION / FIELD DEFINITIONS
-// Metadata describing what sections/fields exist for a profile_type.
-// Rarely changes — safe to fetch alongside the profile every time.
-// ============================================================
-
-export async function getSectionDefinitions(profileType: string): Promise<SectionDefinition[]> {
-  const { data, error } = await supabase
-    .from('section_definitions')
-    .select('*')
-    .eq('profile_type', profileType)
-    .order('sort_order')
-  if (error) throw error
-  return (data ?? []) as SectionDefinition[]
-}
-
-export async function getFieldDefinitions(sectionIds: string[]): Promise<FieldDefinition[]> {
-  if (sectionIds.length === 0) return []
-  const { data, error } = await supabase
-    .from('field_definitions')
-    .select('*')
-    .in('section_id', sectionIds)
-    .order('sort_order')
-  if (error) throw error
-  return (data ?? []) as FieldDefinition[]
-}
-
-// ============================================================
-// FULL PROFILE (for edit page)
+// FULL PROFILE (owner edit page) — two round trips:
+// the child with its personal info + entries, then the definitions
+// for its profile_type with their fields embedded.
 // ============================================================
 
 export async function getChildProfile(childId: string): Promise<ChildProfile> {
-  const { data: child, error: e1 } = await supabase.from('children').select('*').eq('id', childId).single()
-  if (e1) throw e1
+  const { data, error } = await supabase
+    .from('children')
+    .select('*, personal_info(*), profile_entries(*)')
+    .eq('id', childId)
+    .order('sort_order', { referencedTable: 'profile_entries' })
+    .single()
+  if (error) throw error
 
-  const [
-    { data: personalInfo, error: e2 },
-    { data: entries, error: e3 },
-    sections,
-  ] = await Promise.all([
-    supabase.from('personal_info').select('*').eq('child_id', childId).maybeSingle(),
-    supabase.from('profile_entries').select('*').eq('child_id', childId).order('sort_order'),
-    getSectionDefinitions(child.profile_type),
-  ])
+  const { personal_info, profile_entries, ...child } = data as ChildRow & {
+    personal_info: PersonalInfoRow | PersonalInfoRow[] | null
+    profile_entries: ProfileEntryRow[] | null
+  }
 
-  if (e2) throw e2
-  if (e3) throw e3
+  const { data: sectionRows, error: sectionError } = await supabase
+    .from('section_definitions')
+    .select('*, field_definitions(*)')
+    .eq('profile_type', child.profile_type)
+    .order('sort_order')
+    .order('sort_order', { referencedTable: 'field_definitions' })
+  if (sectionError) throw sectionError
 
-  const fields = await getFieldDefinitions(sections.map(s => s.id))
+  const sections: SectionDefinition[] = []
   const fieldsBySection: Record<string, FieldDefinition[]> = {}
-  for (const section of sections) {
-    fieldsBySection[section.section_key] = fields.filter(f => f.section_id === section.id)
+  for (const row of (sectionRows ?? []) as (SectionDefinition & { field_definitions: FieldDefinition[] | null })[]) {
+    const { field_definitions, ...section } = row
+    sections.push(section)
+    fieldsBySection[section.section_key] = field_definitions ?? []
   }
 
   return {
-    child: child as ChildRow,
-    personalInfo: personalInfo as PersonalInfoRow | null,
-    entries: (entries ?? []) as ProfileEntryRow[],
+    child,
+    personalInfo: firstOrNull(personal_info),
+    entries: profile_entries ?? [],
     sections,
     fieldsBySection,
   }
 }
 
 // ============================================================
-// SHARED PROFILE (for public read-only page, anon access)
-// Uses the get_shared_profile() RPC instead of the owner's
-// getChildProfile()/select('*') path — that function:
-//   - returns only the columns the shared page needs (no risk of a
-//     future column addition leaking to anon viewers by default)
-//   - strips hidden_fields out of each entry's `values` server-side,
-//     rather than relying on the client to not render them
+// SHARED PROFILE (public read-only page, anon access)
+// get_shared_profile() is the only read path for anonymous viewers — see
+// the "Anonymous access" notes in schema.sql.
 // ============================================================
 
 export async function getSharedProfile(token: string): Promise<SharedProfile | null> {
   const { data, error } = await supabase.rpc('get_shared_profile', { p_token: token })
   if (error) throw error
-  return (data as SharedProfile | null) ?? null
+  const profile = data as SharedProfile | null
+  if (!profile) return null
+  // Defensive defaults so an older database function (before sections were
+  // added to the payload) degrades to a sparse page instead of crashing.
+  return { ...profile, sections: profile.sections ?? [], entries: profile.entries ?? [] }
 }
 
 // ============================================================
@@ -225,25 +167,31 @@ export async function getSharedProfile(token: string): Promise<SharedProfile | n
 
 export async function upsertPersonalInfo(
   childId: string,
-  data: Partial<Omit<PersonalInfoRow, 'id' | 'child_id' | 'updated_at'>>
-): Promise<void> {
-  const { error } = await supabase
+  data: Partial<Omit<PersonalInfoRow, 'id' | 'child_id' | 'updated_at'>>,
+): Promise<PersonalInfoRow> {
+  const { data: row, error } = await supabase
     .from('personal_info')
     .upsert({ child_id: childId, ...data }, { onConflict: 'child_id' })
+    .select()
+    .single()
   if (error) throw error
+  return row as PersonalInfoRow
 }
 
 // ============================================================
 // PROFILE ENTRIES
-// Generic CRUD replacing the ~8 near-identical per-section
-// upsert/delete pairs that existed before this migration.
 // ============================================================
 
-/** Insert or update a repeatable entry (e.g. one trigger, one contact). */
+/** Next sort_order for a new entry (max + 1, so deletions never cause duplicates). */
+export function nextSortOrder(entries: Pick<ProfileEntryRow, 'sort_order'>[]): number {
+  return entries.reduce((max, e) => Math.max(max, e.sort_order), -1) + 1
+}
+
+/** Insert (no id) or update (with id) one entry. */
 export async function upsertProfileEntry(
   childId: string,
   sectionKey: string,
-  entry: Partial<ProfileEntryRow> & { values: ProfileEntryRow['values'] }
+  entry: Partial<Pick<ProfileEntryRow, 'id' | 'sort_order' | 'section_visible' | 'hidden_fields'>> & { values: EntryValues },
 ): Promise<ProfileEntryRow> {
   const { data, error } = await supabase
     .from('profile_entries')
@@ -259,25 +207,8 @@ export async function deleteProfileEntry(id: string): Promise<void> {
   if (error) throw error
 }
 
-/**
- * Insert or update the single entry for a non-repeatable section
- * (communication, behavioral_notes, education). Creates the row on
- * first save if it doesn't exist yet.
- */
-export async function upsertSingleEntry(
-  childId: string,
-  sectionKey: string,
-  existingId: string | undefined,
-  values: ProfileEntryRow['values']
-): Promise<ProfileEntryRow> {
-  return upsertProfileEntry(childId, sectionKey, { id: existingId, values })
-}
-
 /** Set section_visible on every entry in a section (bulk visibility toggle). */
-export async function setSectionVisibility(
-  entryIds: string[],
-  visible: boolean
-): Promise<void> {
+export async function setSectionVisibility(entryIds: string[], visible: boolean): Promise<void> {
   if (entryIds.length === 0) return
   const { error } = await supabase
     .from('profile_entries')
@@ -286,51 +217,27 @@ export async function setSectionVisibility(
   if (error) throw error
 }
 
-/** Toggle a single entry's visibility (used for per-item show/hide, e.g. one contact). */
-export async function setEntryVisibility(id: string, visible: boolean): Promise<void> {
+/**
+ * Persist a new order for a section's entries (sort_order = index).
+ * One bulk upsert request, so the order is saved atomically.
+ */
+export async function reorderProfileEntries(childId: string, sectionKey: string, orderedIds: string[]): Promise<void> {
+  if (orderedIds.length === 0) return
   const { error } = await supabase
     .from('profile_entries')
-    .update({ section_visible: visible })
-    .eq('id', id)
+    .upsert(
+      orderedIds.map((id, index) => ({ id, child_id: childId, section_key: sectionKey, sort_order: index })),
+      { onConflict: 'id' },
+    )
   if (error) throw error
 }
 
-/** Show/hide one field within an entry independently (e.g. hide DOB but keep name). */
-export async function setFieldHidden(
-  entry: ProfileEntryRow,
-  fieldKey: string,
-  hidden: boolean
-): Promise<ProfileEntryRow> {
-  const nextHidden = hidden
-    ? [...new Set([...entry.hidden_fields, fieldKey])]
-    : entry.hidden_fields.filter(f => f !== fieldKey)
-
-  const { data, error } = await supabase
-    .from('profile_entries')
-    .update({ hidden_fields: nextHidden })
-    .eq('id', entry.id)
-    .select()
-    .single()
-  if (error) throw error
-  return data as ProfileEntryRow
-}
-
 // ============================================================
-// SHARE MANAGEMENT PAGE (initial load)
+// SHARE MANAGEMENT PAGE
 // ============================================================
 
-export interface ShareManagementData {
-  child: ChildRow
-  childName: string | null
-  auditLog: ShareAuditLogRow[]
-  auditTotal: number
-}
-
-/** Fetch everything ShareManagementPage needs on mount in one call. */
-export async function getShareManagementData(
-  childId: string,
-  auditPageSize: number
-): Promise<ShareManagementData> {
+/** Everything ShareManagementPage needs on mount, fetched in parallel. */
+export async function getShareManagementData(childId: string, auditPageSize: number): Promise<ShareManagementData> {
   const [
     { data: child, error: e1 },
     { data: info, error: e2 },
@@ -351,36 +258,71 @@ export async function getShareManagementData(
 
   return {
     child: child as ChildRow,
-    childName: info?.name ?? null,
+    childName: info?.name || null,
     auditLog: (log ?? []) as ShareAuditLogRow[],
     auditTotal: count ?? 0,
   }
 }
 
-// ============================================================
-// AUDIT LOG
-// ============================================================
-
 export async function clearAuditLog(childId: string): Promise<void> {
-  const { error } = await supabase
-    .from('share_audit_log')
-    .delete()
-    .eq('child_id', childId)
+  const { error } = await supabase.from('share_audit_log').delete().eq('child_id', childId)
   if (error) throw error
 }
 
-/** Fetch one page of audit log entries (for "load more" pagination). */
-export async function getAuditLogPage(
-  childId: string,
-  page: number,
-  pageSize: number
-): Promise<ShareAuditLogRow[]> {
+/**
+ * Audit log entries older than `before` (keyset pagination). Using the
+ * last loaded row's timestamp instead of an offset means views logged
+ * while the page is open don't shift the window and cause duplicates.
+ */
+export async function getAuditLogBefore(childId: string, before: string, pageSize: number): Promise<ShareAuditLogRow[]> {
   const { data, error } = await supabase
     .from('share_audit_log')
     .select('*')
     .eq('child_id', childId)
+    .lt('viewed_at', before)
     .order('viewed_at', { ascending: false })
-    .range((page - 1) * pageSize, page * pageSize - 1)
+    .limit(pageSize)
   if (error) throw error
   return (data ?? []) as ShareAuditLogRow[]
+}
+
+// ============================================================
+// EDGE FUNCTIONS
+// ============================================================
+
+/**
+ * Parent-entered content translated into `lang`, keyed by fieldPath().
+ * Returns {} on failure — the page falls back to the original text.
+ */
+export async function getFieldTranslations(childId: string, lang: string): Promise<Record<string, string>> {
+  const { data, error } = await supabase.functions.invoke<{ translations?: Record<string, string> }>('translate', {
+    body: { child_id: childId, target_lang: lang },
+  })
+  if (error) {
+    console.error('[translate] failed:', error)
+    return {}
+  }
+  return data?.translations ?? {}
+}
+
+/** Record one view of the shared page (fire-and-forget; never throws). */
+export async function logShareView(childId: string, coords?: { latitude: number; longitude: number }): Promise<void> {
+  const { error } = await supabase.functions.invoke('log-share-view', {
+    body: { child_id: childId, user_agent: navigator.userAgent, ...coords },
+  })
+  if (error) console.error('[log-share-view] failed:', error)
+}
+
+/** Permanently delete the signed-in user's account and all their data. */
+export async function deleteAccount(): Promise<void> {
+  const { error } = await supabase.functions.invoke('delete-account', { method: 'POST' })
+  if (error) throw error
+}
+
+// ── helpers ──────────────────────────────────────────────────────────────────
+
+/** PostgREST returns one-to-one embeds as an object, but older versions as an array. */
+function firstOrNull<T>(value: T | T[] | null | undefined): T | null {
+  if (Array.isArray(value)) return value[0] ?? null
+  return value ?? null
 }

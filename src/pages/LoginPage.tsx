@@ -1,7 +1,10 @@
 import { useState, type FormEvent } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useAuth } from '../lib/auth'
+import { useAuth } from '../lib/useAuth'
+import { toUserMessage } from '../lib/errors'
+import { BTN_PRIMARY, INPUT, LABEL } from '../lib/styles'
+import { LoadingSpinner } from '../components/ui/LoadingSpinner'
 
 export function LoginPage() {
   const { t } = useTranslation()
@@ -13,13 +16,7 @@ export function LoginPage() {
   const [submitting, setSubmitting] = useState(false)
   const [successMsg, setSuccessMsg] = useState<string | null>(null)
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-      </div>
-    )
-  }
+  if (loading) return <LoadingSpinner variant="fullPage" className="bg-slate-50" />
 
   if (session) {
     return <Navigate to="/dashboard" replace />
@@ -31,18 +28,16 @@ export function LoginPage() {
     setSuccessMsg(null)
     setSubmitting(true)
 
-    const fn = mode === 'signin' ? signInWithEmail : signUpWithEmail
-    const { error } = await fn(email, password)
-
-    if (error) {
-      // Strip any JWT tokens from error messages before showing them in the UI.
-      // Supabase's PKCE flow can surface raw access tokens in error strings on
-      // first login — safe to replace with a generic fallback.
-      const sanitised = error.replace(/eyJ[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_.+/]*/g, '[token]')
-      const isOnlyToken = sanitised.trim() === '[token]' || sanitised.trim() === ''
-      setError(isOnlyToken ? t('common.error') : sanitised)
-    } else if (mode === 'signup') {
-      setSuccessMsg(t('auth.checkEmail'))
+    try {
+      if (mode === 'signin') {
+        await signInWithEmail(email, password)
+      } else {
+        await signUpWithEmail(email, password)
+        setSuccessMsg(t('auth.checkEmail'))
+      }
+    } catch (err) {
+      // Auth errors are user-facing (and token-scrubbed in lib/errors.ts).
+      setError(toUserMessage(err, t('common.error')))
     }
 
     setSubmitting(false)
@@ -71,7 +66,7 @@ export function LoginPage() {
           {/* Google OAuth */}
           <button
             type="button"
-            onClick={signInWithGoogle}
+            onClick={() => signInWithGoogle().catch(err => setError(toUserMessage(err, t('common.error'))))}
             className="w-full flex items-center justify-center gap-3 border border-slate-200 rounded-xl py-2.5 px-4 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
           >
             <GoogleIcon />
@@ -88,7 +83,7 @@ export function LoginPage() {
           {/* Email / password form */}
           <form onSubmit={handleEmailSubmit} className="space-y-3">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
+              <label htmlFor="email" className={LABEL}>
                 {t('auth.email')}
               </label>
               <input
@@ -98,11 +93,11 @@ export function LoginPage() {
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className={INPUT}
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-1">
+              <label htmlFor="password" className={LABEL}>
                 {t('auth.password')}
               </label>
               <input
@@ -113,7 +108,7 @@ export function LoginPage() {
                 minLength={8}
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className={INPUT}
               />
             </div>
 
@@ -132,7 +127,7 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl py-2.5 text-sm font-semibold transition-colors"
+              className={`w-full ${BTN_PRIMARY}`}
             >
               {submitting
                 ? t('common.loading')

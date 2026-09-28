@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { LanguageSelector } from '../components/LanguageSelector'
 
 export function LandingPage() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const [openFaq, setOpenFaq] = useState<number | null>(null)
 
   const features = t('landing.features.items', { returnObjects: true }) as { icon: string; title: string; description: string }[]
@@ -13,7 +13,8 @@ export function LandingPage() {
   const faqItems = t('landing.faq.items', { returnObjects: true }) as { q: string; a: string }[]
 
   return (
-    <div className="text-slate-800" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
+    // Text direction is set globally on <html> by lib/i18n.ts.
+    <div className="text-slate-800">
 
       {/* ── HERO ────────────────────────────────────────────────────────── */}
       <section className="max-w-6xl mx-auto px-4 pt-20 pb-24 text-center">

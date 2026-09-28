@@ -1,6 +1,8 @@
 // ============================================================
 // Myndigo — Database Types
-// Mirror of supabase/schema.sql
+// Hand-maintained mirror of supabase/schema.sql. When the schema
+// changes, update these in the same change. (Generating them with
+// `supabase gen types typescript` is the planned replacement.)
 // ============================================================
 
 export type AlertType =
@@ -14,10 +16,6 @@ export type AlertType =
   | 'custom'
 
 export type AlertSeverity = 'red' | 'orange'
-
-export type CommunicationLevel = 'verbal' | 'limited_verbal' | 'non_verbal'
-
-export type SensoryType = 'sound' | 'light' | 'touch' | 'smell' | 'taste' | 'movement'
 
 // ============================================================
 // Row types — shape of data coming from Supabase
@@ -41,6 +39,9 @@ export interface ChildRow {
   created_at: string
   updated_at: string
 }
+
+/** Dashboard list item: a child plus the bits of personal_info shown on the card. */
+export type ChildSummary = ChildRow & { name: string; photo_base64: string | null }
 
 export interface PersonalInfoRow {
   id: string
@@ -80,6 +81,10 @@ export interface SectionDefinition {
   profile_type: ProfileType
   section_key: string
   label_key: string
+  /** Title on the shared page; falls back to label_key. */
+  share_label_key: string | null
+  /** Sections sharing this key render together in one shared-page card. */
+  share_group_label_key: string | null
   repeatable: boolean
   render_hint: RenderHint
   sort_order: number
@@ -102,17 +107,15 @@ export interface FieldDefinition {
   sort_order: number
 }
 
-/** A field_definitions row joined with its parent section_key, as consumed by the frontend. */
-export interface FieldDefinitionWithSection extends FieldDefinition {
-  section_key: string
-}
-
 // ============================================================
 // PROFILE ENTRIES
-// The actual data. One row per entry per section per child.
-// `values` is keyed by field_key, shape defined by field_definitions
-// for that section_key + profile_type.
+// One row per entry per section per child. `values` is keyed by
+// field_key; its shape is defined by field_definitions.
 // ============================================================
+
+export type FieldValue = string | boolean | string[] | number | null
+export type EntryValues = Record<string, FieldValue>
+
 export interface ProfileEntryRow {
   id: string
   child_id: string
@@ -120,23 +123,9 @@ export interface ProfileEntryRow {
   sort_order: number
   section_visible: boolean
   hidden_fields: string[]
-  // `number` included for 'priority_int' fields (e.g. contacts.priority) —
-  // previously missing from this union despite priority_int existing in
-  // field_definitions, meaning numeric values had no correct type here.
-  values: Record<string, string | boolean | string[] | number | null>
+  values: EntryValues
   created_at: string
   updated_at: string
-}
-
-export interface ContentTranslationRow {
-  id: string
-  child_id: string
-  field_path: string
-  source_lang: string
-  target_lang: string
-  translated_text: string
-  provider_used: string
-  created_at: string
 }
 
 export interface ShareAuditLogRow {
@@ -146,13 +135,13 @@ export interface ShareAuditLogRow {
   user_agent: string | null
   latitude: number | null
   longitude: number | null
-  geo_source: string | null
+  geo_source: 'browser' | 'ip' | null
   ip_city: string | null
   ip_country: string | null
 }
 
 // ============================================================
-// Composite type — full child profile as used in the app
+// Composite types used by pages
 // ============================================================
 
 export interface ChildProfile {
@@ -166,12 +155,19 @@ export interface ChildProfile {
   fieldsBySection: Record<string, FieldDefinition[]>
 }
 
+export interface ShareManagementData {
+  child: ChildRow
+  childName: string | null
+  auditLog: ShareAuditLogRow[]
+  auditTotal: number
+}
+
 // ============================================================
-// Shared (public, no-login) profile — the narrow shape returned by the
-// get_shared_profile() Postgres function. Deliberately NOT the same as
-// ChildProfile: only the columns the shared page actually renders are
-// included, and hidden_fields have already been stripped out of each
-// entry's `values` server-side (see schema.sql get_shared_profile).
+// Shared (public, no-login) profile — the narrow shape returned by
+// get_shared_profile(). Hidden data has already been removed
+// server-side: personalInfo is null when its section is hidden,
+// photo_base64 is null when the photo is hidden, only visible entries
+// are included, and hidden_fields are stripped from `values`.
 // ============================================================
 
 export interface SharedChildInfo {
@@ -186,53 +182,58 @@ export interface SharedPersonalInfo {
   date_of_birth: string | null
   pronouns: string | null
   photo_base64: string | null
-  photo_visible: boolean
-  section_visible: boolean
+}
+
+export interface SharedField {
+  field_key: string
+  label_key: string
+  field_type: FieldType
+  options: FieldOption[] | null
+  translatable: boolean
+  sort_order: number
+}
+
+export interface SharedSection {
+  section_key: string
+  label_key: string
+  share_label_key: string | null
+  share_group_label_key: string | null
+  repeatable: boolean
+  render_hint: RenderHint
+  sort_order: number
+  fields: SharedField[]
 }
 
 export interface SharedProfileEntry {
   id: string
   section_key: string
   sort_order: number
-  section_visible: boolean
-  hidden_fields: string[]
-  values: Record<string, string | boolean | string[] | number | null>
+  values: EntryValues
 }
 
 export interface SharedProfile {
   child: SharedChildInfo
   personalInfo: SharedPersonalInfo | null
+  sections: SharedSection[]
   entries: SharedProfileEntry[]
 }
 
 // ============================================================
-// Alert display metadata (icons, colours)
-// Still used by AlertsSection/SharedProfilePage for icon+colour lookup;
-// alert_type values themselves now live in field_definitions.options.
+// Alert display metadata (icon + default severity per alert type).
+// alert_type values and their labels live in field_definitions.options.
 // ============================================================
 
-export const ALERT_DISPLAY: Record<AlertType, { emoji: string; defaultLabel: string; severity: AlertSeverity }> = {
-  food_allergy:     { emoji: '🍽️', defaultLabel: 'Food Allergy',      severity: 'red' },
-  epilepsy:         { emoji: '⚡', defaultLabel: 'Epilepsy',           severity: 'orange' },
-  diabetes:         { emoji: '💉', defaultLabel: 'Diabetes',           severity: 'orange' },
-  asthma:           { emoji: '🫁', defaultLabel: 'Asthma',             severity: 'orange' },
-  elopement_risk:   { emoji: '🚪', defaultLabel: 'Elopement Risk',     severity: 'red' },
-  non_swimmer:      { emoji: '🌊', defaultLabel: 'Non-Swimmer',        severity: 'red' },
-  heart_condition:  { emoji: '❤️', defaultLabel: 'Heart Condition',    severity: 'red' },
-  custom:           { emoji: '⚠️', defaultLabel: 'Alert',              severity: 'red' },
+export const ALERT_DISPLAY: Record<AlertType, { emoji: string; severity: AlertSeverity }> = {
+  food_allergy:    { emoji: '🍽️', severity: 'red' },
+  epilepsy:        { emoji: '⚡', severity: 'orange' },
+  diabetes:        { emoji: '💉', severity: 'orange' },
+  asthma:          { emoji: '🫁', severity: 'orange' },
+  elopement_risk:  { emoji: '🚪', severity: 'red' },
+  non_swimmer:     { emoji: '🌊', severity: 'red' },
+  heart_condition: { emoji: '❤️', severity: 'red' },
+  custom:          { emoji: '⚠️', severity: 'red' },
 }
 
-export const COMMUNICATION_LABELS: Record<CommunicationLevel, string> = {
-  verbal:         'verbal',
-  limited_verbal: 'limited_verbal',
-  non_verbal:     'non_verbal',
-}
-
-export const SENSORY_LABELS: Record<SensoryType, string> = {
-  sound:    'sound',
-  light:    'light',
-  touch:    'touch',
-  smell:    'smell',
-  taste:    'taste',
-  movement: 'movement',
+export function alertDisplay(alertType: unknown) {
+  return ALERT_DISPLAY[alertType as AlertType] ?? ALERT_DISPLAY.custom
 }

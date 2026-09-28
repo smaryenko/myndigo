@@ -97,24 +97,16 @@ These are the API keys your Edge Functions need at runtime. Set them in the Supa
 From the `myndigo` project folder, run:
 
 ```bash
-supabase functions deploy translate
-```
-
-Then:
-
-```bash
-supabase functions deploy log-share-view
-```
-
-Then:
-
-```bash
+supabase functions deploy translate --no-verify-jwt
+supabase functions deploy log-share-view --no-verify-jwt
 supabase functions deploy delete-account
 ```
 
 You should see `Deployed Function translate`, `Deployed Function log-share-view`, and `Deployed Function delete-account`.
 
-> **Note:** `translate` and `log-share-view` must be deployed with `--no-verify-jwt` because they are called without a user session. `delete-account` does **not** use `--no-verify-jwt` — it validates the user's JWT internally.
+> **Note:** `translate` and `log-share-view` must be deployed with `--no-verify-jwt` because they are called from the public shared page without a user session. `delete-account` is deployed **with** JWT verification and also validates the caller's token itself.
+>
+> All three import shared helpers from `supabase/functions/_shared/` (the CLI bundles them automatically). Redeploy every function after changing anything in `_shared/`.
 
 To verify they deployed correctly, go to your Supabase dashboard → **Edge Functions** — all three functions should appear in the list with a green status.
 
@@ -160,6 +152,46 @@ The easiest option is [Vercel](https://vercel.com):
 ## Database migrations
 
 When changes require adding columns to an existing database (rather than a fresh setup), run the following SQL in the Supabase SQL Editor:
+
+### Code-review fixes: anonymous access lockdown, new RPCs, data-driven shared page (September 2026)
+
+**Order matters** — do these in sequence:
+
+1. **Re-run the whole `supabase/schema.sql`** in the SQL Editor. It is idempotent and applies:
+   - removal of every anonymous read policy/grant on `children`, `personal_info`, `profile_entries`, `content_translations` (the public page now reads only through `get_shared_profile`)
+   - new RPCs `create_child`, `set_empty_section_hidden`; `search_path` pinned on security-definer functions
+   - `get_shared_profile` now also returns section/field definitions and omits hidden personal info
+   - `section_definitions.share_label_key` / `share_group_label_key` + their values
+   - per-entry translation-cache invalidation trigger; alert `label` marked translatable
+   - drops unused `auth_uid()`, `log_share_view()`, `child_is_shared()`
+
+2. **Run this one-off data cleanup:**
+   ```sql
+   -- Translation cache paths changed to one format for every section
+   -- ("{section}.{entry_id}.{field}"); old rows would never be hit again.
+   -- Safe: it's only a cache and refills on the next view.
+   delete from content_translations;
+
+   -- Built-in alert types no longer store an English label (the label now
+   -- comes from the alert type, in the viewer's language). Custom alerts keep theirs.
+   update profile_entries
+   set values = values - 'label'
+   where section_key = 'alerts'
+     and coalesce(values->>'alert_type', 'custom') <> 'custom'
+     and values ? 'label';
+   ```
+
+3. **Redeploy all three Edge Functions** (Step 6). This must happen **before** the new frontend goes live: the frontend now calls them via `supabase.functions.invoke()`, which sends an `authorization` header the old CORS config rejected.
+
+4. **Push the frontend** (GitHub Pages deploys on push to `master`).
+
+5. **Verify** anonymous table access is blocked (count-only requests — no data is downloaded):
+   ```bash
+   npm run check:anon
+   ```
+   Every table should report `PASS`. Then open a `/s/<token>` link in a private window to confirm the shared page still loads.
+
+Existing large photos are shrunk (and EXIF/GPS stripped) automatically the next time a parent opens that child's profile editor.
 
 ### IP geolocation columns for view history (added after initial deploy)
 

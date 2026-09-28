@@ -1,9 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { BTN_PRIMARY_SM, BTN_SECONDARY_SM } from '../../lib/cn'
-
-// Small class constants for the inline edit save/cancel row (xs text, no flex-1)
-const BTN_PRIMARY_XS = 'bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-xs px-3 py-1.5 rounded-lg transition-colors'
-const BTN_SECONDARY_XS = 'border border-slate-200 text-slate-500 text-xs px-3 py-1.5 rounded-lg hover:bg-slate-50'
+import { BTN_PRIMARY_SM, BTN_PRIMARY_XS, BTN_SECONDARY_SM, BTN_SECONDARY_XS } from '../../lib/styles'
 
 interface Props {
   onConfirm: () => void
@@ -15,6 +11,7 @@ interface Props {
   size?: 'md' | 'sm'
 }
 
+/** Save/add + cancel button pair for inline add and edit forms. */
 export function FormActions({
   onConfirm,
   onCancel,
@@ -24,28 +21,8 @@ export function FormActions({
   size = 'md',
 }: Props) {
   const { t } = useTranslation()
-
-  if (size === 'sm') {
-    return (
-      <div className="flex gap-2">
-        <button
-          type="button"
-          onClick={onConfirm}
-          disabled={saving || disabled}
-          className={BTN_PRIMARY_XS}
-        >
-          {saving ? '…' : (confirmLabel ?? t('common.save'))}
-        </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          className={BTN_SECONDARY_XS}
-        >
-          {t('common.cancel')}
-        </button>
-      </div>
-    )
-  }
+  const compact = size === 'sm'
+  const label = confirmLabel ?? (compact ? t('common.save') : t('common.add'))
 
   return (
     <div className="flex gap-2">
@@ -53,15 +30,11 @@ export function FormActions({
         type="button"
         onClick={onConfirm}
         disabled={saving || disabled}
-        className={BTN_PRIMARY_SM}
+        className={compact ? BTN_PRIMARY_XS : BTN_PRIMARY_SM}
       >
-        {saving ? '…' : (confirmLabel ?? t('common.add'))}
+        {saving ? t('common.saving') : label}
       </button>
-      <button
-        type="button"
-        onClick={onCancel}
-        className={BTN_SECONDARY_SM}
-      >
+      <button type="button" onClick={onCancel} disabled={saving} className={compact ? BTN_SECONDARY_XS : BTN_SECONDARY_SM}>
         {t('common.cancel')}
       </button>
     </div>

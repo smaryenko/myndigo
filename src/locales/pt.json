@@ -14,12 +14,15 @@
     "poweredBy": "Desenvolvido por Myndigo",
     "deleteFailed": "Falha ao eliminar",
     "saveFailed": "Falha ao guardar",
-    "removeInstruction": "Remover instrução",
-    "removeAlert": "Remover alerta",
     "toggleMenu": "Alternar menu",
     "selectLanguage": "Selecionar idioma",
     "photoAlt": "Foto da criança",
-    "qrCodeAlt": "Código QR para autenticação de dois fatores"
+    "qrCodeAlt": "Código QR para autenticação de dois fatores",
+    "confirmDelete": "Eliminar este item?",
+    "yesDelete": "Sim, eliminar",
+    "moveUp": "Mover para cima",
+    "moveDown": "Mover para baixo",
+    "reload": "Recarregar página"
   },
   "auth": {
     "signIn": "Iniciar sessão",
@@ -167,7 +170,7 @@
       "addPhoto": "Adicionar fotografia",
       "changePhoto": "Alterar fotografia",
       "removePhoto": "Remover",
-      "photoHint": "Máx. 200 KB, JPG ou PNG",
+      "photoHint": "JPG, PNG ou WebP — redimensionada automaticamente",
       "photoVisible": "Fotografia visível na página partilhada",
       "photoHidden": "Fotografia oculta na página partilhada"
     },
@@ -189,8 +192,7 @@
       "devicePlaceholder": "ex.: Proloquo2Go, tabela PECS",
       "echolalia": "Pode usar ecolalia (repetição de palavras ou frases)",
       "instructions": "Como comunicar — instruções essenciais para outras pessoas",
-      "instructionPlaceholder": "ex.: Usar frases curtas e simples",
-      "addInstruction": "Adicionar"
+      "instructionPlaceholder": "ex.: Usar frases curtas e simples"
     },
     "triggers": {
       "noTriggers": "Ainda não foram adicionados gatilhos.",
@@ -280,16 +282,12 @@
     "downloadQr": "Transferir código QR",
     "invalidateQrTitle": "Invalidar código QR e chip NFC",
     "invalidateQrHint": "Gera uma nova ligação. O código QR atual e quaisquer chips NFC programados deixarão de funcionar imediatamente.",
-    "invalidateQrButton": "Invalidar e regenerar",
-    "regenerateWarning": "Isto irá invalidar o código QR e o chip NFC atuais. Tem a certeza?",
-    "regenerating": "A regenerar…",
     "yesRegenerate": "Sim, regenerar",
     "auditLog": "Ver histórico",
     "noViews": "Ainda não foram registadas visualizações.",
     "clearHistory": "Limpar histórico",
     "clearHistoryWarning": "Isto irá eliminar permanentemente todo o histórico de visualizações deste perfil. Esta ação não pode ser desfeita.",
     "yesClearHistory": "Sim, limpar histórico",
-    "visibilitySettings": "Definições de visibilidade",
     "sectionVisible": "Visível na página partilhada",
     "sectionHidden": "Oculto na página partilhada",
     "alertsHideWarning": "Ocultar os alertas pode colocar o seu filho em risco. Tem a certeza?",
@@ -314,7 +312,13 @@
     "printBadgePrint": "Imprimir",
     "printBadgeClose": "Fechar",
     "printBadgeNameLabel": "Olá, o meu nome é",
-    "printBadgeMessageShort": "Para me conhecer melhor ou me ajudar numa emergência, por favor digitalize este código QR."
+    "printBadgeMessageShort": "Para me conhecer melhor ou me ajudar numa emergência, por favor digitalize este código QR.",
+    "copyFailed": "Não foi possível copiar a ligação. Está selecionada — copie-a manualmente.",
+    "shareLink": "Ligação de partilha",
+    "openInNewTab": "Abrir num novo separador",
+    "geoGps": "GPS",
+    "geoIp": "aprox. via IP",
+    "loadMore": "Mostrar mais {{count}}"
   },
   "notFound": {
     "title": "Página não encontrada",
@@ -325,25 +329,26 @@
     "profileNotFound": "Perfil não encontrado",
     "backToDashboard": "Voltar ao painel",
     "childProfile": "Perfil da criança",
-    "photoTooLarge": "A fotografia deve ter menos de 200 KB. Por favor, redimensione e tente novamente.",
-    "failedToCreate": "Falha ao criar o perfil"
+    "photoTooLarge": "A foto deve ter menos de 20 MB.",
+    "failedToCreate": "Falha ao criar o perfil",
+    "newVersionTitle": "Está disponível uma nova versão do Myndigo",
+    "newVersionHint": "Recarregue a página para continuar.",
+    "unexpectedTitle": "Algo correu mal",
+    "unexpectedHint": "Recarregue a página e tente novamente.",
+    "photoUnreadable": "Não foi possível ler esta foto. Experimente um JPG ou PNG."
   },
   "sharedPage": {
     "notShared": "Este perfil não está atualmente partilhado.",
     "notSharedHint": "O pai/mãe desativou a partilha para este perfil.",
     "alerts": "Alertas importantes",
-    "showAll": "Mostrar tudo",
     "callNow": "Ligar",
     "language": "Idioma",
-    "expandSection": "Mostrar mais",
-    "collapseSection": "Mostrar menos",
     "triggers": "Gatilhos",
     "talkToMe": "Como falar comigo",
     "usesAac": "Utiliza dispositivo CAA / ajuda de comunicação",
     "usesAacDevice": "Utiliza dispositivo CAA: {{device}}",
     "echolalia": "Pode repetir palavras ou frases (ecolalia)",
     "moreAlerts": "+{{count}} mais",
-    "moreContacts": "+{{count}} mais contactos abaixo",
     "alertTypes": {
       "food_allergy": "ALERGIA ALIMENTAR",
       "epilepsy": "EPILEPSIA",
@@ -379,7 +384,9 @@
       "medications": "Medicamentos",
       "conditions": "Condições médicas",
       "doctors": "Médicos"
-    }
+    },
+    "viewPhoto": "Ver foto completa",
+    "closePhoto": "Fechar foto"
   },
   "account": {
     "title": "Conta",
@@ -417,7 +424,6 @@
     "dangerZone": "Zona de perigo",
     "deleteAccount": "Eliminar conta",
     "deleteAccountWarning": "Isto irá eliminar permanentemente a sua conta e todos os perfis de crianças. Esta ação não pode ser desfeita.",
-    "deleting": "A eliminar…",
     "deleteConfirmButton": "Sim, eliminar tudo",
     "toggleNotificationsLabel": "Ativar/desativar notificações de visualização do perfil",
     "upcomingFeature": "Em breve"

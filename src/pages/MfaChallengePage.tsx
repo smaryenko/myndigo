@@ -1,13 +1,17 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, type FormEvent } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useAuth } from '../lib/auth'
+import { useAuth } from '../lib/useAuth'
+import { getVerifiedTotpFactorId, verifyTotpCode } from '../lib/mfa'
+import { BTN_PRIMARY } from '../lib/styles'
+import { InlineError } from '../components/ui/InlineError'
+import { LoadingSpinner } from '../components/ui/LoadingSpinner'
 
 export function MfaChallengePage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
-  const { getVerifiedTotpFactor, challengeTotp, verifyTotp, signOut } = useAuth()
+  const { signOut } = useAuth()
 
   const [code, setCode] = useState('')
   const [factorId, setFactorId] = useState<string | null>(null)
@@ -15,48 +19,47 @@ export function MfaChallengePage() {
   const [verifying, setVerifying] = useState(false)
 
   // Where to send the user after successful verification
-  const from = (location.state as { from?: string })?.from ?? '/dashboard'
+  const from = (location.state as { from?: string } | null)?.from ?? '/dashboard'
 
-  // Load the verified TOTP factor on mount
   useEffect(() => {
-    getVerifiedTotpFactor().then(verified => {
-      if (verified) {
-        setFactorId(verified.id)
-      } else {
-        // No enrolled factor — shouldn't be here, redirect to dashboard
-        navigate('/dashboard', { replace: true })
-      }
-    })
-  }, [navigate, getVerifiedTotpFactor])
+    let cancelled = false
+    getVerifiedTotpFactorId()
+      .then(id => {
+        if (cancelled) return
+        if (id) setFactorId(id)
+        else navigate('/dashboard', { replace: true }) // no enrolled factor — nothing to challenge
+      })
+      .catch(err => {
+        // Without this the page sat on a spinner forever; send them to log in again.
+        console.error('MFA: listing factors failed:', err)
+        if (!cancelled) navigate('/login', { replace: true })
+      })
+    return () => { cancelled = true }
+  }, [navigate])
 
-  const handleVerify = async () => {
+  const handleVerify = async (e?: FormEvent) => {
+    e?.preventDefault()
     if (!factorId || code.length !== 6) return
     setVerifying(true)
     setError(null)
-
-    const { challengeId, error: challengeErr } = await challengeTotp(factorId)
-    if (challengeErr || !challengeId) {
-      setError(challengeErr ?? t('common.error'))
-      setVerifying(false)
-      return
-    }
-
-    const { error: verifyErr } = await verifyTotp(factorId, challengeId, code)
-
-    if (verifyErr) {
+    try {
+      await verifyTotpCode(factorId, code)
+      navigate(from, { replace: true })
+    } catch (err) {
+      // A wrong code is by far the common case — show that message rather
+      // than the raw auth error.
+      console.error('MFA verify failed:', err)
       setError(t('account.mfaChallengeError'))
       setCode('')
       setVerifying(false)
-      return
     }
-
-    navigate(from, { replace: true })
   }
 
+  if (!factorId) return <LoadingSpinner variant="fullPage" className="bg-slate-50" />
+
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl border border-slate-100 p-8 shadow-sm">
-        {/* Icon */}
+    <main className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+      <form onSubmit={handleVerify} className="w-full max-w-sm bg-white rounded-2xl border border-slate-100 p-8 shadow-sm">
         <div className="flex justify-center mb-5">
           <div className="w-12 h-12 rounded-full bg-indigo-50 flex items-center justify-center">
             <svg className="w-6 h-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
@@ -65,39 +68,30 @@ export function MfaChallengePage() {
           </div>
         </div>
 
-        <h1 className="text-xl font-bold text-slate-800 text-center mb-2">
-          {t('account.mfaChallengeTitle')}
-        </h1>
-        <p className="text-sm text-slate-500 text-center mb-6">
-          {t('account.mfaChallengeHint')}
-        </p>
+        <h1 className="text-xl font-bold text-slate-800 text-center mb-2">{t('account.mfaChallengeTitle')}</h1>
+        <p id="mfa-hint" className="text-sm text-slate-500 text-center mb-6">{t('account.mfaChallengeHint')}</p>
 
         <input
           type="text"
           inputMode="numeric"
+          autoComplete="one-time-code"
           maxLength={6}
           value={code}
           onChange={e => {
             setCode(e.target.value.replace(/\D/g, ''))
             setError(null)
           }}
-          onKeyDown={e => e.key === 'Enter' && handleVerify()}
           placeholder="000000"
           autoFocus
+          dir="ltr"
           className="w-full rounded-xl border border-slate-200 px-3 py-3 text-2xl text-center tracking-[0.5em] font-mono focus:outline-none focus:ring-2 focus:ring-indigo-400 mb-3"
-          aria-label={t('account.mfaChallengeTitle')}
+          aria-label={t('account.mfaEnterCode')}
+          aria-describedby="mfa-hint"
         />
 
-        {error && (
-          <p className="text-red-600 text-sm text-center mb-3" role="alert">{error}</p>
-        )}
+        <InlineError message={error} size="md" className="mb-3 text-center" />
 
-        <button
-          type="button"
-          onClick={handleVerify}
-          disabled={verifying || code.length !== 6}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-semibold rounded-xl py-3 text-sm transition-colors"
-        >
+        <button type="submit" disabled={verifying || code.length !== 6} className={`w-full py-3 ${BTN_PRIMARY}`}>
           {verifying ? t('account.mfaChallengeVerifying') : t('account.mfaChallengeVerify')}
         </button>
 
@@ -108,7 +102,7 @@ export function MfaChallengePage() {
         >
           {t('auth.signOut')}
         </button>
-      </div>
-    </div>
+      </form>
+    </main>
   )
 }

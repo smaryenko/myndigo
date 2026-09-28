@@ -1,24 +1,42 @@
+import { useTranslation } from 'react-i18next'
+import { cx } from '../../lib/cx'
+
 interface Props {
-  /** Full-screen centered spinner */
-  fullPage?: boolean
+  /**
+   * 'page' (default) — centered in the content area.
+   * 'fullPage' — full-screen, for route-level loading outside a layout.
+   * 'inline' — small spinner inside a card or button row.
+   */
+  variant?: 'page' | 'fullPage' | 'inline'
+  /** Background for the fullPage variant. */
+  className?: string
 }
 
-export function LoadingSpinner({ fullPage = false }: Props) {
+/** The one loading indicator used across the app. */
+export function LoadingSpinner({ variant = 'page', className }: Props) {
+  const { t } = useTranslation()
   const spinner = (
-    <div className="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+    <span role="status" className="inline-flex">
+      <span
+        aria-hidden="true"
+        className={cx(
+          'border-indigo-500 border-t-transparent rounded-full animate-spin',
+          variant === 'inline' ? 'w-5 h-5 border-2' : 'w-8 h-8 border-4',
+        )}
+      />
+      <span className="sr-only">{t('common.loading')}</span>
+    </span>
   )
 
-  if (fullPage) {
+  if (variant === 'inline') return spinner
+
+  if (variant === 'fullPage') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className={cx('min-h-screen flex items-center justify-center', className ?? 'bg-white')}>
         {spinner}
       </div>
     )
   }
 
-  return (
-    <div className="flex justify-center py-16">
-      {spinner}
-    </div>
-  )
+  return <div className={cx('flex justify-center py-16', className)}>{spinner}</div>
 }

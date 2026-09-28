@@ -14,12 +14,15 @@
     "poweredBy": "Працює на Myndigo",
     "deleteFailed": "Помилка видалення",
     "saveFailed": "Помилка збереження",
-    "removeInstruction": "Видалити інструкцію",
-    "removeAlert": "Видалити попередження",
     "toggleMenu": "Перемкнути меню",
     "selectLanguage": "Виберіть мову",
     "photoAlt": "Фото дитини",
-    "qrCodeAlt": "QR-код для двофакторної автентифікації"
+    "qrCodeAlt": "QR-код для двофакторної автентифікації",
+    "confirmDelete": "Видалити цей запис?",
+    "yesDelete": "Так, видалити",
+    "moveUp": "Перемістити вгору",
+    "moveDown": "Перемістити вниз",
+    "reload": "Перезавантажити сторінку"
   },
   "auth": {
     "signIn": "Увійти",
@@ -167,7 +170,7 @@
       "addPhoto": "Додати фото",
       "changePhoto": "Змінити фото",
       "removePhoto": "Видалити",
-      "photoHint": "Макс. 2 МБ, JPG або PNG",
+      "photoHint": "JPG, PNG або WebP — розмір змінюється автоматично",
       "photoVisible": "Фото видно на спільній сторінці",
       "photoHidden": "Фото приховано зі спільної сторінки"
     },
@@ -189,8 +192,7 @@
       "devicePlaceholder": "наприклад, Proloquo2Go, дошка PECS",
       "echolalia": "Може використовувати ехолалію (повторення слів/фраз)",
       "instructions": "Як спілкуватися — ключові інструкції для інших",
-      "instructionPlaceholder": "наприклад, Використовуйте короткі прості речення",
-      "addInstruction": "Додати"
+      "instructionPlaceholder": "наприклад, Використовуйте короткі прості речення"
     },
     "triggers": {
       "noTriggers": "Ще не додано жодного тригера.",
@@ -280,16 +282,12 @@
     "downloadQr": "Завантажити QR-код",
     "invalidateQrTitle": "Анулювати QR-код і NFC-чіп",
     "invalidateQrHint": "Створює нове посилання. Поточний QR-код і будь-які запрограмовані NFC-чіпи негайно припинять працювати.",
-    "invalidateQrButton": "Анулювати й оновити",
-    "regenerateWarning": "Це анулює поточний QR-код і NFC-чіп. Ви впевнені?",
-    "regenerating": "Оновлення…",
     "yesRegenerate": "Так, оновити",
     "auditLog": "Переглянути історію",
     "noViews": "Переглядів ще не зафіксовано.",
     "clearHistory": "Очистити історію",
     "clearHistoryWarning": "Це назавжди видалить всю історію переглядів цього профілю. Дію неможливо скасувати.",
     "yesClearHistory": "Так, очистити",
-    "visibilitySettings": "Налаштування видимості",
     "sectionVisible": "Видно на спільній сторінці",
     "sectionHidden": "Приховано зі спільної сторінки",
     "alertsHideWarning": "Приховання попереджень може становити загрозу для вашої дитини. Ви впевнені?",
@@ -314,7 +312,13 @@
     "printBadgePrint": "Надрукувати",
     "printBadgeClose": "Закрити",
     "printBadgeNameLabel": "Привіт, мене звати",
-    "printBadgeMessageShort": "Щоб краще мене зрозуміти або допомогти мені в екстреній ситуації, будь ласка, відскануйте цей QR-код."
+    "printBadgeMessageShort": "Щоб краще мене зрозуміти або допомогти мені в екстреній ситуації, будь ласка, відскануйте цей QR-код.",
+    "copyFailed": "Не вдалося скопіювати посилання. Його виділено — скопіюйте вручну.",
+    "shareLink": "Посилання для поширення",
+    "openInNewTab": "Відкрити в новій вкладці",
+    "geoGps": "GPS",
+    "geoIp": "приблизно, за IP",
+    "loadMore": "Показати ще {{count}}"
   },
   "notFound": {
     "title": "Сторінку не знайдено",
@@ -325,25 +329,26 @@
     "profileNotFound": "Профіль не знайдено",
     "backToDashboard": "Повернутися на головну",
     "childProfile": "Профіль дитини",
-    "photoTooLarge": "Фото має бути менше 200 КБ. Будь ласка, зменшіть розмір і спробуйте знову.",
-    "failedToCreate": "Не вдалося створити профіль"
+    "photoTooLarge": "Фото має бути меншим за 20 МБ.",
+    "failedToCreate": "Не вдалося створити профіль",
+    "newVersionTitle": "Доступна нова версія Myndigo",
+    "newVersionHint": "Перезавантажте сторінку, щоб продовжити.",
+    "unexpectedTitle": "Щось пішло не так",
+    "unexpectedHint": "Перезавантажте сторінку та спробуйте ще раз.",
+    "photoUnreadable": "Не вдалося прочитати це фото. Спробуйте JPG або PNG."
   },
   "sharedPage": {
     "notShared": "Цей профіль наразі не поширюється.",
     "notSharedHint": "Батьки вимкнули поширення для цього профілю.",
     "alerts": "Важливі попередження",
-    "showAll": "Показати всі",
     "callNow": "Зателефонувати",
     "language": "Мова",
-    "expandSection": "Показати більше",
-    "collapseSection": "Показати менше",
     "triggers": "Тригери",
     "talkToMe": "Говоріть зі мною",
     "usesAac": "Використовує пристрій AAC / засіб комунікації",
     "usesAacDevice": "Використовує пристрій AAC: {{device}}",
     "echolalia": "Може повторювати слова або фрази (ехолалія)",
     "moreAlerts": "+{{count}} ще",
-    "moreContacts": "+{{count}} інших контактів нижче",
     "alertTypes": {
       "food_allergy": "ХАРЧОВА АЛЕРГІЯ",
       "epilepsy": "ЕПІЛЕПСІЯ",
@@ -379,7 +384,9 @@
       "medications": "Ліки",
       "conditions": "Стани",
       "doctors": "Лікарі"
-    }
+    },
+    "viewPhoto": "Переглянути фото повністю",
+    "closePhoto": "Закрити фото"
   },
   "account": {
     "title": "Акаунт",
@@ -417,7 +424,6 @@
     "dangerZone": "Небезпечна зона",
     "deleteAccount": "Видалити акаунт",
     "deleteAccountWarning": "Це назавжди видалить ваш акаунт і всі профілі дітей. Це неможливо скасувати.",
-    "deleting": "Видалення…",
     "deleteConfirmButton": "Так, видалити все",
     "toggleNotificationsLabel": "Перемкнути сповіщення про перегляди профілю",
     "upcomingFeature": "Незабаром"

@@ -1,20 +1,22 @@
-import { CARD } from '../../lib/cn'
+import type { ReactNode } from 'react'
+import { cx } from '../../lib/cx'
+import { CARD } from '../../lib/styles'
 
 interface Props {
   title?: string
-  children: React.ReactNode
+  children: ReactNode
   className?: string
 }
 
-export function SettingsCard({ title, children, className = '' }: Props) {
+export function SettingsCard({ title, children, className }: Props) {
   return (
-    <div className={`${CARD} ${className}`}>
+    <section className={cx(CARD, className)} aria-label={title}>
       {title && (
         <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">
           {title}
         </h2>
       )}
       {children}
-    </div>
+    </section>
   )
 }

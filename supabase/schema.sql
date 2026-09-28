@@ -76,8 +76,19 @@ create table if not exists section_definitions (
   render_hint     text not null default 'list',     -- 'list' | 'single' | 'alert_bar' | 'contact_list'
   sort_order      int not null default 0,
   default_visible boolean not null default true,
+  -- Shared (public) page presentation. Both optional:
+  --   share_label_key       — title on the shared page; falls back to label_key
+  --   share_group_label_key — sections with the same value render inside one
+  --                           expandable card with that title (e.g. medications,
+  --                           conditions and doctors under "Medical information"),
+  --                           each with its own share_label_key as a sub-heading
+  share_label_key       text,
+  share_group_label_key text,
   unique (profile_type, section_key)
 );
+
+alter table section_definitions add column if not exists share_label_key text;
+alter table section_definitions add column if not exists share_group_label_key text;
 
 -- ============================================================
 -- FIELD DEFINITIONS
@@ -199,45 +210,50 @@ create trigger profile_entries_updated_at
 
 -- ============================================================
 -- FUNCTION: invalidate_translation_cache
--- Deletes cached translations for a specific entry when its
--- source content is updated. Only the changed entry is cleared —
--- all other cached translations remain intact.
+-- Deletes cached translations for exactly one entry when its
+-- source content is updated or the entry is deleted. All other
+-- cached translations (including other entries in the same
+-- section) remain intact.
 --
--- field_path format (must match the translate Edge Function and
--- SharedProfilePage's tx() lookup): "{section_key}.{entry.id}.{field_key}"
--- for repeatable sections, or "{section_key}.{field_key}" for the
--- single-entry sections (communication, behavioral_notes, education) —
--- both are covered by matching on section_key + (entry id OR no id at all).
+-- field_path format — one convention for every section, shared by
+-- the translate Edge Function and the shared page (see
+-- src/lib/fieldPath.ts and supabase/functions/_shared/fieldPath.ts):
+--   "{section_key}.{entry_id}.{field_key}"        e.g. triggers.<uuid>.trigger_text
+--   "{section_key}.{entry_id}.{field_key}.{i}"    list items (text_list fields)
+-- Prefix match uses left() rather than LIKE so '_' in section keys
+-- (e.g. behavioral_notes) isn't treated as a wildcard.
 -- ============================================================
 create or replace function invalidate_translation_cache()
-returns trigger language plpgsql as $$
+returns trigger language plpgsql
+set search_path = ''
+as $$
+declare
+  v_row    public.profile_entries := coalesce(new, old);
+  v_prefix text := v_row.section_key || '.' || v_row.id::text || '.';
 begin
-  if (TG_OP = 'UPDATE') then
-    delete from content_translations
-    where child_id = new.child_id
-      and (
-        field_path like new.section_key || '.' || new.id::text || '.%'
-        or field_path like new.section_key || '.%'
-      );
+  -- Visibility toggles / reordering don't change the source text.
+  if tg_op = 'UPDATE' and new.values is not distinct from old.values then
+    return new;
   end if;
-  return new;
+  delete from public.content_translations
+  where child_id = v_row.child_id
+    and left(field_path, length(v_prefix)) = v_prefix;
+  return v_row;
 end;
 $$;
 
 drop trigger if exists profile_entries_translation_invalidate on profile_entries;
 create trigger profile_entries_translation_invalidate
-  after update on profile_entries
+  after update or delete on profile_entries
   for each row execute function invalidate_translation_cache();
 
 -- ============================================================
 -- ROW LEVEL SECURITY
 -- ============================================================
 
--- Helper: current authenticated user id
-create or replace function auth_uid()
-returns uuid language sql stable as $$
-  select auth.uid();
-$$;
+-- Removed helpers (were never referenced by any policy or client code).
+drop function if exists auth_uid();
+drop function if exists log_share_view(uuid, text, double precision, double precision, text, text, text);
 
 -- Helper: does the current user own this child?
 -- NOTE: if multi-guardian access is added later, only this function
@@ -245,25 +261,17 @@ $$;
 -- policy across the schema that calls owns_child() keeps working
 -- without modification.
 create or replace function owns_child(p_child_id uuid)
-returns boolean language sql stable security definer as $$
+returns boolean language sql stable security definer
+set search_path = ''
+as $$
   select exists (
-    select 1 from children
+    select 1 from public.children
     where id = p_child_id and user_id = auth.uid()
   );
 $$;
 
--- Helper: is sharing enabled for this child?
--- Used for anonymous read-only access on the shared profile page.
--- Access to child_id is already gated by the children table policy
--- (which requires either ownership or anon + share token lookup).
-create or replace function child_is_shared(p_child_id uuid)
-returns boolean language sql stable security definer as $$
-  select exists (
-    select 1 from children
-    where id = p_child_id
-      and sharing_enabled = true
-  );
-$$;
+-- child_is_shared() used to back anonymous read policies; both were
+-- removed — see "Anonymous access" below.
 
 -- Enable RLS on all tables
 alter table children enable row level security;
@@ -272,45 +280,46 @@ alter table profile_entries enable row level security;
 alter table content_translations enable row level security;
 alter table share_audit_log enable row level security;
 
--- children: owner only, plus anon can read if sharing is enabled
+-- ------------------------------------------------------------
+-- Anonymous access
+-- There are deliberately NO row policies granting anon (or
+-- authenticated non-owners) read access to children, personal_info,
+-- profile_entries or content_translations. The share token is the
+-- only credential for the public page, and PostgREST lets callers
+-- choose their own filters — a policy like "sharing_enabled = true"
+-- lets anyone with the (public) anon key list every shared child,
+-- their share tokens, photos and hidden fields without knowing any
+-- token. The shared page reads exclusively through
+-- get_shared_profile(p_token) (security definer, below), and the
+-- translate / log-share-view Edge Functions use service_role.
+-- ------------------------------------------------------------
+drop policy if exists "public read if shared" on children;
+drop policy if exists "anon read if shared" on personal_info;
+drop policy if exists "anon read if shared" on profile_entries;
+drop policy if exists "anon read if shared" on content_translations;
+drop function if exists child_is_shared(uuid);
+
+-- children: owner only
 drop policy if exists "owners can do everything on their children" on children;
 create policy "owners can do everything on their children"
   on children for all
   using (user_id = auth.uid())
   with check (user_id = auth.uid());
 
--- Anyone (anon or authenticated non-owner) can read a child row if sharing is enabled.
--- Ownership is enforced by the "owners can do everything" policy above.
-drop policy if exists "public read if shared" on children;
-create policy "public read if shared"
-  on children for select
-  using (sharing_enabled = true);
-
 -- personal_info
 drop policy if exists "owner full access" on personal_info;
 create policy "owner full access" on personal_info for all
   using (owns_child(child_id)) with check (owns_child(child_id));
-drop policy if exists "anon read if shared" on personal_info;
-create policy "anon read if shared" on personal_info for select
-  using (section_visible = true and child_is_shared(child_id));
 
--- profile_entries — replaces what used to be ~10 separate policy pairs,
--- one per section table. Per-field hiding (hidden_fields) is filtered
--- at the application layer when serving the shared page, not here.
+-- profile_entries — one policy pair for every section.
 drop policy if exists "owner full access" on profile_entries;
 create policy "owner full access" on profile_entries for all
   using (owns_child(child_id)) with check (owns_child(child_id));
-drop policy if exists "anon read if shared" on profile_entries;
-create policy "anon read if shared" on profile_entries for select
-  using (section_visible = true and child_is_shared(child_id));
 
 -- content_translations
 drop policy if exists "owner full access" on content_translations;
 create policy "owner full access" on content_translations for all
   using (owns_child(child_id)) with check (owns_child(child_id));
-drop policy if exists "anon read if shared" on content_translations;
-create policy "anon read if shared" on content_translations for select
-  using (child_is_shared(child_id));
 
 -- share_audit_log: owner read + delete; inserts only via service role (Edge Function)
 drop policy if exists "owner read" on share_audit_log;
@@ -349,7 +358,8 @@ create policy "owner full access"
 -- TABLE-LEVEL GRANTS
 -- RLS policies control row access, but grants control table access.
 -- Authenticated users get full CRUD on their own data (RLS enforces ownership).
--- Anon users get SELECT on shared tables only (RLS enforces sharing_enabled).
+-- Anon gets no table access to child data at all — only EXECUTE on
+-- get_shared_profile() and SELECT on the definitions metadata.
 -- ============================================================
 
 grant select, insert, update, delete on children to authenticated;
@@ -362,11 +372,13 @@ grant select, insert, update, delete on user_preferences to authenticated;
 grant select, delete on share_audit_log to authenticated;
 grant select, insert on share_audit_log to service_role;
 
--- Anon users: select on shared tables only (RLS enforces sharing_enabled = true)
-grant select on children to anon;
-grant select on personal_info to anon;
-grant select on profile_entries to anon;
-grant select on content_translations to anon;
+-- Anon: no direct access to child data (see "Anonymous access" above).
+revoke all on children from anon;
+revoke all on personal_info from anon;
+revoke all on profile_entries from anon;
+revoke all on content_translations from anon;
+revoke all on share_audit_log from anon;
+revoke all on user_preferences from anon;
 
 -- section_definitions / field_definitions: pure schema metadata, same for
 -- every user regardless of who's looking or which child — no RLS needed.
@@ -390,8 +402,8 @@ grant select on field_definitions to authenticated, anon;
 --   - translate: children, section_definitions, field_definitions,
 --     profile_entries, content_translations (select+insert for the cache)
 --   - log-share-view: children, personal_info, user_preferences (all
---     select-only reads inside notifyParent)
---   - delete-account: uses supabase-js admin client (auth.admin.deleteUser),
+--     select-only reads inside notifyParent), share_audit_log insert
+--   - delete-account: calls the Auth admin API (DELETE /auth/v1/admin/users),
 --     not direct table access, so nothing additional needed here
 grant select on children to service_role;
 grant select on section_definitions to service_role;
@@ -408,17 +420,19 @@ grant select on user_preferences to service_role;
 -- will stop working immediately.
 -- ============================================================
 create or replace function regenerate_share_token(p_child_id uuid)
-returns uuid language plpgsql security definer as $$
+returns uuid language plpgsql security definer
+set search_path = ''
+as $$
 declare
   v_new_token uuid;
 begin
-  if not owns_child(p_child_id) then
+  if not public.owns_child(p_child_id) then
     raise exception 'Not authorised';
   end if;
 
   v_new_token := gen_random_uuid();
 
-  update children
+  update public.children
   set share_token = v_new_token
   where id = p_child_id;
 
@@ -426,26 +440,72 @@ begin
 end;
 $$;
 
+revoke execute on function regenerate_share_token(uuid) from public, anon;
+grant execute on function regenerate_share_token(uuid) to authenticated;
+
 -- ============================================================
--- FUNCTION: log_share_view
--- Called from the log-share-view Edge Function (service role).
--- Direct inserts into share_audit_log bypass RLS via service role.
+-- FUNCTION: create_child
+-- Creates the children row and its personal_info row in one
+-- transaction, so a failure can't leave an orphan child without
+-- personal info. Runs as the caller (security invoker) — the normal
+-- owner RLS policies apply to both inserts.
 -- ============================================================
-create or replace function log_share_view(
-  p_child_id   uuid,
-  p_user_agent text,
-  p_latitude   double precision,
-  p_longitude  double precision,
-  p_geo_source text,
-  p_ip_city    text,
-  p_ip_country text
+create or replace function create_child(
+  p_name          text,
+  p_date_of_birth date default null,
+  p_pronouns      text default null
 )
-returns void language plpgsql security definer as $$
+returns public.children language plpgsql
+set search_path = ''
+as $$
+declare
+  v_child public.children;
 begin
-  insert into share_audit_log (child_id, user_agent, latitude, longitude, geo_source, ip_city, ip_country)
-  values (p_child_id, p_user_agent, p_latitude, p_longitude, p_geo_source, p_ip_city, p_ip_country);
+  if auth.uid() is null then
+    raise exception 'Not authenticated';
+  end if;
+
+  insert into public.children (user_id)
+  values (auth.uid())
+  returning * into v_child;
+
+  insert into public.personal_info (child_id, name, date_of_birth, pronouns)
+  values (v_child.id, coalesce(trim(p_name), ''), p_date_of_birth, nullif(trim(p_pronouns), ''));
+
+  return v_child;
 end;
 $$;
+
+revoke execute on function create_child(text, date, text) from public, anon;
+grant execute on function create_child(text, date, text) to authenticated;
+
+-- ============================================================
+-- FUNCTION: set_empty_section_hidden
+-- Adds/removes one section_key in children.hidden_empty_sections
+-- atomically (array_append/array_remove in a single UPDATE), instead
+-- of the client reading the array and writing it back — two tabs
+-- toggling different sections could otherwise overwrite each other.
+-- Security invoker: owner RLS on children applies.
+-- ============================================================
+create or replace function set_empty_section_hidden(
+  p_child_id    uuid,
+  p_section_key text,
+  p_hidden      boolean
+)
+returns text[] language sql
+set search_path = ''
+as $$
+  update public.children
+  set hidden_empty_sections = case
+    when p_hidden then array_append(array_remove(hidden_empty_sections, p_section_key), p_section_key)
+    else array_remove(hidden_empty_sections, p_section_key)
+  end
+  where id = p_child_id
+  returning hidden_empty_sections;
+$$;
+
+revoke execute on function set_empty_section_hidden(uuid, text, boolean) from public, anon;
+grant execute on function set_empty_section_hidden(uuid, text, boolean) to authenticated;
 
 -- ============================================================
 -- SEED DATA — section_definitions / field_definitions for 'asd_child'
@@ -468,6 +528,21 @@ insert into section_definitions (profile_type, section_key, label_key, repeatabl
   ('asd_child', 'education',        'child.sections.educationalInfo',  false, 'single',       90)
 on conflict (profile_type, section_key) do nothing;
 
+-- Shared-page titles / grouping (idempotent — applies to existing rows too).
+update section_definitions set share_label_key = v.share_label_key, share_group_label_key = v.group_key
+from (values
+  ('contacts',         'sharedPage.sections.moreContacts',   null),
+  ('triggers',         'sharedPage.sections.allTriggers',    null),
+  ('sensory',          'sharedPage.sensorySections.title',   null),
+  ('routines',         'sharedPage.sections.routines',       null),
+  ('medications',      'sharedPage.sections.medications',    'sharedPage.sections.medical'),
+  ('conditions',       'sharedPage.sections.conditions',     'sharedPage.sections.medical'),
+  ('doctors',          'sharedPage.sections.doctors',        'sharedPage.sections.medical'),
+  ('behavioral_notes', 'sharedPage.sections.behavioral',     null)
+) as v(section_key, share_label_key, group_key)
+where section_definitions.profile_type = 'asd_child'
+  and section_definitions.section_key = v.section_key;
+
 -- alerts
 insert into field_definitions (section_id, field_key, label_key, field_type, options, required, translatable, sort_order)
 select id, 'alert_type', 'child.alerts.alertType', 'select',
@@ -483,10 +558,17 @@ select id, 'alert_type', 'child.alerts.alertType', 'select',
 from section_definitions where profile_type = 'asd_child' and section_key = 'alerts'
 on conflict (section_id, field_key) do nothing;
 
+-- label is only stored for alert_type = 'custom' (parent-authored text, so
+-- translatable); built-in types are labelled from the alert_type option's
+-- label_key at render time and never store a label.
 insert into field_definitions (section_id, field_key, label_key, field_type, translatable, sort_order)
-select id, 'label', 'child.alerts.alertLabel', 'text', false, 20
+select id, 'label', 'child.alerts.alertLabel', 'text', true, 20
 from section_definitions where profile_type = 'asd_child' and section_key = 'alerts'
 on conflict (section_id, field_key) do nothing;
+
+update field_definitions set translatable = true
+where field_key = 'label'
+  and section_id in (select id from section_definitions where profile_type = 'asd_child' and section_key = 'alerts');
 
 insert into field_definitions (section_id, field_key, label_key, field_type, options, required, translatable, sort_order)
 select id, 'severity', 'child.alerts.severity', 'severity_enum',
@@ -547,10 +629,14 @@ select id, 'echolalia', 'child.communication.echolalia', 'boolean', false, 40
 from section_definitions where profile_type = 'asd_child' and section_key = 'communication'
 on conflict (section_id, field_key) do nothing;
 
-insert into field_definitions (section_id, field_key, label_key, field_type, translatable, sort_order)
-select id, 'instructions', 'child.communication.instructions', 'text_list', true, 50
+insert into field_definitions (section_id, field_key, label_key, placeholder_key, field_type, translatable, sort_order)
+select id, 'instructions', 'child.communication.instructions', 'child.communication.instructionPlaceholder', 'text_list', true, 50
 from section_definitions where profile_type = 'asd_child' and section_key = 'communication'
 on conflict (section_id, field_key) do nothing;
+
+update field_definitions set placeholder_key = 'child.communication.instructionPlaceholder'
+where field_key = 'instructions' and placeholder_key is null
+  and section_id in (select id from section_definitions where profile_type = 'asd_child' and section_key = 'communication');
 
 -- triggers
 insert into field_definitions (section_id, field_key, label_key, placeholder_key, field_type, required, translatable, sort_order)
@@ -687,29 +773,29 @@ on conflict (section_id, field_key) do nothing;
 
 -- ============================================================
 -- FUNCTION: get_shared_profile
--- Server-side read path for the public shared page (anon or
--- authenticated non-owner). Replaces fetching children/personal_info/
--- profile_entries directly for the shared view:
---   1. Only returns explicit columns needed by the shared page (no
---      select * over children/personal_info — narrows what a future
---      column addition would otherwise expose by default).
---   2. Strips hidden_fields out of each entry's `values` jsonb here,
---      server-side — previously this filtering happened only in the
---      React layer, meaning the full values blob (including fields a
---      parent explicitly hid) was sent to the browser and visible via
---      devtools/Network tab on this no-login public page.
---   3. security definer + explicit sharing_enabled check lets this
---      bypass RLS safely — it is the enforcement point, so the check
---      below must stay in sync with child_is_shared()/RLS intent.
+-- The ONLY read path for the public shared page (anon or authenticated
+-- non-owner) — there are no anonymous table policies (see "Anonymous
+-- access" above), so this function is the enforcement point:
+--   1. Requires the share token and sharing_enabled = true.
+--   2. Returns only explicit columns (no select * — a future column
+--      addition can't leak to anon viewers by default).
+--   3. Omits hidden data server-side: personal info when its section is
+--      hidden, the photo when photo_visible = false, entries whose
+--      section is hidden, and any key listed in an entry's hidden_fields.
+--   4. Also returns the section/field definitions for the child's
+--      profile_type so the shared page can render every section from
+--      data (one round trip, no separate definitions fetch).
 -- ============================================================
 create or replace function get_shared_profile(p_token uuid)
-returns jsonb language plpgsql stable security definer as $$
+returns jsonb language plpgsql stable security definer
+set search_path = ''
+as $$
 declare
-  v_child      children;
+  v_child      public.children;
   v_result     jsonb;
 begin
   select * into v_child
-  from children
+  from public.children
   where share_token = p_token and sharing_enabled = true;
 
   if v_child.id is null then
@@ -728,20 +814,41 @@ begin
         'name', pi.name,
         'date_of_birth', pi.date_of_birth,
         'pronouns', pi.pronouns,
-        'photo_base64', case when pi.photo_visible then pi.photo_base64 else null end,
-        'photo_visible', pi.photo_visible,
-        'section_visible', pi.section_visible
+        'photo_base64', case when pi.photo_visible then pi.photo_base64 else null end
       )
-      from personal_info pi
-      where pi.child_id = v_child.id
+      from public.personal_info pi
+      where pi.child_id = v_child.id and pi.section_visible = true
     ),
+    'sections', coalesce((
+      select jsonb_agg(jsonb_build_object(
+        'section_key', sd.section_key,
+        'label_key', sd.label_key,
+        'share_label_key', sd.share_label_key,
+        'share_group_label_key', sd.share_group_label_key,
+        'repeatable', sd.repeatable,
+        'render_hint', sd.render_hint,
+        'sort_order', sd.sort_order,
+        'fields', coalesce((
+          select jsonb_agg(jsonb_build_object(
+            'field_key', fd.field_key,
+            'label_key', fd.label_key,
+            'field_type', fd.field_type,
+            'options', fd.options,
+            'translatable', fd.translatable,
+            'sort_order', fd.sort_order
+          ) order by fd.sort_order)
+          from public.field_definitions fd
+          where fd.section_id = sd.id
+        ), '[]'::jsonb)
+      ) order by sd.sort_order)
+      from public.section_definitions sd
+      where sd.profile_type = v_child.profile_type
+    ), '[]'::jsonb),
     'entries', coalesce((
       select jsonb_agg(jsonb_build_object(
         'id', pe.id,
         'section_key', pe.section_key,
         'sort_order', pe.sort_order,
-        'section_visible', pe.section_visible,
-        'hidden_fields', pe.hidden_fields,
         -- Strip any key listed in hidden_fields out of the values blob
         -- before it ever leaves the database.
         'values', (
@@ -749,8 +856,8 @@ begin
           from jsonb_each(pe.values) kv
           where not (kv.key = any(pe.hidden_fields))
         )
-      ) order by pe.sort_order)
-      from profile_entries pe
+      ) order by pe.sort_order, pe.created_at)
+      from public.profile_entries pe
       where pe.child_id = v_child.id and pe.section_visible = true
     ), '[]'::jsonb)
   ) into v_result;
@@ -760,5 +867,5 @@ end;
 $$;
 
 -- Anon + authenticated callers may invoke this — it performs its own
--- sharing_enabled check internally, so exposing the function itself is safe.
+-- token + sharing_enabled check internally.
 grant execute on function get_shared_profile(uuid) to anon, authenticated;

@@ -14,12 +14,15 @@
     "poweredBy": "مدعوم من Myndigo",
     "deleteFailed": "فشل الحذف",
     "saveFailed": "فشل الحفظ",
-    "removeInstruction": "إزالة التعليمات",
-    "removeAlert": "إزالة التنبيه",
     "toggleMenu": "تبديل القائمة",
     "selectLanguage": "اختر اللغة",
     "photoAlt": "صورة الطفل",
-    "qrCodeAlt": "رمز QR للمصادقة الثنائية"
+    "qrCodeAlt": "رمز QR للمصادقة الثنائية",
+    "confirmDelete": "حذف هذا العنصر؟",
+    "yesDelete": "نعم، احذف",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل",
+    "reload": "إعادة تحميل الصفحة"
   },
   "auth": {
     "signIn": "تسجيل الدخول",
@@ -167,7 +170,7 @@
       "addPhoto": "إضافة صورة",
       "changePhoto": "تغيير الصورة",
       "removePhoto": "حذف",
-      "photoHint": "الحد الأقصى 200 كيلوبايت، JPG أو PNG",
+      "photoHint": "JPG أو PNG أو WebP — يتم تغيير الحجم تلقائيًا",
       "photoVisible": "الصورة ظاهرة على الصفحة المشتركة",
       "photoHidden": "الصورة مخفية من الصفحة المشتركة"
     },
@@ -189,8 +192,7 @@
       "devicePlaceholder": "مثال: Proloquo2Go، لوحة PECS",
       "echolalia": "قد يستخدم صدى الكلام (تكرار الكلمات أو العبارات)",
       "instructions": "كيفية التواصل — تعليمات أساسية للآخرين",
-      "instructionPlaceholder": "مثال: استخدم جملاً قصيرة وبسيطة",
-      "addInstruction": "إضافة"
+      "instructionPlaceholder": "مثال: استخدم جملاً قصيرة وبسيطة"
     },
     "triggers": {
       "noTriggers": "لم تُضف أي محفزات بعد.",
@@ -280,16 +282,12 @@
     "downloadQr": "تحميل رمز QR",
     "invalidateQrTitle": "إبطال رمز QR وشريحة NFC",
     "invalidateQrHint": "يُنشئ رابطاً جديداً. سيتوقف رمز QR الحالي وأي شريحة NFC مبرمجة عن العمل فوراً.",
-    "invalidateQrButton": "إبطال وإعادة الإنشاء",
-    "regenerateWarning": "سيؤدي هذا إلى إبطال رمز QR وشريحة NFC الحاليين. هل أنت متأكد؟",
-    "regenerating": "جارٍ الإنشاء…",
     "yesRegenerate": "نعم، أعد الإنشاء",
     "auditLog": "عرض السجل",
     "noViews": "لم تُسجَّل أي مشاهدات بعد.",
     "clearHistory": "مسح السجل",
     "clearHistoryWarning": "سيؤدي هذا إلى حذف سجل المشاهدات بالكامل لهذا الملف الشخصي نهائياً. لا يمكن التراجع عن هذا الإجراء.",
     "yesClearHistory": "نعم، امسح السجل",
-    "visibilitySettings": "إعدادات الظهور",
     "sectionVisible": "ظاهر على الصفحة المشتركة",
     "sectionHidden": "مخفي من الصفحة المشتركة",
     "alertsHideWarning": "إخفاء التنبيهات قد يعرّض طفلك للخطر. هل أنت متأكد؟",
@@ -314,7 +312,13 @@
     "printBadgePrint": "طباعة",
     "printBadgeClose": "إغلاق",
     "printBadgeNameLabel": "مرحباً، اسمي",
-    "printBadgeMessageShort": "للتعرف عليّ بشكل أفضل أو لمساعدتي في حالة طارئة، يرجى مسح رمز QR هذا."
+    "printBadgeMessageShort": "للتعرف عليّ بشكل أفضل أو لمساعدتي في حالة طارئة، يرجى مسح رمز QR هذا.",
+    "copyFailed": "تعذّر نسخ الرابط. تم تحديده — انسخه يدويًا.",
+    "shareLink": "رابط المشاركة",
+    "openInNewTab": "فتح في علامة تبويب جديدة",
+    "geoGps": "GPS",
+    "geoIp": "تقريبي عبر IP",
+    "loadMore": "عرض {{count}} إضافية"
   },
   "notFound": {
     "title": "الصفحة غير موجودة",
@@ -325,25 +329,26 @@
     "profileNotFound": "الملف الشخصي غير موجود",
     "backToDashboard": "العودة إلى لوحة التحكم",
     "childProfile": "ملف الطفل الشخصي",
-    "photoTooLarge": "يجب أن تكون الصورة أقل من 200 كيلوبايت. يرجى تقليص حجمها والمحاولة مرة أخرى.",
-    "failedToCreate": "فشل إنشاء الملف الشخصي"
+    "photoTooLarge": "يجب أن يكون حجم الصورة أقل من 20 ميغابايت.",
+    "failedToCreate": "فشل إنشاء الملف الشخصي",
+    "newVersionTitle": "يتوفر إصدار جديد من Myndigo",
+    "newVersionHint": "أعد تحميل الصفحة للمتابعة.",
+    "unexpectedTitle": "حدث خطأ ما",
+    "unexpectedHint": "يرجى إعادة تحميل الصفحة والمحاولة مرة أخرى.",
+    "photoUnreadable": "تعذّرت قراءة هذه الصورة. يرجى تجربة صورة JPG أو PNG."
   },
   "sharedPage": {
     "notShared": "هذا الملف الشخصي غير مشارَك حالياً.",
     "notSharedHint": "قام الوالد/الوالدة بتعطيل المشاركة لهذا الملف.",
     "alerts": "تنبيهات مهمة",
-    "showAll": "عرض الكل",
     "callNow": "اتصل الآن",
     "language": "اللغة",
-    "expandSection": "عرض المزيد",
-    "collapseSection": "عرض أقل",
     "triggers": "المحفزات",
     "talkToMe": "كيف تتحدث معي",
     "usesAac": "يستخدم جهاز تواصل معزز / وسيلة مساعدة للتواصل",
     "usesAacDevice": "يستخدم جهاز تواصل معزز: {{device}}",
     "echolalia": "قد يكرر كلمات أو عبارات (صدى الكلام)",
     "moreAlerts": "+{{count}} أخرى",
-    "moreContacts": "+{{count}} جهات اتصال أخرى أدناه",
     "alertTypes": {
       "food_allergy": "حساسية غذائية",
       "epilepsy": "الصرع",
@@ -379,7 +384,9 @@
       "medications": "الأدوية",
       "conditions": "الحالات الطبية",
       "doctors": "الأطباء"
-    }
+    },
+    "viewPhoto": "عرض الصورة كاملة",
+    "closePhoto": "إغلاق الصورة"
   },
   "account": {
     "title": "الحساب",
@@ -417,7 +424,6 @@
     "dangerZone": "منطقة الخطر",
     "deleteAccount": "حذف الحساب",
     "deleteAccountWarning": "سيؤدي هذا إلى حذف حسابك وجميع ملفات الأطفال نهائياً. لا يمكن التراجع عن هذا الإجراء.",
-    "deleting": "جارٍ الحذف…",
     "deleteConfirmButton": "نعم، احذف كل شيء",
     "toggleNotificationsLabel": "تفعيل/تعطيل إشعارات مشاهدة الملف الشخصي",
     "upcomingFeature": "قريباً"

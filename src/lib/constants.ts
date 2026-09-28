@@ -7,5 +7,9 @@ export const SAVED_FLASH_MS = 2000
 export const AUDIT_PAGE_SIZE = 10
 
 // ── Validation ────────────────────────────────────────────────────────────────
-/** Maximum photo file size in bytes (2 MB) */
-export const MAX_PHOTO_BYTES = 2 * 1024 * 1024
+/**
+ * Maximum size of the photo file a parent picks (20 MB). It's resized to
+ * ~50 KB in the browser before saving (see lib/image.ts), so this only
+ * guards against decoding absurdly large files on low-memory phones.
+ */
+export const MAX_PHOTO_BYTES = 20 * 1024 * 1024

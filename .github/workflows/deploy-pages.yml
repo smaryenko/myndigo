@@ -36,6 +36,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint and test
+        run: |
+          npm run lint
+          npm test
+
       - name: Build
         # BASE_PATH must match the repo name so assets resolve under
         # https://<user>.github.io/myndigo/. VITE_SUPABASE_* are the

@@ -1,94 +1,107 @@
+import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
-import { INPUT_SM } from '../../lib/cn'
-import type { FieldDefinition } from '../../lib/types'
-
-type FieldValue = string | boolean | string[] | number | null
+import { cx } from '../../lib/cx'
+import { INPUT_SM, LABEL, SELECT_SM } from '../../lib/styles'
+import type { FieldDefinition, FieldValue } from '../../lib/types'
 
 interface Props {
   field: FieldDefinition
-  value: FieldValue
+  value: FieldValue | undefined
   onChange: (value: FieldValue) => void
   autoFocus?: boolean
+  /**
+   * 'visible' — label above the input (single-entry forms).
+   * 'sr-only' — label announced to screen readers only (compact add/edit rows,
+   * where the placeholder is the visual cue).
+   */
+  labelMode?: 'visible' | 'sr-only'
 }
 
 /**
- * Renders the correct input widget for a single field, based on
- * field.field_type. This is the one place that needs a new case
- * whenever a genuinely new field_type is introduced — everything
- * else (which fields exist, in what order, for which section) is
- * pure data in field_definitions.
+ * Renders the correct input widget (with an associated <label>) for one
+ * field, based on field.field_type. This is the one place that needs a new
+ * case whenever a genuinely new field_type is introduced — which fields
+ * exist, in what order, for which section is pure data in field_definitions.
+ *
+ * Not handled here: 'priority_int' (derived from list order) and
+ * 'text_list' (see TextListField).
  */
-export function FieldInput({ field, value, onChange, autoFocus }: Props) {
+export function FieldInput({ field, value, onChange, autoFocus, labelMode = 'sr-only' }: Props) {
   const { t } = useTranslation()
+  const id = useId()
   const label = t(field.label_key)
   const placeholder = t(field.placeholder_key ?? field.label_key)
+  const labelClass = labelMode === 'visible' ? LABEL : 'sr-only'
+  const text = typeof value === 'string' ? value : ''
 
+  if (field.field_type === 'priority_int' || field.field_type === 'text_list') return null
+
+  if (field.field_type === 'boolean') {
+    return (
+      <label htmlFor={id} className="flex items-center gap-3">
+        <input
+          id={id}
+          type="checkbox"
+          checked={value === true}
+          onChange={e => onChange(e.target.checked)}
+          className="w-4 h-4 accent-indigo-600"
+        />
+        <span className="text-sm text-slate-700">{label}</span>
+      </label>
+    )
+  }
+
+  let control
   switch (field.field_type) {
     case 'longtext':
-      return (
+      control = (
         <textarea
-          value={(value as string) ?? ''}
+          id={id}
+          value={text}
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
           rows={3}
           autoFocus={autoFocus}
-          className="w-full rounded-lg border border-slate-200 px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"
+          className={cx(INPUT_SM, 'resize-none')}
         />
       )
-
+      break
     case 'select':
     case 'severity_enum':
-      return (
+      control = (
         <select
-          value={(value as string) ?? field.options?.[0]?.value ?? ''}
+          id={id}
+          value={text || (field.options?.[0]?.value ?? '')}
           onChange={e => onChange(e.target.value)}
-          className="w-full appearance-none rounded-lg border border-slate-200 px-2.5 py-2 pr-8 text-sm bg-white bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2394a3b8%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22M6%209l6%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_0.5rem_center] focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          autoFocus={autoFocus}
+          className={SELECT_SM}
         >
           {(field.options ?? []).map(opt => (
             <option key={opt.value} value={opt.value}>{t(opt.label_key)}</option>
           ))}
         </select>
       )
-
-    case 'boolean':
-      return (
-        <label className="flex items-center gap-3">
-          <input
-            type="checkbox"
-            checked={Boolean(value)}
-            onChange={e => onChange(e.target.checked)}
-            className="w-4 h-4 accent-indigo-600"
-          />
-          <span className="text-sm text-slate-700">{label}</span>
-        </label>
-      )
-
+      break
     case 'phone':
-      return (
+      control = (
         <input
+          id={id}
           type="tel"
-          value={(value as string) ?? ''}
+          autoComplete="tel"
+          value={text}
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
           autoFocus={autoFocus}
           className={INPUT_SM}
         />
       )
-
-    case 'priority_int':
-      // Priority is derived from list order, not directly editable as a field.
-      return null
-
-    case 'text_list':
-      // Handled by the caller (list-of-strings editor), not a plain widget.
-      return null
-
-    case 'text':
+      break
     default:
-      return (
+      control = (
         <input
+          id={id}
           type="text"
-          value={(value as string) ?? ''}
+          value={text}
           onChange={e => onChange(e.target.value)}
           placeholder={placeholder}
           autoFocus={autoFocus}
@@ -96,4 +109,14 @@ export function FieldInput({ field, value, onChange, autoFocus }: Props) {
         />
       )
   }
+
+  return (
+    <div>
+      <label htmlFor={id} className={labelClass}>
+        {label}
+        {field.required && <span className="text-red-500" aria-hidden="true"> *</span>}
+      </label>
+      {control}
+    </div>
+  )
 }

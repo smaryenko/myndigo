@@ -1,5 +1,7 @@
-import { useState, type ReactNode } from 'react'
+import { useId, useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import { cx } from '../../lib/cx'
+import { ConfirmPanel } from '../ui/ConfirmPanel'
 
 interface SectionCardProps {
   title: string
@@ -13,6 +15,7 @@ interface SectionCardProps {
   defaultCollapsed?: boolean
 }
 
+/** Collapsible editor card with a shared-page visibility toggle in its header. */
 export function SectionCard({
   title,
   visible,
@@ -24,6 +27,8 @@ export function SectionCard({
   const { t } = useTranslation()
   const [collapsed, setCollapsed] = useState(defaultCollapsed)
   const [confirmingHide, setConfirmingHide] = useState(false)
+  const contentId = useId()
+  const visibilityLabel = visible ? t('share.sectionVisible') : t('share.sectionHidden')
 
   const handleVisibilityToggle = () => {
     if (visible && hideWarning) {
@@ -34,67 +39,52 @@ export function SectionCard({
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-      {/* Header */}
+    <section className="bg-white rounded-2xl border border-slate-100 overflow-hidden" aria-label={title}>
       <div className="flex items-center justify-between gap-2 flex-wrap px-4 py-3 border-b border-slate-50">
         <button
           type="button"
           onClick={() => setCollapsed(c => !c)}
+          aria-expanded={!collapsed}
+          aria-controls={contentId}
           className="flex items-center gap-2 text-left"
         >
-          <span className="font-semibold text-slate-800 text-sm">{title}</span>
-          <span className="text-slate-400 text-xs shrink-0">{collapsed ? '▸' : '▾'}</span>
+          <h2 className="font-semibold text-slate-800 text-sm">{title}</h2>
+          <span className="text-slate-400 text-xs shrink-0" aria-hidden="true">{collapsed ? '▸' : '▾'}</span>
         </button>
 
-        {/* Visibility toggle — label always shown (not just on sm+): on mobile,
-            the 👁/🙈 emoji pair alone reads as nearly identical at small size,
-            so hiding the text left this control ambiguous on phones. Header
-            wraps (flex-wrap) rather than truncating the section title when
-            both don't fit on one line. */}
+        {/* Visibility toggle — label always shown (the 👁/🙈 emoji pair alone
+            is ambiguous at small sizes). Header wraps rather than truncating. */}
         <button
           type="button"
           onClick={handleVisibilityToggle}
-          title={visible ? t('share.sectionVisible') : t('share.sectionHidden')}
-          className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border transition-colors shrink-0 whitespace-nowrap ${
-            visible
-              ? 'border-green-200 bg-green-50 text-green-700'
-              : 'border-slate-200 bg-slate-50 text-slate-400'
-          }`}
+          aria-pressed={visible}
+          aria-label={`${title}: ${visibilityLabel}`}
+          className={cx(
+            'flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border transition-colors shrink-0 whitespace-nowrap',
+            visible ? 'border-green-200 bg-green-50 text-green-700' : 'border-slate-200 bg-slate-50 text-slate-400',
+          )}
         >
-          <span>{visible ? '👁' : '🙈'}</span>
-          <span>{visible ? t('share.sectionVisible') : t('share.sectionHidden')}</span>
+          <span aria-hidden="true">{visible ? '👁' : '🙈'}</span>
+          <span>{visibilityLabel}</span>
         </button>
       </div>
 
-      {/* Warning modal */}
-      {confirmingHide && (
-        <div className="bg-amber-50 border-b border-amber-100 px-4 py-3">
-          <p className="text-sm text-amber-800 mb-3">{hideWarning}</p>
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => { onVisibilityChange(false); setConfirmingHide(false) }}
-              className="text-xs bg-amber-600 text-white px-3 py-1.5 rounded-lg hover:bg-amber-700"
-            >
-              {t('share.hideAnyway')}
-            </button>
-            <button
-              type="button"
-              onClick={() => setConfirmingHide(false)}
-              className="text-xs border border-amber-200 text-amber-700 px-3 py-1.5 rounded-lg hover:bg-amber-100"
-            >
-              {t('common.cancel')}
-            </button>
-          </div>
-        </div>
+      {confirmingHide && hideWarning && (
+        <ConfirmPanel
+          tone="warning"
+          message={hideWarning}
+          confirmLabel={t('share.hideAnyway')}
+          onConfirm={() => { onVisibilityChange(false); setConfirmingHide(false) }}
+          onCancel={() => setConfirmingHide(false)}
+          className="bg-amber-50 border-b border-amber-100 px-4 py-3"
+        />
       )}
 
-      {/* Content */}
       {!collapsed && (
-        <div className="px-4 py-4">
+        <div id={contentId} className="px-4 py-4">
           {children}
         </div>
       )}
-    </div>
+    </section>
   )
 }

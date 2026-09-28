@@ -1,70 +1,45 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+// Supabase Edge Function: delete-account
+// Deployed WITH JWT verification. Called only from the app's own
+// authenticated frontend, so CORS is restricted to APP_ORIGIN when set
+// (falls back to "*" so an unconfigured deployment doesn't break).
+//
+// Deleting the auth user cascades to every table (children → personal_info,
+// profile_entries, content_translations, share_audit_log; user_preferences).
 
-// This endpoint is always called from the app's own authenticated frontend
-// with the caller's JWT — unlike translate/log-share-view it has no reason
-// to accept requests from arbitrary origins. Configure APP_ORIGIN in the
-// Edge Function secrets (e.g. "https://myndigo.app"); falls back to "*"
-// only if it isn't set, so existing deployments don't break silently.
-const allowedOrigin = Deno.env.get('APP_ORIGIN') ?? '*'
-const corsHeaders = {
-  'Access-Control-Allow-Origin': allowedOrigin,
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+import { corsHeaders, json, preflight } from '../_shared/http.ts'
+import { serviceEnv, serviceHeaders } from '../_shared/rest.ts'
+
+const CORS = corsHeaders(Deno.env.get('APP_ORIGIN') ?? '*')
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
-  }
+  if (req.method === 'OPTIONS') return preflight(CORS)
 
   try {
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!
-
-    // Verify the caller is authenticated using their JWT
+    const env = serviceEnv()
+    const anonKey = Deno.env.get('SUPABASE_ANON_KEY')
     const authHeader = req.headers.get('Authorization')
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
-    }
+    if (!authHeader || !anonKey) return json({ error: 'Unauthorized' }, CORS, 401)
 
-    // Use the caller's token to identify who they are
-    const userClient = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
+    // Identify the caller from their own JWT (never from the request body).
+    const userRes = await fetch(`${env.url}/auth/v1/user`, {
+      headers: { apikey: anonKey, Authorization: authHeader },
     })
-    const { data: { user }, error: userError } = await userClient.auth.getUser()
+    if (!userRes.ok) return json({ error: 'Unauthorized' }, CORS, 401)
+    const user = await userRes.json()
+    if (!user?.id) return json({ error: 'Unauthorized' }, CORS, 401)
 
-    if (userError || !user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
-    }
-
-    // Use service role to delete the user from auth.users
-    // Cascade in the DB handles deletion of all child data
-    const adminClient = createClient(supabaseUrl, serviceRoleKey)
-    const { error: deleteError } = await adminClient.auth.admin.deleteUser(user.id)
-
-    if (deleteError) {
-      console.error('delete-account: deleteUser failed:', deleteError.message)
-      return new Response(JSON.stringify({ error: 'Account deletion failed' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
-    }
-
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    const deleteRes = await fetch(`${env.url}/auth/v1/admin/users/${encodeURIComponent(user.id)}`, {
+      method: 'DELETE',
+      headers: serviceHeaders(env),
     })
+    if (!deleteRes.ok) {
+      console.error('delete-account: deleteUser failed:', deleteRes.status, await deleteRes.text())
+      return json({ error: 'Account deletion failed' }, CORS, 500)
+    }
+
+    return json({ success: true }, CORS)
   } catch (err) {
     console.error('delete-account: error:', err)
-    return new Response(JSON.stringify({ error: 'Account deletion failed' }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    })
+    return json({ error: 'Account deletion failed' }, CORS, 500)
   }
 })

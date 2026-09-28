@@ -14,12 +14,15 @@
     "poweredBy": "Powered by Myndigo",
     "deleteFailed": "Delete failed",
     "saveFailed": "Save failed",
-    "removeInstruction": "Remove instruction",
-    "removeAlert": "Remove alert",
     "toggleMenu": "Toggle menu",
     "selectLanguage": "Select language",
     "photoAlt": "Child photo",
-    "qrCodeAlt": "QR code for two-factor authentication"
+    "qrCodeAlt": "QR code for two-factor authentication",
+    "confirmDelete": "Delete this item?",
+    "yesDelete": "Yes, delete",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "reload": "Reload page"
   },
   "auth": {
     "signIn": "Log in",
@@ -167,7 +170,7 @@
       "addPhoto": "Add photo",
       "changePhoto": "Change photo",
       "removePhoto": "Remove",
-      "photoHint": "Max 2 MB, JPG or PNG",
+      "photoHint": "JPG, PNG or WebP — resized automatically",
       "photoVisible": "Photo visible on shared page",
       "photoHidden": "Photo hidden from shared page"
     },
@@ -189,8 +192,7 @@
       "devicePlaceholder": "e.g. Proloquo2Go, PECS board",
       "echolalia": "May use echolalia (repeating words/phrases)",
       "instructions": "How to communicate — key instructions for others",
-      "instructionPlaceholder": "e.g. Use short simple sentences",
-      "addInstruction": "Add"
+      "instructionPlaceholder": "e.g. Use short simple sentences"
     },
     "triggers": {
       "noTriggers": "No triggers added yet.",
@@ -280,16 +282,12 @@
     "downloadQr": "Download QR code",
     "invalidateQrTitle": "Invalidate QR code & NFC chip",
     "invalidateQrHint": "Generates a new link. The current QR code and any programmed NFC chips will stop working immediately.",
-    "invalidateQrButton": "Invalidate & regenerate",
-    "regenerateWarning": "This will invalidate the current QR code and NFC chip. Are you sure?",
-    "regenerating": "Regenerating…",
     "yesRegenerate": "Yes, regenerate",
     "auditLog": "View history",
     "noViews": "No views recorded yet.",
     "clearHistory": "Clear history",
     "clearHistoryWarning": "This will permanently delete all view history for this profile. This cannot be undone.",
     "yesClearHistory": "Yes, clear history",
-    "visibilitySettings": "Visibility settings",
     "sectionVisible": "Visible on shared page",
     "sectionHidden": "Hidden from shared page",
     "alertsHideWarning": "Hiding alerts could put your child at risk. Are you sure?",
@@ -314,7 +312,13 @@
     "printBadgePrint": "Print",
     "printBadgeClose": "Close",
     "printBadgeNameLabel": "Hi, my name is",
-    "printBadgeMessageShort": "To get to know me better or to help me in an emergency, please scan this QR code."
+    "printBadgeMessageShort": "To get to know me better or to help me in an emergency, please scan this QR code.",
+    "copyFailed": "Couldn't copy the link. It's selected — copy it manually.",
+    "shareLink": "Share link",
+    "openInNewTab": "Open in new tab",
+    "geoGps": "GPS",
+    "geoIp": "approx. via IP",
+    "loadMore": "Show {{count}} more"
   },
   "notFound": {
     "title": "Page not found",
@@ -325,25 +329,26 @@
     "profileNotFound": "Profile not found",
     "backToDashboard": "Back to dashboard",
     "childProfile": "Child profile",
-    "photoTooLarge": "Photo must be under 2 MB. Please resize and try again.",
-    "failedToCreate": "Failed to create profile"
+    "photoTooLarge": "Photo must be under 20 MB.",
+    "failedToCreate": "Failed to create profile",
+    "newVersionTitle": "A new version of Myndigo is available",
+    "newVersionHint": "Reload the page to continue.",
+    "unexpectedTitle": "Something went wrong",
+    "unexpectedHint": "Please reload the page and try again.",
+    "photoUnreadable": "We couldn't read this photo. Please try a JPG or PNG."
   },
   "sharedPage": {
     "notShared": "This profile is not currently shared.",
     "notSharedHint": "The parent has disabled sharing for this profile.",
     "alerts": "Important alerts",
-    "showAll": "Show all",
     "callNow": "Call",
     "language": "Language",
-    "expandSection": "Show more",
-    "collapseSection": "Show less",
     "triggers": "Triggers",
     "talkToMe": "Talk to me",
     "usesAac": "Uses AAC / communication device",
     "usesAacDevice": "Uses AAC device: {{device}}",
     "echolalia": "May repeat words or phrases (echolalia)",
     "moreAlerts": "+{{count}} more",
-    "moreContacts": "+{{count}} more contacts below",
     "alertTypes": {
       "food_allergy": "FOOD ALLERGY",
       "epilepsy": "EPILEPSY",
@@ -379,7 +384,9 @@
       "medications": "Medications",
       "conditions": "Conditions",
       "doctors": "Doctors"
-    }
+    },
+    "viewPhoto": "View full photo",
+    "closePhoto": "Close photo"
   },
   "account": {
     "title": "Account",
@@ -397,7 +404,8 @@
     "mfaDisabled": "Not enabled",
     "mfaProtected": "Your account is protected with a time-based authenticator app.",
     "mfaIncorrectCode": "Incorrect code. Please try again.",
-    "mfaDisable": "Disable 2FA",    "mfaDisableConfirm": "Disabling 2FA will make your account less secure. Continue?",
+    "mfaDisable": "Disable 2FA",
+    "mfaDisableConfirm": "Disabling 2FA will make your account less secure. Continue?",
     "mfaDisabling": "Disabling…",
     "mfaYesDisable": "Yes, disable",
     "mfaScanQr": "Scan this QR code with your authenticator app (Google Authenticator, Authy, etc.):",
@@ -416,7 +424,6 @@
     "dangerZone": "Danger zone",
     "deleteAccount": "Delete account",
     "deleteAccountWarning": "This will permanently delete your account and all child profiles. This cannot be undone.",
-    "deleting": "Deleting…",
     "deleteConfirmButton": "Yes, delete everything",
     "toggleNotificationsLabel": "Toggle profile view notifications",
     "upcomingFeature": "Coming soon"

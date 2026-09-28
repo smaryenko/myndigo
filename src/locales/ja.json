@@ -14,12 +14,15 @@
     "poweredBy": "Myndigo が提供",
     "deleteFailed": "削除に失敗しました",
     "saveFailed": "保存に失敗しました",
-    "removeInstruction": "指示を削除",
-    "removeAlert": "警告を削除",
     "toggleMenu": "メニューの切り替え",
     "selectLanguage": "言語を選択",
     "photoAlt": "お子さまの写真",
-    "qrCodeAlt": "二要素認証用の QR コード"
+    "qrCodeAlt": "二要素認証用の QR コード",
+    "confirmDelete": "この項目を削除しますか？",
+    "yesDelete": "はい、削除します",
+    "moveUp": "上へ移動",
+    "moveDown": "下へ移動",
+    "reload": "ページを再読み込み"
   },
   "auth": {
     "signIn": "サインイン",
@@ -167,7 +170,7 @@
       "addPhoto": "写真を追加",
       "changePhoto": "写真を変更",
       "removePhoto": "削除",
-      "photoHint": "最大 200 KB、JPG または PNG",
+      "photoHint": "JPG・PNG・WebP（サイズは自動調整されます）",
       "photoVisible": "写真は共有ページに表示されます",
       "photoHidden": "写真は共有ページで非表示になります"
     },
@@ -189,8 +192,7 @@
       "devicePlaceholder": "例：Proloquo2Go、PECS ボード",
       "echolalia": "反響言語を使うことがある（言葉やフレーズを繰り返す）",
       "instructions": "コミュニケーション方法——他者への重要な指示",
-      "instructionPlaceholder": "例：短くシンプルな文章を使う",
-      "addInstruction": "追加"
+      "instructionPlaceholder": "例：短くシンプルな文章を使う"
     },
     "triggers": {
       "noTriggers": "まだ引き金が追加されていません。",
@@ -280,16 +282,12 @@
     "downloadQr": "QRコードをダウンロード",
     "invalidateQrTitle": "QR コードと NFC チップを無効化",
     "invalidateQrHint": "新しいリンクを生成します。現在の QR コードとプログラムされた NFC チップはすぐに使用できなくなります。",
-    "invalidateQrButton": "無効化して再生成",
-    "regenerateWarning": "現在の QR コードと NFC チップが無効になります。よろしいですか？",
-    "regenerating": "再生成中…",
     "yesRegenerate": "はい、再生成します",
     "auditLog": "履歴を表示",
     "noViews": "まだ閲覧記録がありません。",
     "clearHistory": "履歴を削除",
     "clearHistoryWarning": "このプロフィールの閲覧履歴がすべて完全に削除されます。この操作は元に戻せません。",
     "yesClearHistory": "はい、削除します",
-    "visibilitySettings": "表示設定",
     "sectionVisible": "共有ページで表示",
     "sectionHidden": "共有ページで非表示",
     "alertsHideWarning": "警告を非表示にするとお子さまが危険にさらされる可能性があります。よろしいですか？",
@@ -314,7 +312,13 @@
     "printBadgePrint": "印刷",
     "printBadgeClose": "閉じる",
     "printBadgeNameLabel": "こんにちは、私の名前は",
-    "printBadgeMessageShort": "私のことをもっと知っていただくため、または緊急時に助けていただくため、このQRコードをスキャンしてください。"
+    "printBadgeMessageShort": "私のことをもっと知っていただくため、または緊急時に助けていただくため、このQRコードをスキャンしてください。",
+    "copyFailed": "リンクをコピーできませんでした。選択されているので手動でコピーしてください。",
+    "shareLink": "共有リンク",
+    "openInNewTab": "新しいタブで開く",
+    "geoGps": "GPS",
+    "geoIp": "IP による推定",
+    "loadMore": "さらに {{count}} 件表示"
   },
   "notFound": {
     "title": "ページが見つかりません",
@@ -325,25 +329,26 @@
     "profileNotFound": "プロフィールが見つかりません",
     "backToDashboard": "ダッシュボードに戻る",
     "childProfile": "子どものプロフィール",
-    "photoTooLarge": "写真は 200 KB 未満である必要があります。サイズを変更して再試行してください。",
-    "failedToCreate": "プロフィールの作成に失敗しました"
+    "photoTooLarge": "写真は 20 MB 未満にしてください。",
+    "failedToCreate": "プロフィールの作成に失敗しました",
+    "newVersionTitle": "Myndigo の新しいバージョンがあります",
+    "newVersionHint": "続行するにはページを再読み込みしてください。",
+    "unexpectedTitle": "問題が発生しました",
+    "unexpectedHint": "ページを再読み込みして、もう一度お試しください。",
+    "photoUnreadable": "この写真を読み込めませんでした。JPG または PNG をお試しください。"
   },
   "sharedPage": {
     "notShared": "このプロフィールは現在共有されていません。",
     "notSharedHint": "保護者がこのプロフィールの共有を無効にしました。",
     "alerts": "重要な警告",
-    "showAll": "すべて表示",
     "callNow": "電話する",
     "language": "言語",
-    "expandSection": "もっと見る",
-    "collapseSection": "折りたたむ",
     "triggers": "引き金",
     "talkToMe": "話しかけ方",
     "usesAac": "AAC 機器 / コミュニケーション補助を使用",
     "usesAacDevice": "AAC 機器を使用：{{device}}",
     "echolalia": "言葉やフレーズを繰り返すことがあります（反響言語）",
     "moreAlerts": "他 {{count}} 件",
-    "moreContacts": "他 {{count}} 件の連絡先を以下に表示",
     "alertTypes": {
       "food_allergy": "食物アレルギー",
       "epilepsy": "てんかん",
@@ -379,7 +384,9 @@
       "medications": "薬",
       "conditions": "病状",
       "doctors": "医師"
-    }
+    },
+    "viewPhoto": "写真を拡大表示",
+    "closePhoto": "写真を閉じる"
   },
   "account": {
     "title": "アカウント",
@@ -417,7 +424,6 @@
     "dangerZone": "危険ゾーン",
     "deleteAccount": "アカウントを削除",
     "deleteAccountWarning": "アカウントとすべての子どものプロフィールが完全に削除されます。この操作は元に戻せません。",
-    "deleting": "削除中…",
     "deleteConfirmButton": "はい、すべて削除します",
     "toggleNotificationsLabel": "プロフィール閲覧通知のオン・オフ切り替え",
     "upcomingFeature": "近日公開"

@@ -1,6 +1,6 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useAuth } from '../lib/auth'
+import { useAuth } from '../lib/useAuth'
 import { LanguageSelector } from './LanguageSelector'
 
 export function AppLayout() {

@@ -1,58 +1,59 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { getChildProfile, deleteChild } from '../lib/db'
-import type { ChildProfile, ProfileEntryRow } from '../lib/types'
+import { toUserMessage, userMessage } from '../lib/errors'
+import { cx } from '../lib/cx'
+import { useAsync } from '../hooks/useAsync'
+import type { ProfileEntryRow } from '../lib/types'
 import { PersonalInfoSection } from '../components/profile/PersonalInfoSection'
 import { DynamicSection } from '../components/profile/DynamicSection'
 import { DangerZone } from '../components/ui/DangerZone'
 import { LoadingSpinner } from '../components/ui/LoadingSpinner'
 import { PageHeader } from '../components/ui/PageHeader'
 
-export function ChildProfilePage() {
+/**
+ * Route wrapper: keys the page by child id so navigating from one child to
+ * another remounts every section (their form state is initialised from props
+ * once) instead of carrying the previous child's unsaved values across.
+ */
+export function ChildProfileRoute() {
   const { id } = useParams<{ id: string }>()
+  return <ChildProfilePage key={id} childId={id ?? ''} />
+}
+
+function ChildProfilePage({ childId }: { childId: string }) {
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const [profile, setProfile] = useState<ChildProfile | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { data: profile, setData: setProfile, loading, error } = useAsync(
+    childId ? () => getChildProfile(childId) : null,
+    childId,
+  )
   const [deleting, setDeleting] = useState(false)
-  useEffect(() => {
-    if (!id) return
-    getChildProfile(id)
-      .then(setProfile)
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false))
-  }, [id])
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   const handleDelete = async () => {
-    if (!id) return
     setDeleting(true)
+    setDeleteError(null)
     try {
-      await deleteChild(id)
+      await deleteChild(childId)
       navigate('/dashboard')
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('common.deleteFailed'))
+      setDeleteError(toUserMessage(err, t('common.deleteFailed')))
       setDeleting(false)
     }
   }
 
   const handleEntriesChange = (sectionKey: string, entries: ProfileEntryRow[]) => {
-    setProfile(p => {
-      if (!p) return p
-      const others = p.entries.filter(e => e.section_key !== sectionKey)
-      return { ...p, entries: [...others, ...entries] }
-    })
+    setProfile(p => p && { ...p, entries: [...p.entries.filter(e => e.section_key !== sectionKey), ...entries] })
   }
 
-  if (loading) {
-    return <LoadingSpinner />
-  }
+  if (loading) return <LoadingSpinner />
 
   if (error || !profile) {
     return (
       <div className="text-center py-16">
-        <p className="text-red-600 text-sm">{error ?? t('errors.profileNotFound')}</p>
+        <p className="text-red-600 text-sm" role="alert">{userMessage(error, t('errors.profileNotFound'))}</p>
         <button type="button" onClick={() => navigate('/dashboard')} className="mt-4 text-indigo-600 text-sm hover:underline">
           {t('errors.backToDashboard')}
         </button>
@@ -69,21 +70,26 @@ export function ChildProfilePage() {
         onBack={() => navigate('/dashboard')}
         action={
           <Link
-            to={`/children/${id}/share`}
+            to={`/children/${childId}/share`}
             className="flex items-center gap-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm font-medium px-3 py-1.5 rounded-xl transition-colors"
           >
-            <span className={`w-2 h-2 rounded-full flex-shrink-0 ${profile.child.sharing_enabled ? 'bg-green-500' : 'bg-slate-400'}`} />
-            🔗 {t('share.title')}
+            <span
+              className={cx('w-2 h-2 rounded-full flex-shrink-0', profile.child.sharing_enabled ? 'bg-green-500' : 'bg-slate-400')}
+              aria-hidden="true"
+            />
+            <span aria-hidden="true">🔗</span> {t('share.title')}
+            <span className="sr-only">
+              ({profile.child.sharing_enabled ? t('share.sharingOn') : t('share.sharingOff')})
+            </span>
           </Link>
         }
       />
 
-      {/* Sections */}
       <div className="space-y-3">
         <PersonalInfoSection
           childId={profile.child.id}
           data={profile.personalInfo}
-          onChange={personalInfo => setProfile(p => p ? { ...p, personalInfo } : p)}
+          onChange={personalInfo => setProfile(p => p && { ...p, personalInfo })}
         />
 
         {profile.sections.map(section => (
@@ -96,7 +102,7 @@ export function ChildProfilePage() {
             onChange={entries => handleEntriesChange(section.section_key, entries)}
             hiddenEmptySections={profile.child.hidden_empty_sections}
             onHiddenEmptySectionsChange={next =>
-              setProfile(p => p ? { ...p, child: { ...p.child, hidden_empty_sections: next } } : p)
+              setProfile(p => p && { ...p, child: { ...p.child, hidden_empty_sections: next } })
             }
           />
         ))}
@@ -110,6 +116,7 @@ export function ChildProfilePage() {
         confirmLabel={t('child.deleteConfirmButton')}
         onConfirm={handleDelete}
         loading={deleting}
+        error={deleteError}
       />
     </div>
   )
