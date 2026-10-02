@@ -24,8 +24,17 @@ export const SELECT = `w-full rounded-xl border px-3 py-2.5 pr-8 text-sm bg-[rig
 /** Smaller <select> used inside add-item forms */
 export const SELECT_SM = `w-full rounded-lg border px-2.5 py-2 pr-8 text-sm bg-[right_0.5rem_center] ${FIELD_SURFACE} ${SELECT_CHEVRON} ${FOCUS}`
 
-/** Compact <select> used in navigation bars */
-export const SELECT_XS = `text-xs border rounded-lg px-2 py-1.5 pr-6 text-slate-600 bg-[right_0.25rem_center] bg-white border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 ${SELECT_CHEVRON} ${FOCUS}`
+/**
+ * Round icon-only control used in every header (theme, language, home,
+ * account, sign in/out, menu). Pair with <IconTooltip> for the visible label.
+ */
+export const ICON_BTN = 'relative w-9 h-9 flex-shrink-0 inline-flex items-center justify-center rounded-full border transition-colors '
+  + 'border-slate-200 bg-white/70 text-slate-600 hover:bg-slate-100 hover:text-slate-900 backdrop-blur '
+  + 'dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-slate-50 '
+  + 'focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 dark:focus-visible:ring-indigo-500'
+
+/** Active state for an ICON_BTN nav link (current page). */
+export const ICON_BTN_ACTIVE = 'border-indigo-300 text-indigo-600 dark:border-indigo-500 dark:text-indigo-300'
 
 /** Form label above an input */
 export const LABEL = 'block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1'

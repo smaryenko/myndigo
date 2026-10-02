@@ -29,8 +29,6 @@ export interface ThemeConfig {
   /** Footer bar + text */
   footer: string
   footerText: string
-  /** Language picker button */
-  langBtn: string
   /** Sub-heading inside grouped cards (e.g. Medications within Medical) */
   sectionHeading: string
   /** Divider between items */
@@ -70,7 +68,6 @@ export const THEMES: Record<BuiltInTheme, ThemeConfig> = {
     contactRow:       'bg-white border border-slate-300 rounded-xl hover:bg-slate-50 active:bg-slate-100 dark:bg-slate-900 dark:border-slate-700 dark:hover:bg-slate-800 dark:active:bg-slate-800',
     footer:           'bg-slate-200 border-t border-slate-300 dark:bg-slate-950 dark:border-slate-800',
     footerText:       'text-slate-500 dark:text-slate-400',
-    langBtn:          'border border-slate-300 bg-white hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800',
     sectionHeading:   'text-xs font-bold text-slate-600 uppercase tracking-widest dark:text-slate-400',
     divider:          'border-slate-100 dark:border-slate-800',
     deEscBorder:      'border-slate-300 dark:border-slate-600',
@@ -97,7 +94,6 @@ export const THEMES: Record<BuiltInTheme, ThemeConfig> = {
     contactRow:       'bg-green-50 border border-green-200 rounded-2xl shadow-sm hover:bg-green-100 active:bg-green-100 dark:bg-green-950/40 dark:border-green-900 dark:shadow-none dark:hover:bg-green-950/70 dark:active:bg-green-950/70',
     footer:           'bg-orange-50 border-t border-orange-200 dark:bg-stone-950 dark:border-orange-950',
     footerText:       'text-orange-700 dark:text-orange-300',
-    langBtn:          'border border-orange-200 bg-white hover:bg-orange-50 dark:border-orange-900 dark:bg-stone-900 dark:hover:bg-stone-800',
     sectionHeading:   'text-xs font-semibold text-orange-700 uppercase tracking-widest dark:text-orange-300',
     divider:          'border-orange-100 dark:border-orange-950',
     deEscBorder:      'border-orange-300 dark:border-orange-800',
@@ -124,7 +120,6 @@ export const THEMES: Record<BuiltInTheme, ThemeConfig> = {
     contactRow:       'bg-green-50 border-2 border-green-200 rounded-3xl shadow-md hover:bg-green-100 active:bg-green-100 dark:bg-green-950/50 dark:border-green-800 dark:shadow-none dark:hover:bg-green-950/80 dark:active:bg-green-950/80',
     footer:           'bg-violet-100 border-t border-violet-300 dark:bg-violet-950 dark:border-violet-800',
     footerText:       'text-violet-600 dark:text-violet-300',
-    langBtn:          'border border-violet-300 bg-white hover:bg-violet-50 dark:border-violet-700 dark:bg-slate-900 dark:hover:bg-violet-900',
     sectionHeading:   'text-xs font-bold text-violet-600 uppercase tracking-widest dark:text-violet-300',
     divider:          'border-violet-100 dark:border-violet-900',
     deEscBorder:      'border-violet-300 dark:border-violet-700',

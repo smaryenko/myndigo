@@ -1,8 +1,13 @@
 import { useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { cx } from '../lib/cx'
+import { ICON_BTN } from '../lib/styles'
 import { LanguageSelector } from './LanguageSelector'
 import { ThemeToggle } from './ThemeToggle'
+import { IconTooltip } from './ui/IconTooltip'
+
+const ICON = 'w-[1.1rem] h-[1.1rem]'
 
 export function PublicLayout() {
   const { t } = useTranslation()
@@ -30,31 +35,31 @@ export function PublicLayout() {
             )}
           </div>
 
-          {/* Desktop right — language + login */}
-          <div className="hidden md:flex items-center gap-3">
+          {/* Right — round icon controls with tooltips (same on mobile and desktop) */}
+          <div className="flex items-center gap-2">
             <LanguageSelector />
             <ThemeToggle />
-            <Link to="/login" className="text-sm text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 font-medium transition-colors">
-              {t('auth.signIn')}
-            </Link>
-          </div>
-
-          {/* Mobile: language selector + login + hamburger (landing only) */}
-          <div className="md:hidden flex items-center gap-2">
-            <LanguageSelector />
-            <ThemeToggle />
-            <Link to="/login" className="text-sm text-slate-600 dark:text-slate-400 font-medium px-1">
-              {t('auth.signIn')}
-            </Link>
+            <IconTooltip label={t('auth.signIn')} align="end">
+              <Link to="/login" className={ICON_BTN} aria-label={t('auth.signIn')}>
+                <svg className={cx(ICON, 'rtl:rotate-180')} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3" />
+                </svg>
+              </Link>
+            </IconTooltip>
             {isLanding && (
-              <button
-                type="button"
-                onClick={() => setMenuOpen(m => !m)}
-                className="p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100"
-                aria-label={t('common.toggleMenu')}
-              >
-                {menuOpen ? '✕' : '☰'}
-              </button>
+              <IconTooltip label={t('common.toggleMenu')} align="end" className="md:hidden">
+                <button
+                  type="button"
+                  onClick={() => setMenuOpen(m => !m)}
+                  className={ICON_BTN}
+                  aria-label={t('common.toggleMenu')}
+                  aria-expanded={menuOpen}
+                >
+                  <svg className={ICON} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden="true">
+                    {menuOpen ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+                  </svg>
+                </button>
+              </IconTooltip>
             )}
           </div>
         </div>

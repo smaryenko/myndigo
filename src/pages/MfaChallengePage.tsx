@@ -60,7 +60,7 @@ export function MfaChallengePage() {
 
   return (
     <main className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center px-4">
-      <ThemeToggle className="fixed top-4 end-4" />
+      <div className="fixed top-4 end-4"><ThemeToggle tooltipAlign="end" /></div>
       <form onSubmit={handleVerify} className="w-full max-w-sm bg-white rounded-2xl border border-slate-100 p-8 shadow-sm dark:bg-slate-800 dark:border-slate-700">
         <div className="flex justify-center mb-5">
           <div className="w-12 h-12 rounded-full bg-indigo-50 dark:bg-indigo-950/50 flex items-center justify-center">

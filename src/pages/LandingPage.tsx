@@ -254,7 +254,7 @@ export function LandingPage() {
             <a href="#" className="hover:text-slate-800 dark:hover:text-slate-100 transition-colors">{t('landing.footer.terms')}</a>
             <a href="#" className="hover:text-slate-800 dark:hover:text-slate-100 transition-colors">{t('landing.footer.contact')}</a>
           </div>
-          <LanguageSelector />
+          <LanguageSelector openUp />
         </div>
       </footer>
     </div>

@@ -912,6 +912,19 @@ client-side (512px JPEG, EXIF/GPS stripped); legacy large photos auto-shrink whe
   stone + orange accents, playful → violet-950. Viewers default to their OS
   setting. The QR code container stays forced white so it remains scannable.
 - No DB changes (device-local preference, like the UI language).
+- **One language picker everywhere:** `components/LanguageSelector.tsx` — round
+  "EN" button opening a **custom themed listbox** (not a native `<select>`: the
+  native popup's size/colour can't be controlled and differed between pages).
+  Full keyboard support (arrows/Home/End/Enter/Escape/Tab), outside-click close,
+  `openUp` for the landing footer. Tooltips (`IconTooltip`) render only on
+  `(hover:hover) and (pointer:fine)` devices — never on touch. Optional `value` / `onChange` / `translating` props let
+  the shared page drive viewer language with it. The old shared-page
+  `LanguagePicker` and the `langBtn` theme token were removed.
+- **Header controls are all round icon buttons** (`ICON_BTN` / `ICON_BTN_ACTIVE`
+  in `styles.ts`, 36px circle) wrapped in `ui/IconTooltip` (CSS hover/focus
+  tooltip, `aria-hidden`; the control carries the `aria-label`). Applies to
+  language, theme, home, account (tooltip includes email), sign out, sign in
+  and the landing hamburger. Use `align="end"` for the right-most items.
 
 
 ## Supabase database-linter fixes (Sept 2026)

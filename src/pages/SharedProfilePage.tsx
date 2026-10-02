@@ -8,7 +8,7 @@ import { ExpandableSection } from '../components/shared/ExpandableSection'
 import { TalkToMeCard, TriggersCard } from '../components/shared/HighlightCards'
 import { CommunicationBadge, IdentityCard, type CommunicationLevel } from '../components/shared/IdentityCard'
 import { ThemeToggle } from '../components/ThemeToggle'
-import { LanguagePicker } from '../components/shared/LanguagePicker'
+import { LanguageSelector } from '../components/LanguageSelector'
 import { SectionBody } from '../components/shared/SectionBody'
 import {
   buildSectionViews,
@@ -47,7 +47,7 @@ export function SharedProfilePage() {
   if (status === 'notFound' || !profile) {
     return (
       <main className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center px-4 text-center">
-        <ThemeToggle className="fixed top-4 end-4" />
+        <div className="fixed top-4 end-4"><ThemeToggle tooltipAlign="end" /></div>
         <div className="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center mb-4" aria-hidden="true">
           <svg className="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -96,9 +96,10 @@ export function SharedProfilePage() {
       'sm:border-x sm:border-slate-200 sm:shadow-xl dark:sm:border-white/10 dark:sm:shadow-black/60',
       theme.pageBg,
     )}>
-      <div className="flex justify-end items-center gap-2 px-4 pt-1.5">
-        <LanguagePicker value={viewerLang} onChange={changeLanguage} translating={translating} theme={theme} />
-        <ThemeToggle className="w-8 h-8" />
+      {/* Same control row as the app headers (size, gap, padding). */}
+      <div className="relative z-20 flex justify-end items-center gap-2 px-4 py-3">
+        <LanguageSelector value={viewerLang} onChange={changeLanguage} translating={translating} />
+        <ThemeToggle tooltipAlign="end" />
       </div>
 
       <main className="flex-1 flex flex-col">

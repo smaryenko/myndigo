@@ -45,6 +45,11 @@ body {
 
 /* Base page colour, so nothing outside a page's own background flashes white
    in dark mode (overscroll, wide-screen margins, loading states). */
+/* Native controls (e.g. the language <select> popup) follow the app theme,
+   not the OS setting. */
+html {
+  color-scheme: light;
+}
 html.dark {
   color-scheme: dark;
   background-color: theme('colors.slate.950');
