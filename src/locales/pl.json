@@ -22,7 +22,9 @@
     "yesDelete": "Tak, usuń",
     "moveUp": "Przenieś w górę",
     "moveDown": "Przenieś w dół",
-    "reload": "Odśwież stronę"
+    "reload": "Odśwież stronę",
+    "switchToDark": "Przełącz na ciemny motyw",
+    "switchToLight": "Przełącz na jasny motyw"
   },
   "auth": {
     "signIn": "Zaloguj się",
@@ -395,13 +397,6 @@
     "memberSince": "Członek od",
     "interfaceLanguage": "Język interfejsu",
     "languageHint": "Ustawia język portalu dla rodziców. Język udostępnionego profilu jest ustawiany dla każdego dziecka osobno.",
-    "appearance": "Wygląd",
-    "appearanceHint": "Wybierz wygląd Myndigo. Opcja Systemowy działa zgodnie z ustawieniami urządzenia.",
-    "theme": {
-      "system": "Systemowy",
-      "light": "Jasny",
-      "dark": "Ciemny"
-    },
     "notifications": "Powiadomienia",
     "notifyOnViewLabel": "Alerty o wyświetleniu profilu",
     "notifyOnViewHint": "Otrzymaj e-mail, gdy ktoś zeskanuje kod QR Twojego dziecka i wyświetli jego udostępniony profil.",

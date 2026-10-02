@@ -45,7 +45,7 @@ export function AlertBadge({ section, alert, tx, theme }: BadgeProps) {
         </span>
       )}
       {showNote && note && (
-        <div className="mt-1 text-xs bg-white border border-slate-200 rounded-lg px-2.5 py-2 text-slate-700 shadow-sm">
+        <div className="mt-1 text-xs bg-white border border-slate-200 rounded-lg px-2.5 py-2 text-slate-700 shadow-sm dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200">
           {note}
         </div>
       )}

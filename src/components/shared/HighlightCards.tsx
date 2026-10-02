@@ -32,7 +32,7 @@ export function TriggersCard({ section, entries, tx, theme }: TriggersProps) {
             <li key={entry.id} className="text-sm">
               <span className={cx('font-semibold block', theme.triggerText)}>{theme.listBullet}{first}</span>
               {rest.map((line, i) => (
-                <span key={i} className={cx('block mt-1 ps-3 border-s-2 text-xs leading-relaxed opacity-80', theme.deEscBorder)}>
+                <span key={i} className={cx('block mt-1 ps-3 border-s-2 text-xs leading-relaxed opacity-80', theme.deEscBorder, theme.triggerText)}>
                   {line}
                 </span>
               ))}

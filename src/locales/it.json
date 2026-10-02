@@ -22,7 +22,9 @@
     "yesDelete": "Sì, elimina",
     "moveUp": "Sposta su",
     "moveDown": "Sposta giù",
-    "reload": "Ricarica la pagina"
+    "reload": "Ricarica la pagina",
+    "switchToDark": "Passa al tema scuro",
+    "switchToLight": "Passa al tema chiaro"
   },
   "auth": {
     "signIn": "Accedi",
@@ -395,13 +397,6 @@
     "memberSince": "Membro dal",
     "interfaceLanguage": "Lingua dell'interfaccia",
     "languageHint": "Questo imposta la lingua del tuo portale genitori. La lingua del profilo condiviso è impostata per ogni figlio.",
-    "appearance": "Aspetto",
-    "appearanceHint": "Scegli l'aspetto di Myndigo. L'opzione Sistema segue le impostazioni del tuo dispositivo.",
-    "theme": {
-      "system": "Sistema",
-      "light": "Chiaro",
-      "dark": "Scuro"
-    },
     "notifications": "Notifiche",
     "notifyOnViewLabel": "Avvisi di visualizzazione del profilo",
     "notifyOnViewHint": "Ricevi un'e-mail quando qualcuno scansiona il codice QR di tuo figlio e visualizza il suo profilo condiviso.",

@@ -2,6 +2,7 @@ import { useState, useEffect, type FormEvent } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../lib/useAuth'
+import { ThemeToggle } from '../components/ThemeToggle'
 import { getVerifiedTotpFactorId, verifyTotpCode } from '../lib/mfa'
 import { BTN_PRIMARY } from '../lib/styles'
 import { InlineError } from '../components/ui/InlineError'
@@ -59,6 +60,7 @@ export function MfaChallengePage() {
 
   return (
     <main className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center px-4">
+      <ThemeToggle className="fixed top-4 end-4" />
       <form onSubmit={handleVerify} className="w-full max-w-sm bg-white rounded-2xl border border-slate-100 p-8 shadow-sm dark:bg-slate-800 dark:border-slate-700">
         <div className="flex justify-center mb-5">
           <div className="w-12 h-12 rounded-full bg-indigo-50 dark:bg-indigo-950/50 flex items-center justify-center">

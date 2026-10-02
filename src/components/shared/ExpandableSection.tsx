@@ -21,9 +21,9 @@ export function ExpandableSection({ title, theme, children }: Props) {
         aria-controls={contentId}
         className="w-full flex items-center justify-between px-4 py-3 text-start"
       >
-        <h2 className="text-sm font-semibold text-slate-800">{title}</h2>
+        <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-100">{title}</h2>
         <svg
-          className={cx('w-4 h-4 text-slate-500 transition-transform', open && 'rotate-180')}
+          className={cx('w-4 h-4 text-slate-500 transition-transform dark:text-slate-400', open && 'rotate-180')}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

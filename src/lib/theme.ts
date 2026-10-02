@@ -1,21 +1,20 @@
 // ── Dark / light theme ────────────────────────────────────────────────────────
-// The parent portal supports three appearance choices, persisted per device:
-//   'system' (default) — follow the browser / OS colour scheme, and track it live
-//   'light'            — force light
-//   'dark'             — force dark
+// A single sun/moon toggle (ThemeToggle) on every page. Behaviour:
+//   - no stored choice → follow the browser / OS colour scheme, live
+//   - after a click    → the explicit 'light' / 'dark' choice is remembered
+//                        on this device (localStorage) and wins over the OS
 //
 // Tailwind is configured with darkMode: 'class', so the resolved theme is applied
 // by toggling the `dark` class on <html>. main.tsx applies it before first paint
 // (see applyStoredTheme) to avoid a flash of the wrong theme.
 
-export type ThemePreference = 'system' | 'light' | 'dark'
 export type ResolvedTheme = 'light' | 'dark'
 
 const STORAGE_KEY = 'myndigo.theme'
-const PREFERENCES: readonly ThemePreference[] = ['system', 'light', 'dark']
+const listeners = new Set<() => void>()
 
-function isThemePreference(value: unknown): value is ThemePreference {
-  return typeof value === 'string' && (PREFERENCES as readonly string[]).includes(value)
+function isResolvedTheme(value: unknown): value is ResolvedTheme {
+  return value === 'light' || value === 'dark'
 }
 
 function prefersDark(): boolean {
@@ -24,61 +23,53 @@ function prefersDark(): boolean {
     && window.matchMedia('(prefers-color-scheme: dark)').matches
 }
 
-/** The stored preference, or 'system' if unset / unreadable. */
-export function getThemePreference(): ThemePreference {
+/** The explicit stored choice, or null when following the system. */
+function storedTheme(): ResolvedTheme | null {
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
-    if (isThemePreference(stored)) return stored
+    if (isResolvedTheme(stored)) return stored
   } catch { /* storage unavailable — fall through */ }
-  return 'system'
+  return null
 }
 
-/** Resolve a preference to the concrete theme to render right now. */
-export function resolveTheme(preference: ThemePreference): ResolvedTheme {
-  if (preference === 'system') return prefersDark() ? 'dark' : 'light'
-  return preference
+/** The theme to render right now. */
+export function currentTheme(): ResolvedTheme {
+  return storedTheme() ?? (prefersDark() ? 'dark' : 'light')
 }
 
-/** Toggle the `dark` class on <html> to match the resolved theme. */
-function applyResolvedTheme(theme: ResolvedTheme): void {
-  document.documentElement.classList.toggle('dark', theme === 'dark')
+function applyTheme(): void {
+  document.documentElement.classList.toggle('dark', currentTheme() === 'dark')
+  listeners.forEach(fn => fn())
 }
 
-/**
- * Persist a preference and apply it immediately. Call this from the UI.
- * @returns the resolved theme that was applied
- */
-export function setThemePreference(preference: ThemePreference): ResolvedTheme {
-  try { localStorage.setItem(STORAGE_KEY, preference) } catch { /* ignore */ }
-  const resolved = resolveTheme(preference)
-  applyResolvedTheme(resolved)
-  return resolved
+/** Flip between light and dark and remember the choice on this device. */
+export function toggleTheme(): void {
+  const next: ResolvedTheme = currentTheme() === 'dark' ? 'light' : 'dark'
+  try { localStorage.setItem(STORAGE_KEY, next) } catch { /* ignore */ }
+  applyTheme()
 }
 
-/**
- * Apply the stored preference to <html>. Call once at startup (before render)
- * so the first paint is already in the right theme.
- */
+/** Subscribe to theme changes (for useSyncExternalStore). Returns an unsubscribe fn. */
+export function subscribeTheme(fn: () => void): () => void {
+  listeners.add(fn)
+  return () => { listeners.delete(fn) }
+}
+
+/** Apply the current theme to <html>. Call once at startup, before render. */
 export function applyStoredTheme(): void {
-  applyResolvedTheme(resolveTheme(getThemePreference()))
+  applyTheme()
 }
 
 /**
- * Start listening for OS colour-scheme changes. While the preference is
- * 'system', flipping the OS theme re-applies live. Returns an unsubscribe fn.
+ * Follow OS colour-scheme changes while no explicit choice is stored.
+ * Returns an unsubscribe fn.
  */
 export function watchSystemTheme(): () => void {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
     return () => {}
   }
   const media = window.matchMedia('(prefers-color-scheme: dark)')
-  const onChange = () => {
-    if (getThemePreference() === 'system') {
-      applyResolvedTheme(media.matches ? 'dark' : 'light')
-    }
-  }
+  const onChange = () => { if (!storedTheme()) applyTheme() }
   media.addEventListener('change', onChange)
   return () => media.removeEventListener('change', onChange)
 }
-
-export { PREFERENCES as THEME_PREFERENCES }

@@ -5,7 +5,6 @@ import { useAuth } from '../lib/useAuth'
 import { deleteAccount } from '../lib/db'
 import { toUserMessage } from '../lib/errors'
 import { currentLanguage, setLanguage } from '../lib/i18n'
-import { getThemePreference, setThemePreference, THEME_PREFERENCES } from '../lib/theme'
 import { SUPPORTED_LANGS } from '../lib/languages'
 import { cx } from '../lib/cx'
 import { PILL, PILL_ACTIVE, PILL_INACTIVE } from '../lib/styles'
@@ -20,7 +19,6 @@ export function AccountPage() {
   const navigate = useNavigate()
   const [deleting, setDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState<string | null>(null)
-  const [themePref, setThemePref] = useState(getThemePreference)
   const selectedLang = currentLanguage()
 
   const handleDeleteAccount = async () => {
@@ -66,27 +64,6 @@ export function AccountPage() {
           ))}
         </div>
         <p className="text-xs text-slate-400 dark:text-slate-500 mt-3">{t('account.languageHint')}</p>
-      </SettingsCard>
-
-      <SettingsCard title={t('account.appearance')}>
-        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={t('account.appearance')}>
-          {THEME_PREFERENCES.map(pref => (
-            <button
-              key={pref}
-              type="button"
-              role="radio"
-              aria-checked={themePref === pref}
-              onClick={() => {
-                setThemePreference(pref)
-                setThemePref(pref)
-              }}
-              className={cx(PILL, themePref === pref ? PILL_ACTIVE : PILL_INACTIVE)}
-            >
-              {t(`account.theme.${pref}`)}
-            </button>
-          ))}
-        </div>
-        <p className="text-xs text-slate-400 dark:text-slate-500 mt-3">{t('account.appearanceHint')}</p>
       </SettingsCard>
 
       {/* Notification preferences — not yet user-configurable (upcoming feature). */}

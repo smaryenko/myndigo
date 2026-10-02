@@ -57,7 +57,7 @@ export function EntryLines({ section, fields, entry, tx, theme }: EntryProps) {
         if (field.field_type === 'text_list') {
           const items = fieldListItems(section, field, entry, tx)
           return items.length ? (
-            <ul key={field.field_key} className="text-xs text-slate-600 mt-1 space-y-0.5">
+            <ul key={field.field_key} className="text-xs text-slate-600 mt-1 space-y-0.5 dark:text-slate-300">
               {items.map((item, i) => <li key={i}>{theme.listBullet || '• '}{item}</li>)}
             </ul>
           ) : null
@@ -65,11 +65,11 @@ export function EntryLines({ section, fields, entry, tx, theme }: EntryProps) {
         const text = fieldText(section, field, entry, t, tx)
         if (text === null) return null
         if (field.field_key === titleKey) {
-          return <p key={field.field_key} className="text-sm font-semibold text-slate-900">{text}</p>
+          return <p key={field.field_key} className="text-sm font-semibold text-slate-900 dark:text-slate-50">{text}</p>
         }
         if (field.field_type === 'phone') {
           return (
-            <a key={field.field_key} href={`tel:${text}`} className="block text-xs text-slate-700 underline mt-0.5" dir="ltr">
+            <a key={field.field_key} href={`tel:${text}`} className="block text-xs text-slate-700 underline mt-0.5 dark:text-slate-200" dir="ltr">
               {text}
             </a>
           )
@@ -78,7 +78,7 @@ export function EntryLines({ section, fields, entry, tx, theme }: EntryProps) {
           <p
             key={field.field_key}
             className={cx(
-              'text-xs text-slate-600 mt-1 leading-relaxed',
+              'text-xs text-slate-600 mt-1 leading-relaxed dark:text-slate-300',
               field.field_type === 'longtext' && `whitespace-pre-wrap ps-3 border-s-2 ${theme.deEscBorder}`,
             )}
           >
@@ -104,7 +104,7 @@ function SingleEntryBody({ section, fields, entry, tx, theme }: EntryProps) {
 
   // A section that is just one free-text field (e.g. behavioral notes): show the text alone.
   if (fields.length === 1 && rows.length === 1 && rows[0].text !== null) {
-    return <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">{rows[0].text}</p>
+    return <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed dark:text-slate-200">{rows[0].text}</p>
   }
 
   return (
@@ -113,12 +113,12 @@ function SingleEntryBody({ section, fields, entry, tx, theme }: EntryProps) {
         field.field_type === 'longtext' ? (
           <div key={field.field_key} className="pt-1">
             <dt className="sr-only">{t(field.label_key)}</dt>
-            <dd className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">{text}</dd>
+            <dd className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed dark:text-slate-200">{text}</dd>
           </div>
         ) : (
           <div key={field.field_key} className={cx('flex gap-2 py-1.5 border-b last:border-0', theme.divider)}>
-            <dt className="text-xs font-semibold text-slate-500 w-28 flex-shrink-0">{t(field.label_key)}</dt>
-            <dd className="text-sm text-slate-800">
+            <dt className="text-xs font-semibold text-slate-500 w-28 flex-shrink-0 dark:text-slate-400">{t(field.label_key)}</dt>
+            <dd className="text-sm text-slate-800 dark:text-slate-100">
               {items ? (
                 <ul className="space-y-0.5">{items.map((item, i) => <li key={i}>{item}</li>)}</ul>
               ) : field.field_type === 'boolean' ? (

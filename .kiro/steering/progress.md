@@ -889,25 +889,28 @@ client-side (512px JPEG, EXIF/GPS stripped); legacy large photos auto-shrink whe
   end-to-end (server strips hidden fields) but still has **no editor UI** to toggle it.
 
 
-## Dark theme (parent portal)
+## Dark theme (whole app)
 
 - Tailwind `darkMode: 'class'`. The resolved theme is applied by toggling the
   `dark` class on `<html>`.
-- `src/lib/theme.ts` is the single source: preference is `'system' | 'light' | 'dark'`
-  (default `'system'`), persisted in `localStorage` under `myndigo.theme`.
-  `applyStoredTheme()` runs in `main.tsx` before render (no flash), and
-  `watchSystemTheme()` keeps `'system'` in sync with the OS live.
-- Colours live in `src/lib/styles.ts` — every shared constant now carries its
-  own `dark:` variants, so most of the portal follows the theme from one place.
-  Components with inline slate/white classes got `dark:` variants directly.
-- Account settings has a 3-way **Appearance** picker (System / Light / Dark),
-  next to the language picker.
-- i18n: `account.appearance`, `account.appearanceHint`, `account.theme.{system,light,dark}`
-  added to all 11 locales (i18n-check clean, 330 keys).
-- **Scope is the authenticated portal + auth screens only.** The public
-  **landing page** and the **shared profile page** (`/s/:token`) are deliberately
-  left light — the shared page has its own viewer themes (`sharedThemes.ts`),
-  and the QR code container is forced white so it stays scannable.
+- `src/lib/theme.ts` is the single source. No stored value → follow the OS
+  (live, via `watchSystemTheme()`); after a click the explicit `'light' | 'dark'`
+  is persisted in `localStorage` under `myndigo.theme`. `applyStoredTheme()`
+  runs in `main.tsx` before render (no flash). React reads it via
+  `useSyncExternalStore(subscribeTheme, currentTheme)`.
+- **UI: `ThemeToggle`** (round sun/moon button, cross-fade + view transition,
+  modelled on smaryenko.github.io) in `AppLayout`, `PublicLayout`, the shared
+  page header (next to `LanguagePicker`), its not-shared state, MFA challenge
+  and 404. The old Account → Appearance picker was removed
+  (`account.appearance*`/`account.theme.*` keys deleted; `common.switchToDark`/
+  `common.switchToLight` added — 327 keys, i18n-check clean).
+- Colours live in `src/lib/styles.ts` — every shared constant carries its own
+  `dark:` variants. Components with inline slate/white classes got `dark:`
+  variants directly (incl. landing page and everything in `components/shared/`).
+- **Shared page:** each viewer theme in `sharedThemes.ts` (professional / warm /
+  playful) has its own paired `dark:` classes — professional → slate, warm →
+  stone + orange accents, playful → violet-950. Viewers default to their OS
+  setting. The QR code container stays forced white so it remains scannable.
 - No DB changes (device-local preference, like the UI language).
 
 

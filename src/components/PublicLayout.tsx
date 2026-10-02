@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { LanguageSelector } from './LanguageSelector'
+import { ThemeToggle } from './ThemeToggle'
 
 export function PublicLayout() {
   const { t } = useTranslation()
@@ -32,6 +33,7 @@ export function PublicLayout() {
           {/* Desktop right — language + login */}
           <div className="hidden md:flex items-center gap-3">
             <LanguageSelector />
+            <ThemeToggle />
             <Link to="/login" className="text-sm text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 font-medium transition-colors">
               {t('auth.signIn')}
             </Link>
@@ -40,6 +42,7 @@ export function PublicLayout() {
           {/* Mobile: language selector + login + hamburger (landing only) */}
           <div className="md:hidden flex items-center gap-2">
             <LanguageSelector />
+            <ThemeToggle />
             <Link to="/login" className="text-sm text-slate-600 dark:text-slate-400 font-medium px-1">
               {t('auth.signIn')}
             </Link>

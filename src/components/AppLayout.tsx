@@ -2,6 +2,7 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../lib/useAuth'
 import { LanguageSelector } from './LanguageSelector'
+import { ThemeToggle } from './ThemeToggle'
 
 export function AppLayout() {
   const { t } = useTranslation()
@@ -23,6 +24,7 @@ export function AppLayout() {
 
         <div className="flex items-center gap-3 ml-auto">
           <LanguageSelector />
+          <ThemeToggle />
           {/* Dashboard link — icon on mobile, text on larger screens */}
           <NavLink
             to="/dashboard"

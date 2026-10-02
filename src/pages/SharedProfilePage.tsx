@@ -7,6 +7,7 @@ import { ContactRows } from '../components/shared/ContactRows'
 import { ExpandableSection } from '../components/shared/ExpandableSection'
 import { TalkToMeCard, TriggersCard } from '../components/shared/HighlightCards'
 import { CommunicationBadge, IdentityCard, type CommunicationLevel } from '../components/shared/IdentityCard'
+import { ThemeToggle } from '../components/ThemeToggle'
 import { LanguagePicker } from '../components/shared/LanguagePicker'
 import { SectionBody } from '../components/shared/SectionBody'
 import {
@@ -45,15 +46,16 @@ export function SharedProfilePage() {
 
   if (status === 'notFound' || !profile) {
     return (
-      <main className="min-h-screen bg-slate-50 flex flex-col items-center justify-center px-4 text-center">
-        <div className="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center mb-4" aria-hidden="true">
+      <main className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center px-4 text-center">
+        <ThemeToggle className="fixed top-4 end-4" />
+        <div className="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center mb-4" aria-hidden="true">
           <svg className="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
           </svg>
         </div>
-        <h1 className="text-lg font-semibold text-slate-800 mb-1">{t('sharedPage.notShared')}</h1>
-        <p className="text-sm text-slate-500">{t('sharedPage.notSharedHint')}</p>
-        <footer className="fixed bottom-4 text-xs text-slate-300">{t('common.poweredBy')}</footer>
+        <h1 className="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-1">{t('sharedPage.notShared')}</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400">{t('sharedPage.notSharedHint')}</p>
+        <footer className="fixed bottom-4 text-xs text-slate-300 dark:text-slate-600">{t('common.poweredBy')}</footer>
       </main>
     )
   }
@@ -85,9 +87,18 @@ export function SharedProfilePage() {
   const blocks = groupSections(belowFold)
 
   return (
-    <div className={cx('min-h-screen max-w-lg mx-auto flex flex-col font-sans', theme.pageBg)}>
-      <div className="flex justify-end px-4 pt-1.5">
+    // Full-width wrapper so the theme background also fills the sides on wide screens.
+    // Neutral full-width backdrop; the content column keeps the theme colour and
+    // gets a subtle outline + shadow on wider screens so it reads as a card.
+    <div className="min-h-screen bg-white dark:bg-black">
+    <div className={cx(
+      'min-h-screen max-w-lg mx-auto flex flex-col font-sans text-slate-900 dark:text-slate-100',
+      'sm:border-x sm:border-slate-200 sm:shadow-xl dark:sm:border-white/10 dark:sm:shadow-black/60',
+      theme.pageBg,
+    )}>
+      <div className="flex justify-end items-center gap-2 px-4 pt-1.5">
         <LanguagePicker value={viewerLang} onChange={changeLanguage} translating={translating} theme={theme} />
+        <ThemeToggle className="w-8 h-8" />
       </div>
 
       <main className="flex-1 flex flex-col">
@@ -158,6 +169,7 @@ export function SharedProfilePage() {
         {t('common.poweredBy')}
       </footer>
       <div className="h-10" aria-hidden="true" />
+    </div>
     </div>
   )
 }
