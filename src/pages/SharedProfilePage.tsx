@@ -90,7 +90,7 @@ export function SharedProfilePage() {
     // Full-width wrapper so the theme background also fills the sides on wide screens.
     // Neutral full-width backdrop; the content column keeps the theme colour and
     // gets a subtle outline + shadow on wider screens so it reads as a card.
-    <div className="min-h-screen bg-white dark:bg-black">
+    <div className="min-h-screen bg-white dark:bg-slate-900">
     <div className={cx(
       'min-h-screen max-w-lg mx-auto flex flex-col font-sans text-slate-900 dark:text-slate-100',
       'sm:border-x sm:border-slate-200 sm:shadow-xl dark:sm:border-white/10 dark:sm:shadow-black/60',
