@@ -61,7 +61,7 @@ function Photo({ src, name, theme }: { src: string; name: string; theme: ThemeCo
         ref={openRef}
         type="button"
         onClick={() => setOpen(true)}
-        className={cx('w-20 h-20 overflow-hidden flex-shrink-0 hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-slate-400 select-none', theme.photoRadius)}
+        className={cx('w-14 h-14 overflow-hidden flex-shrink-0 hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-slate-400 select-none', theme.photoRadius)}
         aria-label={t('sharedPage.viewPhoto')}
         onContextMenu={e => e.preventDefault()}
       >
@@ -97,18 +97,18 @@ export function IdentityCard({ personalInfo, level, theme }: Props) {
   const age = ageInYears(personalInfo.date_of_birth)
 
   return (
-    <section aria-label={personalInfo.name} className={cx('mx-4 px-4 py-4 flex items-center gap-4 mb-2', theme.card)}>
+    <section aria-label={personalInfo.name} className="flex items-center gap-3 px-4 py-3">
       {personalInfo.photo_base64 ? (
         <Photo src={personalInfo.photo_base64} name={personalInfo.name} theme={theme} />
       ) : (
-        <div className={cx('w-20 h-20 flex items-center justify-center flex-shrink-0', theme.photoRadius, theme.photoPlaceholder)} aria-hidden="true">
-          <svg className="w-10 h-10 text-slate-300 dark:text-slate-600" fill="currentColor" viewBox="0 0 24 24">
+        <div className={cx('w-14 h-14 flex items-center justify-center flex-shrink-0', theme.photoRadius, theme.photoPlaceholder)} aria-hidden="true">
+          <svg className="w-7 h-7 text-slate-300 dark:text-slate-600" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
           </svg>
         </div>
       )}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight dark:text-slate-50">
+        <h1 className="text-lg font-bold text-slate-900 tracking-tight dark:text-slate-50">
           {personalInfo.name}
           {age !== null && <span className="font-normal text-slate-500 dark:text-slate-400">, {age}</span>}
         </h1>

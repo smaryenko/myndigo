@@ -74,6 +74,17 @@ export function LandingPage() {
                   <span className="mt-1 inline-block bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-200 text-xs font-semibold px-2.5 py-0.5 rounded-full">{t('landing.mockProfile.nonVerbal')}</span>
                 </div>
               </div>
+              {/* Emergency contacts */}
+              <div className="px-4 py-3 space-y-2 border-t border-slate-100 dark:border-slate-700">
+                <a href="#" className="flex items-center gap-3 bg-green-50 border border-green-100 dark:bg-green-950/40 dark:border-green-900 rounded-xl px-3 py-2.5">
+                  <span className="text-xl">📞</span>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Mum</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{t('landing.mockProfile.contactRelation')}</p>
+                  </div>
+                  <span className="text-green-700 dark:text-green-400 font-semibold text-sm">+44 7700 900000</span>
+                </a>
+              </div>
               {/* Triggers + communication */}
               <div className="px-4 py-3 grid grid-cols-2 gap-3 border-t border-slate-100 dark:border-slate-700">
                 <div className="bg-red-50 dark:bg-red-950/40 rounded-xl p-3">
@@ -92,17 +103,6 @@ export function LandingPage() {
                     <li>• {t('landing.mockProfile.talk3')}</li>
                   </ul>
                 </div>
-              </div>
-              {/* Emergency contacts */}
-              <div className="px-4 py-3 space-y-2 border-t border-slate-100 dark:border-slate-700">
-                <a href="#" className="flex items-center gap-3 bg-green-50 border border-green-100 dark:bg-green-950/40 dark:border-green-900 rounded-xl px-3 py-2.5">
-                  <span className="text-xl">📞</span>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Mum</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">{t('landing.mockProfile.contactRelation')}</p>
-                  </div>
-                  <span className="text-green-700 dark:text-green-400 font-semibold text-sm">+44 7700 900000</span>
-                </a>
               </div>
               {/* Expandable hint */}
               <div className="px-4 py-3 border-t border-slate-100 dark:border-slate-700 text-center">

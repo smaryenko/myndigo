@@ -67,8 +67,8 @@ export function AlertBar({ section, alerts, tx, theme, limit = 3 }: BarProps) {
   const { t } = useTranslation()
   if (alerts.length === 0) return null
   return (
-    <section aria-label={t('sharedPage.alerts')} className={cx('mx-4 mt-2 mb-2 px-4 py-3.5', theme.alertBar)}>
-      <h2 className={cx('text-xs font-semibold uppercase tracking-widest mb-2.5', theme.alertHeading)}>
+    <section aria-label={t('sharedPage.alerts')} className={cx('border-b border-slate-100 px-4 pt-4 pb-3 dark:border-slate-700', theme.alertBar)}>
+      <h2 className={cx('text-xs font-bold uppercase tracking-widest mb-2', theme.alertHeading)}>
         <span aria-hidden="true">⚠️</span> {t('sharedPage.alerts')}
       </h2>
       <div className="flex flex-wrap gap-2">

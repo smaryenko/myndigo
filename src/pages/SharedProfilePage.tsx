@@ -102,74 +102,79 @@ export function SharedProfilePage() {
         <ThemeToggle tooltipAlign="end" />
       </div>
 
-      <main className="flex-1 flex flex-col">
-        {alertView && <AlertBar section={alertView.section} alerts={alerts} tx={tx} theme={theme} limit={TOP_COUNT} />}
+      <div className="mx-4 mb-4 flex flex-1 flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-800">
+        <main className="flex flex-1 flex-col">
+          {alertView && <AlertBar section={alertView.section} alerts={alerts} tx={tx} theme={theme} limit={TOP_COUNT} />}
 
-        {profile.personalInfo ? (
-          <IdentityCard personalInfo={profile.personalInfo} level={level} theme={theme} />
-        ) : (
-          level && (
-            <div className="mx-4 mb-3">
-              <CommunicationBadge level={level} theme={theme} />
-            </div>
-          )
-        )}
-
-        {contactView && <ContactRows section={contactView.section} contacts={contactView.entries} tx={tx} theme={theme} />}
-
-        {(topTriggers.length > 0 || hasTalkToMe) && (
-          <div className="mx-4 grid grid-cols-2 gap-2 mb-2">
-            {triggersView && topTriggers.length > 0 && (
-              <TriggersCard section={triggersView.section} entries={topTriggers} tx={tx} theme={theme} />
-            )}
-            {commView && commEntry && hasTalkToMe && (
-              <TalkToMeCard section={commView.section} entry={commEntry} badgeFieldKey={levelField?.field_key ?? null} tx={tx} theme={theme} />
-            )}
-          </div>
-        )}
-
-        <div className="flex-1 mx-4 mb-2">
-          {alertView && alerts.length > TOP_COUNT && (
-            <ExpandableSection theme={theme} title={`${t('sharedPage.alerts')} (${alerts.length})`}>
-              <div className="flex flex-wrap gap-2">
-                {alerts.map(alert => (
-                  <AlertBadge key={alert.id} section={alertView.section} alert={alert} tx={tx} theme={theme} />
-                ))}
+          {profile.personalInfo ? (
+            <IdentityCard personalInfo={profile.personalInfo} level={level} theme={theme} />
+          ) : (
+            level && (
+              <div className="border-t border-slate-100 px-4 py-3 dark:border-slate-700">
+                <CommunicationBadge level={level} theme={theme} />
               </div>
-            </ExpandableSection>
+            )
           )}
 
-          {triggersView && triggersView.entries.length > TOP_COUNT && (
-            <ExpandableSection theme={theme} title={sectionTitle(triggersView.section, t)}>
-              <SectionBody section={triggersView.section} entries={triggersView.entries} tx={tx} theme={theme} />
-            </ExpandableSection>
+          {contactView && (
+            <div className="border-t border-slate-100 px-4 py-3 dark:border-slate-700">
+              <ContactRows section={contactView.section} contacts={contactView.entries} tx={tx} theme={theme} />
+            </div>
           )}
 
-          {blocks.map(block =>
-            block.kind === 'single' ? (
-              <ExpandableSection key={block.view.section.section_key} theme={theme} title={sectionTitle(block.view.section, t)}>
-                <SectionBody section={block.view.section} entries={block.view.entries} tx={tx} theme={theme} />
-              </ExpandableSection>
-            ) : (
-              <ExpandableSection key={block.labelKey} theme={theme} title={t(block.labelKey)}>
-                <div className="space-y-4">
-                  {block.views.map(view => (
-                    <div key={view.section.section_key}>
-                      <h3 className={cx(theme.sectionHeading, 'mb-2')}>{sectionTitle(view.section, t)}</h3>
-                      <SectionBody section={view.section} entries={view.entries} tx={tx} theme={theme} />
-                    </div>
+          {(topTriggers.length > 0 || hasTalkToMe) && (
+            <div className="grid grid-cols-2 gap-3 border-t border-slate-100 px-4 py-3 dark:border-slate-700">
+              {triggersView && topTriggers.length > 0 && (
+                <TriggersCard section={triggersView.section} entries={topTriggers} tx={tx} theme={theme} />
+              )}
+              {commView && commEntry && hasTalkToMe && (
+                <TalkToMeCard section={commView.section} entry={commEntry} badgeFieldKey={levelField?.field_key ?? null} tx={tx} theme={theme} />
+              )}
+            </div>
+          )}
+
+          <div className="flex-1 border-t border-slate-100 px-4 py-3 dark:border-slate-700">
+            {alertView && alerts.length > TOP_COUNT && (
+              <ExpandableSection theme={theme} title={`${t('sharedPage.alerts')} (${alerts.length})`}>
+                <div className="flex flex-wrap gap-2">
+                  {alerts.map(alert => (
+                    <AlertBadge key={alert.id} section={alertView.section} alert={alert} tx={tx} theme={theme} />
                   ))}
                 </div>
               </ExpandableSection>
-            ),
-          )}
-        </div>
-      </main>
+            )}
 
-      <footer className={cx('fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-lg text-center py-3 text-xs font-medium z-10', theme.footerText, theme.footer)}>
-        {t('common.poweredBy')}
-      </footer>
-      <div className="h-10" aria-hidden="true" />
+            {triggersView && triggersView.entries.length > TOP_COUNT && (
+              <ExpandableSection theme={theme} title={sectionTitle(triggersView.section, t)}>
+                <SectionBody section={triggersView.section} entries={triggersView.entries} tx={tx} theme={theme} />
+              </ExpandableSection>
+            )}
+
+            {blocks.map(block =>
+              block.kind === 'single' ? (
+                <ExpandableSection key={block.view.section.section_key} theme={theme} title={sectionTitle(block.view.section, t)}>
+                  <SectionBody section={block.view.section} entries={block.view.entries} tx={tx} theme={theme} />
+                </ExpandableSection>
+              ) : (
+                <ExpandableSection key={block.labelKey} theme={theme} title={t(block.labelKey)}>
+                  <div className="space-y-4">
+                    {block.views.map(view => (
+                      <div key={view.section.section_key}>
+                        <h3 className={cx(theme.sectionHeading, 'mb-2')}>{sectionTitle(view.section, t)}</h3>
+                        <SectionBody section={view.section} entries={view.entries} tx={tx} theme={theme} />
+                      </div>
+                    ))}
+                  </div>
+                </ExpandableSection>
+              ),
+            )}
+          </div>
+          <footer className={cx('border-t border-slate-100 px-4 py-3 text-center text-xs font-medium dark:border-slate-700', theme.footerText)}>
+            {t('common.poweredBy')}
+          </footer>
+        </main>
+      </div>
+
     </div>
     </div>
   )

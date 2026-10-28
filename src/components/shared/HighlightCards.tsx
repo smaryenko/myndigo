@@ -21,9 +21,9 @@ export function TriggersCard({ section, entries, tx, theme }: TriggersProps) {
   const { t } = useTranslation()
   const fields = section.fields.filter(isDisplayable)
   return (
-    <section aria-label={t('sharedPage.triggers')} className={cx(theme.triggerCardBg, 'p-4')}>
-      <h2 className={cx(theme.triggerHeading, 'mb-3')}>{t('sharedPage.triggers')}</h2>
-      <ul className="space-y-3">
+    <section aria-label={t('sharedPage.triggers')} className={cx(theme.triggerCardBg, 'rounded-xl p-3')}>
+      <h2 className={cx(theme.triggerHeading, 'mb-2')}>{t('sharedPage.triggers')}</h2>
+      <ul className="space-y-1">
         {entries.map(entry => {
           const [first, ...rest] = fields
             .map(f => fieldText(section, f, entry, t, tx))
@@ -59,9 +59,9 @@ export function TalkToMeCard({ section, entry, badgeFieldKey, tx, theme }: TalkP
   const lines = talkToMeLines(section, entry, badgeFieldKey, t, tx)
   if (lines.length === 0) return null
   return (
-    <section aria-label={t('sharedPage.talkToMe')} className={cx(theme.talkCardBg, 'p-4')}>
-      <h2 className={cx(theme.talkHeading, 'mb-3')}>{t('sharedPage.talkToMe')}</h2>
-      <ul className={cx('space-y-2 text-sm', theme.talkText)}>
+    <section aria-label={t('sharedPage.talkToMe')} className={cx(theme.talkCardBg, 'rounded-xl p-3')}>
+      <h2 className={cx(theme.talkHeading, 'mb-2')}>{t('sharedPage.talkToMe')}</h2>
+      <ul className={cx('space-y-1 text-sm', theme.talkText)}>
         {lines.map((line, i) => (
           <li key={i} className="leading-snug">{theme.listBullet}{line}</li>
         ))}

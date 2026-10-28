@@ -37,7 +37,7 @@ export function ContactRows({ section, contacts, tx, theme, primaryCount = 2 }: 
   const more = contacts.slice(primaryCount)
 
   return (
-    <div className="mx-4 mb-2">
+    <div>
       <ul className="space-y-2" aria-label={t(section.label_key)}>
         {primary.map(contact => {
           const { name, phone, details } = describe(contact)
